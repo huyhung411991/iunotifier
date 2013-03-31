@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="ButtonStyle">
+        <ignore path="res\layout\activity_event_details.xml" />
+        <ignore path="res\layout\activity_login.xml" />
+        <ignore path="res\layout\activity_logout.xml" />
+    </issue>
+    <issue id="ContentDescription">
+        <ignore path="res\layout\activity_main_menu_gridlayout.xml" />
+    </issue>
+    <issue id="UseCompoundDrawables">
+        <ignore path="res\layout\activity_main_menu_gridlayout.xml" />
+    </issue>
+    <issue id="UselessParent">
+        <ignore path="res\layout\activity_event_details.xml" />
+        <ignore path="res\layout\activity_events.xml" />
+        <ignore path="res\layout\activity_logout.xml" />
+    </issue>
+</lint>

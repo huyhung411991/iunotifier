@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_activity_events">Events</string>
+    <string name="events_upcomingEvents">Upcoming</string>
+    <string name="events_todayEvents">Today</string>
+    <string name="events_allEvents">All</string>
+
+</resources>

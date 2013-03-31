@@ -1,0 +1,20 @@
+<resources>
+
+    <string name="title_activity_login">Login</string>
+    
+    <string name="login_username">Username: </string>
+    <string name="login_password">Password: </string>
+    <string name="login_signIn">Sign in</string>
+    <string name="login_cancel">Cancel</string>
+    
+    <string name="login_forgotPassword">Recover lost password</string>
+    <string name="login_progressSigningIn">Signing in&#8230;\n
+        Your phone is contacting IUNotifier.\n
+		This can take up to a few minutes.</string>
+    
+    <string name="login_invalidUsername">This user name is invalid</string>
+    <string name="login_invalidPassword">This password is too short</string>
+    <string name="login_incorrectPassword">This password is incorrect</string>
+    <string name="login_fieldRequired">This field is required</string>
+
+</resources>

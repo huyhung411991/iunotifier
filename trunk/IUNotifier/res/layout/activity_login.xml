@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity"
+    tools:ignore="MissingPrefix" >
+
+    <TableLayout
+        android:id="@+id/login_form_tableLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:stretchColumns="1" >
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_username" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/login_username_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLines="1"
+                android:singleLine="true" >
+            </EditText>
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_password" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/login_password_editText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:imeActionId="@+id/login"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:singleLine="true" >
+            </EditText>
+        </TableRow>
+
+        <TableRow android:layout_marginTop="8dp" >
+
+            <Button
+                android:id="@+id/login_cancel_button"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/login_cancel" >
+            </Button>
+
+            <Button
+                android:id="@+id/login_signIn_button"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/login_signIn" >
+            </Button>
+        </TableRow>
+    </TableLayout>
+
+    <TableLayout
+        android:id="@+id/login_status_tableLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:stretchColumns="*"
+        android:visibility="invisible" >
+
+        <TableRow>
+
+            <ProgressBar style="?android:attr/progressBarStyleLarge" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/login_status_textView"
+                android:layout_gravity="center"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/login_progressSigningIn"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </TableRow>
+    </TableLayout>
+
+</RelativeLayout>
