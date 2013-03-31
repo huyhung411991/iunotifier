@@ -43,6 +43,7 @@ public class DB {
 	public static abstract class Department implements BaseColumns {
 		public static final String TABLE_NAME = "Departments";
 		public static final String ID = "departmentID";
+		public static final String PARSE_ID = "objectID";
 		public static final String NAME = "departmentName";
 		public static final String UPDATED_AT = "updatedAt";
 		
@@ -59,6 +60,7 @@ public class DB {
 	public static abstract class Course implements BaseColumns {
 		public static final String TABLE_NAME = "Courses";
 		public static final String ID = "courseID";
+		public static final String PARSE_ID = "objectID";
 		public static final String NAME = "courseName";
 		public static final String DEPARTMENT_ID = "departmentID";
 		public static final String UPDATED_AT = "updatedAt";
@@ -76,6 +78,7 @@ public class DB {
 	public static abstract class CourseDetails implements BaseColumns {
 		public static final String TABLE_NAME = "CourseDetails";
 		public static final String ID = "courseID";
+		public static final String PARSE_ID = "objectID";
 		public static final String NAME = "courseName";
 		public static final String LECTURER = "lecturer";
 		public static final String THEORY = "theory";
