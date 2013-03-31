@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LogoutActivity" >
+
+    <TableLayout
+        android:id="@+id/logout_status"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:stretchColumns="0,1" >
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/logout_message"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_span="2"
+                android:text="@string/logout_message"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </TableRow>
+
+        <TableRow android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/logout_no_button"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/logout_no" >
+            </Button>
+
+            <Button
+                android:id="@+id/logout_yes_button"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/logout_yes" >
+            </Button>
+        </TableRow>
+    </TableLayout>
+
+</RelativeLayout>

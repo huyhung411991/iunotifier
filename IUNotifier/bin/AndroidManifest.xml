@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.iuinsider.iunotifier"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="17" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:name="com.iuinsider.iunotifier.IUNotifierApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:logo="@drawable/ic_launcher"
+        android:theme="@style/AppTheme" >
+        <provider
+            android:name="com.iuinsider.iunotifier.providers.IUContentProvider"
+            android:authorities="com.iuinsider.iunotifier.provider"
+            tools:ignore="ExportedContentProvider" >
+        </provider>
+
+        <!-- ====================================================================== -->
+        <activity
+            android:name="com.iuinsider.iunotifier.SplashScreenActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" >
+                </action>
+
+                <category android:name="android.intent.category.LAUNCHER" >
+                </category>
+            </intent-filter>
+        </activity>
+
+        <!-- ====================================================================== -->
+        <activity
+            android:name="com.iuinsider.iunotifier.MainMenuActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- ====================================================================== -->
+        <activity
+            android:name="com.iuinsider.iunotifier.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:parentActivityName="com.iuinsider.iunotifier.MainMenuActivity"
+            android:theme="@android:style/Theme.Holo.Dialog" >
+        </activity>
+
+        <!-- ====================================================================== -->
+        <activity
+            android:name="com.iuinsider.iunotifier.LogoutActivity"
+            android:label="@string/title_activity_logout"
+            android:parentActivityName="com.iuinsider.iunotifier.MainMenuActivity"
+            android:theme="@android:style/Theme.Holo.Dialog" >
+        </activity>
+
+        <!-- ====================================================================== -->
+        <activity
+            android:name="com.iuinsider.iunotifier.NewsActivity"
+            android:label="@string/title_activity_news"
+            android:parentActivityName="com.iuinsider.iunotifier.MainMenuActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iuinsider.iunotifier.MainMenuActivity" />
+        </activity>
+
+        <!-- ====================================================================== -->
+        <activity
+            android:name="com.iuinsider.iunotifier.WebViewActivity"
+            android:label="@string/title_activity_web_view"
+            android:parentActivityName="com.iuinsider.iunotifier.NewsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iuinsider.iunotifier.NewsActivity" />
+        </activity>
+
+        <!-- ====================================================================== -->
+        <activity
+            android:name="com.iuinsider.iunotifier.EventsActivity"
+            android:label="@string/title_activity_events"
+            android:parentActivityName="com.iuinsider.iunotifier.MainMenuActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iuinsider.iunotifier.MainMenuActivity" />
+        </activity>
+
+        <!-- ====================================================================== -->
+        <activity
+            android:name="com.iuinsider.iunotifier.EventDetailsActivity"
+            android:label="@string/title_activity_event_details"
+            android:parentActivityName="com.iuinsider.iunotifier.EventsActivity"
+            android:theme="@android:style/Theme.Holo.Dialog" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iuinsider.iunotifier.EventsActivity" />
+        </activity>
+        <!-- ====================================================================== -->
+        <activity
+            android:name="com.iuinsider.iunotifier.CourseActivity"
+            android:label="@string/title_activity_course"
+            android:parentActivityName="com.iuinsider.iunotifier.MainMenuActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iuinsider.iunotifier.MainMenuActivity" />
+        </activity>
+        
+
+        <service android:name="com.parse.PushService" />
+
+        <receiver android:name="com.parse.ParseBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
