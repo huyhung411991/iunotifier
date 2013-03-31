@@ -9,9 +9,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.provider.BaseColumns;
 import android.text.TextUtils;
-
 
 public class IUContentProvider extends ContentProvider {
 	// Used for the UriMacher
@@ -20,15 +18,32 @@ public class IUContentProvider extends ContentProvider {
 	private static final int NEWS_ID = 2;
 	private static final int EVENT = 3;
 	private static final int EVENT_ID = 4;
+	private static final int DEPARTMENT = 5;
+	private static final int DEPARTMENT_ID = 6;
+	private static final int COURSE = 7;
+	private static final int COURSE_ID = 8;
+	private static final int COURSE_DETAILS = 9;
+	private static final int COURSE_DETAILS_ID = 10;
 
 	static {
 		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		sUriMatcher.addURI(DB.News.AUTHORITY, DB.News.TABLE_NAME, NEWS);
 		sUriMatcher.addURI(DB.News.AUTHORITY, DB.News.TABLE_NAME + "/#",
 				NEWS_ID);
-		sUriMatcher.addURI(DB.News.AUTHORITY, DB.Event.TABLE_NAME, EVENT);
-		sUriMatcher.addURI(DB.News.AUTHORITY, DB.Event.TABLE_NAME + "/#",
+		sUriMatcher.addURI(DB.Event.AUTHORITY, DB.Event.TABLE_NAME, EVENT);
+		sUriMatcher.addURI(DB.Event.AUTHORITY, DB.Event.TABLE_NAME + "/#",
 				EVENT_ID);
+		sUriMatcher.addURI(DB.Department.AUTHORITY, DB.Department.TABLE_NAME,
+				DEPARTMENT);
+		sUriMatcher.addURI(DB.Department.AUTHORITY, DB.Department.TABLE_NAME
+				+ "/#", DEPARTMENT_ID);
+		sUriMatcher.addURI(DB.Course.AUTHORITY, DB.Course.TABLE_NAME, COURSE);
+		sUriMatcher.addURI(DB.Course.AUTHORITY, DB.Course.TABLE_NAME + "/#",
+				COURSE_ID);
+		sUriMatcher.addURI(DB.CourseDetails.AUTHORITY,
+				DB.CourseDetails.TABLE_NAME, COURSE_DETAILS);
+		sUriMatcher.addURI(DB.CourseDetails.AUTHORITY,
+				DB.CourseDetails.TABLE_NAME + "/#", COURSE_DETAILS_ID);
 	}
 
 	private static DBHelper dbHelper;
@@ -51,6 +66,18 @@ public class IUContentProvider extends ContentProvider {
 			return DB.Event.CONTENT_TYPE;
 		case EVENT_ID:
 			return DB.Event.CONTENT_ITEM_TYPE;
+		case DEPARTMENT:
+			return DB.Department.CONTENT_TYPE;
+		case DEPARTMENT_ID:
+			return DB.Department.CONTENT_ITEM_TYPE;
+		case COURSE:
+			return DB.Course.CONTENT_TYPE;
+		case COURSE_ID:
+			return DB.Course.CONTENT_ITEM_TYPE;
+		case COURSE_DETAILS:
+			return DB.CourseDetails.CONTENT_TYPE;
+		case COURSE_DETAILS_ID:
+			return DB.CourseDetails.CONTENT_ITEM_TYPE;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -69,7 +96,7 @@ public class IUContentProvider extends ContentProvider {
 			break;
 		case NEWS_ID:
 			queryBuilder.setTables(DB.News.TABLE_NAME);
-			queryBuilder.appendWhere(BaseColumns._ID + "="
+			queryBuilder.appendWhere(DB.News._ID + "="
 					+ uri.getLastPathSegment());
 			break;
 		case EVENT:
@@ -77,7 +104,31 @@ public class IUContentProvider extends ContentProvider {
 			break;
 		case EVENT_ID:
 			queryBuilder.setTables(DB.Event.TABLE_NAME);
-			queryBuilder.appendWhere(BaseColumns._ID + "="
+			queryBuilder.appendWhere(DB.Event._ID + "="
+					+ uri.getLastPathSegment());
+			break;
+		case DEPARTMENT:
+			queryBuilder.setTables(DB.Department.TABLE_NAME);
+			break;
+		case DEPARTMENT_ID:
+			queryBuilder.setTables(DB.Department.TABLE_NAME);
+			queryBuilder.appendWhere(DB.Department.ID + "="
+					+ uri.getLastPathSegment());
+			break;
+		case COURSE:
+			queryBuilder.setTables(DB.Course.TABLE_NAME);
+			break;
+		case COURSE_ID:
+			queryBuilder.setTables(DB.Course.TABLE_NAME);
+			queryBuilder.appendWhere(DB.Course.ID + "="
+					+ uri.getLastPathSegment());
+			break;
+		case COURSE_DETAILS:
+			queryBuilder.setTables(DB.CourseDetails.TABLE_NAME);
+			break;
+		case COURSE_DETAILS_ID:
+			queryBuilder.setTables(DB.CourseDetails.TABLE_NAME);
+			queryBuilder.appendWhere(DB.CourseDetails.ID + "="
 					+ uri.getLastPathSegment());
 			break;
 		default:
@@ -113,6 +164,20 @@ public class IUContentProvider extends ContentProvider {
 			rowId = db.insert(DB.Event.TABLE_NAME, null, values);
 			noteUri = ContentUris.withAppendedId(DB.Event.CONTENT_URI, rowId);
 			break;
+		case DEPARTMENT:
+			rowId = db.insert(DB.Department.TABLE_NAME, null, values);
+			noteUri = ContentUris.withAppendedId(DB.Department.CONTENT_URI,
+					rowId);
+			break;
+		case COURSE:
+			rowId = db.insert(DB.Course.TABLE_NAME, null, values);
+			noteUri = ContentUris.withAppendedId(DB.Course.CONTENT_URI, rowId);
+			break;
+		case COURSE_DETAILS:
+			rowId = db.insert(DB.CourseDetails.TABLE_NAME, null, values);
+			noteUri = ContentUris.withAppendedId(DB.CourseDetails.CONTENT_URI,
+					rowId);
+			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -136,10 +201,10 @@ public class IUContentProvider extends ContentProvider {
 			break;
 		case NEWS_ID:
 			if (TextUtils.isEmpty(selection))
-				rowsDeleted = db.delete(DB.News.TABLE_NAME, BaseColumns._ID
+				rowsDeleted = db.delete(DB.News.TABLE_NAME, DB.News._ID
 						+ " = " + uri.getLastPathSegment(), null);
 			else
-				rowsDeleted = db.delete(DB.News.TABLE_NAME, BaseColumns._ID
+				rowsDeleted = db.delete(DB.News.TABLE_NAME, DB.News._ID
 						+ " = " + uri.getLastPathSegment() + " AND "
 						+ selection, selectionArgs);
 			break;
@@ -149,12 +214,53 @@ public class IUContentProvider extends ContentProvider {
 			break;
 		case EVENT_ID:
 			if (TextUtils.isEmpty(selection))
-				rowsDeleted = db.delete(DB.Event.TABLE_NAME, BaseColumns._ID
+				rowsDeleted = db.delete(DB.Event.TABLE_NAME, DB.Event._ID
 						+ " = " + uri.getLastPathSegment(), null);
 			else
-				rowsDeleted = db.delete(DB.Event.TABLE_NAME, BaseColumns._ID
+				rowsDeleted = db.delete(DB.Event.TABLE_NAME, DB.Event._ID
 						+ " = " + uri.getLastPathSegment() + " AND "
 						+ selection, selectionArgs);
+			break;
+		case DEPARTMENT:
+			rowsDeleted = db.delete(DB.Department.TABLE_NAME, selection,
+					selectionArgs);
+			break;
+		case DEPARTMENT_ID:
+			if (TextUtils.isEmpty(selection))
+				rowsDeleted = db.delete(DB.Department.TABLE_NAME,
+						DB.Department.ID + " = " + uri.getLastPathSegment(),
+						null);
+			else
+				rowsDeleted = db.delete(DB.Department.TABLE_NAME,
+						DB.Department.ID + " = " + uri.getLastPathSegment()
+								+ " AND " + selection, selectionArgs);
+			break;
+		case COURSE:
+			rowsDeleted = db.delete(DB.Course.TABLE_NAME, selection,
+					selectionArgs);
+			break;
+		case COURSE_ID:
+			if (TextUtils.isEmpty(selection))
+				rowsDeleted = db.delete(DB.Course.TABLE_NAME, DB.Course.ID
+						+ " = " + uri.getLastPathSegment(), null);
+			else
+				rowsDeleted = db.delete(DB.Course.TABLE_NAME, DB.Course.ID
+						+ " = " + uri.getLastPathSegment() + " AND "
+						+ selection, selectionArgs);
+			break;
+		case COURSE_DETAILS:
+			rowsDeleted = db.delete(DB.CourseDetails.TABLE_NAME, selection,
+					selectionArgs);
+			break;
+		case COURSE_DETAILS_ID:
+			if (TextUtils.isEmpty(selection))
+				rowsDeleted = db.delete(DB.CourseDetails.TABLE_NAME,
+						DB.CourseDetails.ID + " = " + uri.getLastPathSegment(),
+						null);
+			else
+				rowsDeleted = db.delete(DB.CourseDetails.TABLE_NAME,
+						DB.CourseDetails.ID + " = " + uri.getLastPathSegment()
+								+ " AND " + selection, selectionArgs);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
@@ -178,11 +284,11 @@ public class IUContentProvider extends ContentProvider {
 		case NEWS_ID:
 			if (TextUtils.isEmpty(selection))
 				rowsUpdated = db.update(DB.News.TABLE_NAME, values,
-						BaseColumns._ID + " = " + uri.getLastPathSegment(),
+						DB.News._ID + " = " + uri.getLastPathSegment(),
 						null);
 			else
 				rowsUpdated = db.update(DB.News.TABLE_NAME, values,
-						BaseColumns._ID + " = " + uri.getLastPathSegment()
+						DB.News._ID + " = " + uri.getLastPathSegment()
 								+ " AND " + selection, selectionArgs);
 			break;
 		case EVENT:
@@ -192,11 +298,52 @@ public class IUContentProvider extends ContentProvider {
 		case EVENT_ID:
 			if (TextUtils.isEmpty(selection))
 				rowsUpdated = db.update(DB.Event.TABLE_NAME, values,
-						BaseColumns._ID + " = " + uri.getLastPathSegment(),
+						DB.Event._ID + " = " + uri.getLastPathSegment(),
 						null);
 			else
 				rowsUpdated = db.update(DB.Event.TABLE_NAME, values,
-						BaseColumns._ID + " = " + uri.getLastPathSegment()
+						DB.Event._ID + " = " + uri.getLastPathSegment()
+								+ " AND " + selection, selectionArgs);
+			break;
+		case DEPARTMENT:
+			rowsUpdated = db.update(DB.Department.TABLE_NAME, values,
+					selection, selectionArgs);
+			break;
+		case DEPARTMENT_ID:
+			if (TextUtils.isEmpty(selection))
+				rowsUpdated = db.update(DB.Department.TABLE_NAME, values,
+						DB.Department.ID + " = " + uri.getLastPathSegment(),
+						null);
+			else
+				rowsUpdated = db.update(DB.Department.TABLE_NAME, values,
+						DB.Department.ID + " = " + uri.getLastPathSegment()
+								+ " AND " + selection, selectionArgs);
+			break;
+		case COURSE:
+			rowsUpdated = db.update(DB.Course.TABLE_NAME, values, selection,
+					selectionArgs);
+			break;
+		case COURSE_ID:
+			if (TextUtils.isEmpty(selection))
+				rowsUpdated = db.update(DB.Course.TABLE_NAME, values,
+						DB.Course.ID + " = " + uri.getLastPathSegment(), null);
+			else
+				rowsUpdated = db.update(DB.Course.TABLE_NAME, values,
+						DB.Course.ID + " = " + uri.getLastPathSegment()
+								+ " AND " + selection, selectionArgs);
+			break;
+		case COURSE_DETAILS:
+			rowsUpdated = db.update(DB.CourseDetails.TABLE_NAME, values,
+					selection, selectionArgs);
+			break;
+		case COURSE_DETAILS_ID:
+			if (TextUtils.isEmpty(selection))
+				rowsUpdated = db.update(DB.CourseDetails.TABLE_NAME, values,
+						DB.CourseDetails.ID + " = " + uri.getLastPathSegment(),
+						null);
+			else
+				rowsUpdated = db.update(DB.CourseDetails.TABLE_NAME, values,
+						DB.CourseDetails.ID + " = " + uri.getLastPathSegment()
 								+ " AND " + selection, selectionArgs);
 			break;
 		default:
