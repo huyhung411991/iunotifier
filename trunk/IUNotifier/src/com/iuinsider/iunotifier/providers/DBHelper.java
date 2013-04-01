@@ -27,7 +27,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	private static final String CREATE_TABLE_DEPARTMENTS = "CREATE TABLE "
 			+ DB.Department.TABLE_NAME + " (" + DB.Department._ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Department.ID
-			+ " TEXT, " + DB.Department.NAME + " TEXT, "
+			+ " TEXT UNIQUE, " + DB.Department.NAME + " TEXT, "
 			+ DB.Department.UPDATED_AT + " TEXT)";
 
 	private static final String DELETE_TABLE_DEPARTMENTS = "DROP TABLE IF EXISTS "
@@ -35,9 +35,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
 	private static final String CREATE_TABLE_COURSE = "CREATE TABLE "
 			+ DB.Course.TABLE_NAME + " (" + DB.Course._ID
-			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Course.ID + " TEXT, "
-			+ DB.Course.NAME + " TEXT, " + DB.Course.DEPARTMENT_ID + " TEXT, "
-			+ DB.Course.UPDATED_AT + " TEXT)";
+			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Course.ID
+			+ " TEXT UNIQUE, " + DB.Course.NAME + " TEXT, "
+			+ DB.Course.DEPARTMENT_ID + " TEXT, " + DB.Course.UPDATED_AT
+			+ " TEXT)";
 
 	private static final String DELETE_TABLE_COURSE = "DROP TABLE IF EXISTS "
 			+ DB.Course.TABLE_NAME;
@@ -45,7 +46,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	private static final String CREATE_TABLE_COURSE_DETAILS = "CREATE TABLE "
 			+ DB.CourseDetails.TABLE_NAME + " (" + DB.CourseDetails._ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.CourseDetails.ID
-			+ " TEXT, " + DB.CourseDetails.NAME + " TEXT, "
+			+ " TEXT UNIQUE, " + DB.CourseDetails.NAME + " TEXT, "
 			+ DB.CourseDetails.LECTURER + " TEXT, " + DB.CourseDetails.THEORY
 			+ " TEXT, " + DB.CourseDetails.LAB + " TEXT, "
 			+ DB.CourseDetails.CREDIT + " INTEGER, "

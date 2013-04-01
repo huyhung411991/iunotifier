@@ -157,24 +157,24 @@ public class IUContentProvider extends ContentProvider {
 		Uri noteUri = null;
 		switch (sUriMatcher.match(uri)) {
 		case NEWS:
-			rowId = db.insert(DB.News.TABLE_NAME, null, values);
+			rowId = db.insertWithOnConflict(DB.News.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 			noteUri = ContentUris.withAppendedId(DB.News.CONTENT_URI, rowId);
 			break;
 		case EVENT:
-			rowId = db.insert(DB.Event.TABLE_NAME, null, values);
+			rowId = db.insertWithOnConflict(DB.Event.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 			noteUri = ContentUris.withAppendedId(DB.Event.CONTENT_URI, rowId);
 			break;
 		case DEPARTMENT:
-			rowId = db.insert(DB.Department.TABLE_NAME, null, values);
+			rowId = db.insertWithOnConflict(DB.Department.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 			noteUri = ContentUris.withAppendedId(DB.Department.CONTENT_URI,
 					rowId);
 			break;
 		case COURSE:
-			rowId = db.insert(DB.Course.TABLE_NAME, null, values);
+			rowId = db.insertWithOnConflict(DB.Course.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 			noteUri = ContentUris.withAppendedId(DB.Course.CONTENT_URI, rowId);
 			break;
 		case COURSE_DETAILS:
-			rowId = db.insert(DB.CourseDetails.TABLE_NAME, null, values);
+			rowId = db.insertWithOnConflict(DB.CourseDetails.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 			noteUri = ContentUris.withAppendedId(DB.CourseDetails.CONTENT_URI,
 					rowId);
 			break;
