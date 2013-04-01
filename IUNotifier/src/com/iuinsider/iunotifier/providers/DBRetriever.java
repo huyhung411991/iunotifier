@@ -180,7 +180,8 @@ public class DBRetriever {
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Course.TABLE_NAME);
-		if (!TextUtils.isEmpty(departmentID) || departmentID.equals("ALL"))
+		
+		if (!TextUtils.isEmpty(departmentID) && !departmentID.equals("ALL"))
 			query.whereEqualTo(DB.Course.DEPARTMENT_ID, departmentID);
 
 		if (!TextUtils.isEmpty(timeAfter)) {
@@ -201,6 +202,8 @@ public class DBRetriever {
 								courseObject.getString(DB.Course.ID));
 						course.put(DB.Course.NAME,
 								courseObject.getString(DB.Course.NAME));
+						course.put(DB.Course.DEPARTMENT_ID,
+								courseObject.getString(DB.Course.DEPARTMENT_ID));
 						Date date = courseObject.getUpdatedAt();
 						course.put(DB.Course.UPDATED_AT, DateToString(date));
 						context.getContentResolver().insert(DB.Course.CONTENT_URI, course);
