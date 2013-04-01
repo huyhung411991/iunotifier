@@ -142,7 +142,7 @@ public class MainMenuActivity extends Activity {
 
 	/** Called when the user clicks the Course button */
 	public void openCourse(View view) {
-		Intent intent = new Intent(this, CourseActivity.class);
+		Intent intent = new Intent(this, DepartmentActivity.class);
 		startActivity(intent);
 
 		// Transition animation

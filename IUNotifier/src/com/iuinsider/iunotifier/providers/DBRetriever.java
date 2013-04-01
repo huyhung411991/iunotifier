@@ -20,6 +20,9 @@ public class DBRetriever {
 	private static ContentResolver contentResolver = null;
 
 	public static String DateToString(Date date) {
+		if (date == null)
+			return "";
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
 				Locale.US);
 		String string = sdf.format(date);
@@ -28,6 +31,9 @@ public class DBRetriever {
 	}
 
 	public static Date StringToDate(String string) {
+		if (TextUtils.isEmpty(string))
+			return null;
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
 				Locale.US);
 		Date date = null;
@@ -146,7 +152,7 @@ public class DBRetriever {
 						ParseObject departmentObject = li.next();
 						ContentValues department = new ContentValues();
 						department.put(DB.Department.ID, departmentObject
-								.getString(DB.Department.PARSE_ID));
+								.getString(DB.Department.ID));
 						department.put(DB.Department.NAME,
 								departmentObject.getString(DB.Department.NAME));
 						Date date = departmentObject
@@ -189,7 +195,7 @@ public class DBRetriever {
 						ParseObject courseObject = li.next();
 						ContentValues course = new ContentValues();
 						course.put(DB.Course.ID,
-								courseObject.getString(DB.Course.PARSE_ID));
+								courseObject.getString(DB.Course.ID));
 						course.put(DB.Course.NAME,
 								courseObject.getString(DB.Course.NAME));
 						Date date = courseObject.getDate(DB.Course.UPDATED_AT);

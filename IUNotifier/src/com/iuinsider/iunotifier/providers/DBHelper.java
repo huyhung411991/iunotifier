@@ -27,7 +27,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	private static final String CREATE_TABLE_DEPARTMENTS = "CREATE TABLE "
 			+ DB.Department.TABLE_NAME + " (" + DB.Department._ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Department.ID
-			+ "TEXT, " + DB.Department.NAME + " TEXT, "
+			+ " TEXT, " + DB.Department.NAME + " TEXT, "
 			+ DB.Department.UPDATED_AT + " TEXT)";
 
 	private static final String DELETE_TABLE_DEPARTMENTS = "DROP TABLE IF EXISTS "
