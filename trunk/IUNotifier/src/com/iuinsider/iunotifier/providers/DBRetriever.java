@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -18,6 +19,7 @@ import com.parse.ParseQuery;
 
 public class DBRetriever {
 	private static ContentResolver contentResolver = null;
+	private static Context context = null;
 
 	public static String DateToString(Date date) {
 		if (date == null)
@@ -131,9 +133,9 @@ public class DBRetriever {
 		});
 	}
 
-	public static void DepartmentQuery(ContentResolver resolver,
+	public static void DepartmentQuery(Context c,
 			String timeCondition) {
-		contentResolver = resolver;
+		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Department.TABLE_NAME);
 
@@ -155,11 +157,10 @@ public class DBRetriever {
 								.getString(DB.Department.ID));
 						department.put(DB.Department.NAME,
 								departmentObject.getString(DB.Department.NAME));
-						Date date = departmentObject
-								.getDate(DB.Department.UPDATED_AT);
+						Date date = departmentObject.getUpdatedAt();
 						department.put(DB.Department.UPDATED_AT,
 								DateToString(date));
-						contentResolver.insert(DB.Department.CONTENT_URI,
+						context.getContentResolver().insert(DB.Department.CONTENT_URI,
 								department);
 					}
 
@@ -172,9 +173,9 @@ public class DBRetriever {
 		});
 	}
 
-	public static void CourseQuery(ContentResolver resolver,
+	public static void CourseQuery(Context c,
 			String departmentID, String timeAfter) {
-		contentResolver = resolver;
+		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Course.TABLE_NAME);
 		if (!TextUtils.isEmpty(departmentID))
@@ -200,7 +201,7 @@ public class DBRetriever {
 								courseObject.getString(DB.Course.NAME));
 						Date date = courseObject.getDate(DB.Course.UPDATED_AT);
 						course.put(DB.Course.UPDATED_AT, DateToString(date));
-						contentResolver.insert(DB.Course.CONTENT_URI, course);
+						context.getContentResolver().insert(DB.Course.CONTENT_URI, course);
 					}
 
 					Log.d(DB.Course.TABLE_NAME, "Retrieved " + list.size()
