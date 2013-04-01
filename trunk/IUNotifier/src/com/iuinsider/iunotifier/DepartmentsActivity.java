@@ -164,15 +164,14 @@ public class DepartmentsActivity extends ListActivity implements
 		mCursor.moveToPosition(position);
 		String columnName = DB.Departments.ID;
 		int columnIndex = mCursor.getColumnIndex(columnName);
-		String department = mCursor.getString(columnIndex);
+		String departmentID = mCursor.getString(columnIndex);
 
 		Intent intent = new Intent(this, CoursesActivity.class);
-		intent.putExtra(EXTRA_DEPARTMENT, department);
+		intent.putExtra(EXTRA_DEPARTMENT, departmentID);
 		startActivity(intent);
 
 		// New, more advanced and easy to use transition animation
 		overridePendingTransition(R.anim.slide_in_right, 0);
-
 	}
 
 }

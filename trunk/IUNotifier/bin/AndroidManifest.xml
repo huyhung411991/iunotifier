@@ -158,7 +158,7 @@
         
         <!-- ====================================================================== -->
         <activity
-            android:name="com.iuinsider.iunotifier.Announcements"
+            android:name="com.iuinsider.iunotifier.AnnouncementsActivity"
             android:label="@string/title_activity_announcements"
             android:parentActivityName="com.iuinsider.iunotifier.CourseDetailsActivity" >
             <meta-data

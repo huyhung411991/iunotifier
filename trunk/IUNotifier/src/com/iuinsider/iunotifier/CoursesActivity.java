@@ -6,6 +6,7 @@ import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -32,6 +33,7 @@ public class CoursesActivity extends ListActivity implements
 
 	private static final String LAST_UPDATE = ".com.iuinsider.iunotifier.LAST_UPDATE";
 	private static final String EXTRA_DEPARTMENT = ".com.iuinsider.iunotifier.DEPARTMENT";
+	private static final String EXTRA_COURSE = ".com.iuinsider.iunotifier.COURSE";
 
 	// These are the Contacts rows that we will retrieve
 	private static final String[] PROJECTION = new String[] { DB.Courses._ID,
@@ -147,8 +149,8 @@ public class CoursesActivity extends ListActivity implements
 			return new CursorLoader(this, DB.Courses.CONTENT_URI, PROJECTION,
 					SELECTION, null, SORTORDER);
 		else {
-			String newSelection = SELECTION + " AND " + DB.Courses.DEPARTMENT_ID
-					+ " = '" + departmentID + "'";
+			String newSelection = SELECTION + " AND "
+					+ DB.Courses.DEPARTMENT_ID + " = '" + departmentID + "'";
 			return new CursorLoader(this, DB.Courses.CONTENT_URI, PROJECTION,
 					newSelection, null, SORTORDER);
 		}
@@ -178,18 +180,18 @@ public class CoursesActivity extends ListActivity implements
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		/*
-		 * Cursor mCursor = mAdapter.getCursor();
-		 * mCursor.moveToPosition(position); String columnName = DB.News.LINK;
-		 * int columnIndex = mCursor.getColumnIndex(columnName); String link =
-		 * mCursor.getString(columnIndex);
-		 * 
-		 * Intent intent = new Intent(this, WebViewActivity.class);
-		 * intent.putExtra(EXTRA_LINK, link); startActivityForResult(intent, 0);
-		 * // startActivity(intent);
-		 * 
-		 * // New, more advanced and easy to use transition animation
-		 * overridePendingTransition(R.anim.slide_in_right, 0);
-		 */
+		
+		Cursor mCursor = mAdapter.getCursor();
+		mCursor.moveToPosition(position);
+		String columnName = DB.Courses.ID;
+		int columnIndex = mCursor.getColumnIndex(columnName);
+		String courseID = mCursor.getString(columnIndex);
+
+		Intent intent = new Intent(this, CourseDetailsActivity.class);
+		intent.putExtra(EXTRA_COURSE, courseID);
+		startActivity(intent);
+
+		// New, more advanced and easy to use transition animation
+		overridePendingTransition(R.anim.slide_in_right, 0);
 	}
 }

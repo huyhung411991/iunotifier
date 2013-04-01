@@ -3,7 +3,7 @@ package com.iuinsider.iunotifier;
 import android.annotation.TargetApi;
 import android.app.ListActivity;
 import android.app.LoaderManager;
-import android.content.ContentResolver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -28,7 +28,7 @@ public class EventsActivity extends ListActivity implements
 
 	private ParseUser currentUser = null;
 	private SimpleCursorAdapter mAdapter = null;
-	private ContentResolver contentResolver = null;
+	private Context context;
 	private String sortCondition = "All";
 
 	// These are the Contacts rows that we will retrieve
@@ -48,9 +48,9 @@ public class EventsActivity extends ListActivity implements
 		getListView().setEmptyView(progressBar);
 
 		currentUser = ParseUser.getCurrentUser();
-		contentResolver = getContentResolver();
+		context = this;
 
-		DBRetriever.allEventsQuery(contentResolver, sortCondition);
+		DBRetriever.allEventsQuery(this, sortCondition);
 
 		// For the cursor adapter, specify which columns go into which views
 		String[] fromColumns = { DB.Events.TITLE };
@@ -75,7 +75,7 @@ public class EventsActivity extends ListActivity implements
 				sortCondition = (String) tg_all.getText();
 				tg_today.setChecked(false);
 				tg_upcoming.setChecked(false);
-				DBRetriever.allEventsQuery(contentResolver, sortCondition);
+				DBRetriever.allEventsQuery(context, sortCondition);
 			}
 		});
 
@@ -85,7 +85,7 @@ public class EventsActivity extends ListActivity implements
 				sortCondition = (String) tg_today.getText();
 				tg_all.setChecked(false);
 				tg_upcoming.setChecked(false);
-				DBRetriever.allEventsQuery(contentResolver, sortCondition);
+				DBRetriever.allEventsQuery(context, sortCondition);
 			}
 		});
 
@@ -95,7 +95,7 @@ public class EventsActivity extends ListActivity implements
 				sortCondition = (String) tg_upcoming.getText();
 				tg_today.setChecked(false);
 				tg_all.setChecked(false);
-				DBRetriever.allEventsQuery(contentResolver, sortCondition);
+				DBRetriever.allEventsQuery(context, sortCondition);
 			}
 		});
 
@@ -154,7 +154,7 @@ public class EventsActivity extends ListActivity implements
 			onBackPressed();
 			return true;
 		case R.id.action_refresh:
-			DBRetriever.allEventsQuery(contentResolver, sortCondition);
+			DBRetriever.allEventsQuery(this, sortCondition);
 			break;
 		default:
 			break;
