@@ -26,20 +26,21 @@ import com.iuinsider.iunotifier.providers.DBRetriever;
 
 public class DepartmentActivity extends ListActivity implements
 		LoaderManager.LoaderCallbacks<Cursor> {
-	
+
 	private SimpleCursorAdapter mAdapter = null;
-	
+
 	private static final String LAST_UPDATE = ".com.iuinsider.iunotifier.LAST_UPDATE";
 
 	// These are the Contacts rows that we will retrieve
 	private static final String[] PROJECTION = new String[] {
 			DB.Department._ID, DB.Department.ID, DB.Department.NAME };
-
+	
 	// This is the select criteria
-	// private static final String SELECTION = "((" + DB.News.TITLE +
-	// " NOTNULL) AND ("
-	// + DB.News.TITLE + " != '' ))";
-	private static final String SELECTION = "";
+	private static final String SELECTION = "((" + DB.Department.NAME
+			+ " NOTNULL) AND (" + DB.Department.NAME + " != '' ))";
+	
+	// This is the sorting order
+	private static final String SORTORDER = DB.Department.ID + " ASC";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,17 +53,17 @@ public class DepartmentActivity extends ListActivity implements
 
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-
 		if (activeNetwork != null && activeNetwork.isConnected()) {
-//			SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
-//			String lastUpdate = pref.getString(LAST_UPDATE, "");
-//			DBRetriever.DepartmentQuery(this, lastUpdate);
-//			SharedPreferences.Editor prefEdit = pref.edit();
-//			prefEdit.putString(LAST_UPDATE, DBRetriever.DateToString(new Date()));
-//			prefEdit.commit();
-//			Log.d("Network", "Network available");
-			getContentResolver().delete(DB.Event.CONTENT_URI, null, null);
-			DBRetriever.DepartmentQuery(this, null);
+			SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
+			String lastUpdate = pref.getString(LAST_UPDATE, "");
+			
+			DBRetriever.DepartmentQuery(this, lastUpdate);
+			
+			SharedPreferences.Editor prefEdit = pref.edit();
+			prefEdit.putString(LAST_UPDATE,
+					DBRetriever.DateToString(new Date()));
+			prefEdit.commit();
+			Log.d("Network", "Network available");
 		} else {
 			Log.d("Network", "Network unavailable");
 		}
@@ -128,7 +129,7 @@ public class DepartmentActivity extends ListActivity implements
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
 		return new CursorLoader(this, DB.Department.CONTENT_URI, PROJECTION,
-				SELECTION, null, null);
+				SELECTION, null, SORTORDER);
 	}
 
 	// =========================================================================================
