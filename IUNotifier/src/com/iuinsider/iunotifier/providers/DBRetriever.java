@@ -18,25 +18,25 @@ import com.parse.ParseQuery;
 
 public class DBRetriever {
 	private static ContentResolver contentResolver = null;
-	
+
 	public static String DateToString(Date date) {
-		SimpleDateFormat sdf = new SimpleDateFormat(
-				"yyyy-MM-dd HH:mm:ss", Locale.US);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+				Locale.US);
 		String string = sdf.format(date);
-		
+
 		return string;
 	}
-	
+
 	public static Date StringToDate(String string) {
-		SimpleDateFormat sdf = new SimpleDateFormat(
-				"yyyy-MM-dd HH:mm:ss", Locale.US);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+				Locale.US);
 		Date date = null;
 		try {
 			date = sdf.parse(string);
 		} catch (java.text.ParseException e) {
 			Log.e("eventDetails", e.toString());
 		}
-		
+
 		return date;
 	}
 
@@ -65,7 +65,8 @@ public class DBRetriever {
 						contentResolver.insert(DB.News.CONTENT_URI, news);
 					}
 
-					Log.d(DB.News.TABLE_NAME, "Retrieved " + list.size() + " news");
+					Log.d(DB.News.TABLE_NAME, "Retrieved " + list.size()
+							+ " items");
 				} else {
 					Log.d(DB.News.TABLE_NAME, "Error: " + e.getMessage());
 				}
@@ -115,7 +116,8 @@ public class DBRetriever {
 						contentResolver.insert(DB.Event.CONTENT_URI, event);
 					}
 
-					Log.d(DB.Event.TABLE_NAME, "Retrieved " + list.size() + " news");
+					Log.d(DB.Event.TABLE_NAME, "Retrieved " + list.size()
+							+ " items");
 				} else {
 					Log.d(DB.Event.TABLE_NAME, "Error: " + e.getMessage());
 				}
@@ -143,21 +145,27 @@ public class DBRetriever {
 					while (li.hasNext()) {
 						ParseObject departmentObject = li.next();
 						ContentValues department = new ContentValues();
-						department.put(DB.Department.ID, departmentObject.getString(DB.Department.PARSE_ID));
-						department.put(DB.Department.NAME, departmentObject.getString(DB.Department.NAME));
-						Date date = departmentObject.getDate(DB.Department.UPDATED_AT);
-						department.put(DB.Department.UPDATED_AT, DateToString(date));
-						contentResolver.insert(DB.Department.CONTENT_URI, department);
+						department.put(DB.Department.ID, departmentObject
+								.getString(DB.Department.PARSE_ID));
+						department.put(DB.Department.NAME,
+								departmentObject.getString(DB.Department.NAME));
+						Date date = departmentObject
+								.getDate(DB.Department.UPDATED_AT);
+						department.put(DB.Department.UPDATED_AT,
+								DateToString(date));
+						contentResolver.insert(DB.Department.CONTENT_URI,
+								department);
 					}
 
-					Log.d(DB.Department.TABLE_NAME, "Retrieved " + list.size() + " news");
+					Log.d(DB.Department.TABLE_NAME, "Retrieved " + list.size()
+							+ " items");
 				} else {
 					Log.d(DB.Department.TABLE_NAME, "Error: " + e.getMessage());
 				}
 			}
 		});
 	}
-	
+
 	public static void CourseQuery(ContentResolver resolver,
 			String departmentID, String timeAfter) {
 		contentResolver = resolver;
@@ -180,14 +188,17 @@ public class DBRetriever {
 					while (li.hasNext()) {
 						ParseObject courseObject = li.next();
 						ContentValues course = new ContentValues();
-						course.put(DB.Course.ID, courseObject.getString(DB.Course.PARSE_ID));
-						course.put(DB.Course.NAME, courseObject.getString(DB.Course.NAME));
+						course.put(DB.Course.ID,
+								courseObject.getString(DB.Course.PARSE_ID));
+						course.put(DB.Course.NAME,
+								courseObject.getString(DB.Course.NAME));
 						Date date = courseObject.getDate(DB.Course.UPDATED_AT);
 						course.put(DB.Course.UPDATED_AT, DateToString(date));
 						contentResolver.insert(DB.Course.CONTENT_URI, course);
 					}
 
-					Log.d(DB.Course.TABLE_NAME, "Retrieved " + list.size() + " news");
+					Log.d(DB.Course.TABLE_NAME, "Retrieved " + list.size()
+							+ " items");
 				} else {
 					Log.d(DB.Course.TABLE_NAME, "Error: " + e.getMessage());
 				}
