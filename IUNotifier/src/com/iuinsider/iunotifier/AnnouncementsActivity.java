@@ -1,14 +1,16 @@
 package com.iuinsider.iunotifier;
 
-import android.annotation.TargetApi;
 import android.app.ListActivity;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.os.Build;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,49 +20,56 @@ import android.widget.SimpleCursorAdapter;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
-import com.parse.ParseUser;
 
-public class NewsActivity extends ListActivity implements
+public class AnnouncementsActivity extends ListActivity implements
 		LoaderManager.LoaderCallbacks<Cursor> {
 
-	private ParseUser currentUser = null;
 	private SimpleCursorAdapter mAdapter = null;
+	private String courseID;
 
-	private static final String EXTRA_LINK = ".com.iuinsider.iunotifier.LINK";
+	private static final String EXTRA_COURSE = ".com.iuinsider.iunotifier.COURSE";
 
 	// These are the Contacts rows that we will retrieve
-	private static final String[] PROJECTION = new String[] { DB.News._ID,
-			DB.News.TITLE, DB.News.LINK };
+	private static final String[] PROJECTION = new String[] { DB.Announce._ID,
+			DB.Announce.MESSAGE };
 
 	// This is the select criteria
-	// private static final String SELECTION = "((" + DB.News.TITLE +
-	// " NOTNULL) AND ("
-	// + DB.News.TITLE + " != '' ))";
-	private static final String SELECTION = "";
+	private static final String SELECTION = DB.Announce.MESSAGE + " NOTNULL AND "
+			+ DB.Announce.MESSAGE + " != ''";
 
-	// =========================================================================================
+	// This is the sorting order
+	private static final String SORTORDER = DB.Announce.UPDATED_AT + " DESC";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_news);
+		setContentView(R.layout.activity_announcements);
 
 		ProgressBar progressBar = (ProgressBar) this
-				.findViewById(R.id.news_progressBar);
+				.findViewById(R.id.announcements_progressBar);
 		getListView().setEmptyView(progressBar);
 
-		currentUser = ParseUser.getCurrentUser();
+		courseID = getIntent().getStringExtra(EXTRA_COURSE);
+		if (courseID == null)
+			finish();
 
-		DBRetriever.allNewsQuery(this);
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+		if (activeNetwork != null && activeNetwork.isConnected()) {			
+			DBRetriever.announcementsQuery(this, courseID);
+			Log.d("Network", "Network available");
+		} else {
+			Log.d("Network", "Network unavailable");
+		}
 
 		// For the cursor adapter, specify which columns go into which views
-		String[] fromColumns = { DB.News.TITLE };
-		int[] toViews = { android.R.id.text1 }; // The TextView in
-												// simple_list_item_1
+		String[] fromColumns = { DB.Announce.MESSAGE };
+		int[] toViews = { android.R.id.text1 };
 
 		// Create an empty adapter we will use to display the loaded data.
 		// We pass null for the cursor, then update it in onLoadFinished()
 		mAdapter = new SimpleCursorAdapter(this,
-				R.layout.custom_simple_list_item_2, null, fromColumns,
+				android.R.layout.simple_list_item_1, null, fromColumns,
 				toViews, 0);
 		setListAdapter(mAdapter);
 
@@ -73,41 +82,20 @@ public class NewsActivity extends ListActivity implements
 	}
 
 	// =========================================================================================
-	// This override the default animation of the Android Device "Back" Button
-	@Override
-	public void onBackPressed() {
-		if (!isTaskRoot()) {
-			NewsActivity.this.finish();
-			overridePendingTransition(0, R.anim.slide_out_right);
-		} else {
-			Intent newIntent = new Intent(this, MainMenuActivity.class);
-			NewsActivity.this.finish();
-			startActivity(newIntent);
-			overridePendingTransition(0, R.anim.slide_out_right);
-		}		
-	}
-
-	// =========================================================================================
 	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 * Set up the {@link android.app.ActionBar}.
 	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+
 	}
 
 	// =========================================================================================
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.news, menu);
-
-		if (currentUser != null) {
-			MenuItem switchButton = menu.findItem(R.id.action_login);
-			switchButton.setIcon(R.drawable.sign_in);
-		}
+		getMenuInflater().inflate(R.menu.announcements, menu);
 		return true;
 	}
 
@@ -116,13 +104,15 @@ public class NewsActivity extends ListActivity implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			onBackPressed();
+			// This ID represents the Home or Up button. In the case of this
+			// activity, the Up button is shown. Use NavUtils to allow users
+			// to navigate up one level in the application structure. For
+			// more details, see the Navigation pattern on Android Design:
+			//
+			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+			//
+			NavUtils.navigateUpFromSameTask(this);
 			return true;
-		case R.id.action_refresh:
-			DBRetriever.allNewsQuery(this);
-			break;
-		default:
-			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -133,8 +123,15 @@ public class NewsActivity extends ListActivity implements
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
-		return new CursorLoader(this, DB.News.CONTENT_URI, PROJECTION,
-				SELECTION, null, null);
+//		if (courseID == null || courseID.equals("ALL"))
+			return new CursorLoader(this, DB.Announce.CONTENT_URI, PROJECTION,
+					SELECTION, null, SORTORDER);
+//		else {
+//			String newSelection = SELECTION + " AND "
+//					+ DB.Announce.COURSE_ID + " = '" + courseID + "'";
+//			return new CursorLoader(this, DB.Announce.CONTENT_URI, PROJECTION,
+//					newSelection, null, SORTORDER);
+//		}
 	}
 
 	// =========================================================================================
@@ -161,19 +158,18 @@ public class NewsActivity extends ListActivity implements
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-
-		Cursor mCursor = mAdapter.getCursor();
-		mCursor.moveToPosition(position);
-		String columnName = DB.News.LINK;
-		int columnIndex = mCursor.getColumnIndex(columnName);
-		String link = mCursor.getString(columnIndex);
-
-		Intent intent = new Intent(this, WebViewActivity.class);
-		intent.putExtra(EXTRA_LINK, link);
-		startActivityForResult(intent, 0);
-		// startActivity(intent);
-
-		// New, more advanced and easy to use transition animation
-		overridePendingTransition(R.anim.slide_in_right, 0);
+		/*
+		 * Cursor mCursor = mAdapter.getCursor();
+		 * mCursor.moveToPosition(position); String columnName = DB.News.LINK;
+		 * int columnIndex = mCursor.getColumnIndex(columnName); String link =
+		 * mCursor.getString(columnIndex);
+		 * 
+		 * Intent intent = new Intent(this, WebViewActivity.class);
+		 * intent.putExtra(EXTRA_LINK, link); startActivityForResult(intent, 0);
+		 * // startActivity(intent);
+		 * 
+		 * // New, more advanced and easy to use transition animation
+		 * overridePendingTransition(R.anim.slide_in_right, 0);
+		 */
 	}
 }

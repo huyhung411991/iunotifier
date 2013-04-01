@@ -24,6 +24,8 @@ public class IUContentProvider extends ContentProvider {
 	private static final int COURSE_ID = 8;
 	private static final int COURSE_DETAILS = 9;
 	private static final int COURSE_DETAILS_ID = 10;
+	private static final int ANNOUNCEMENT = 11;
+	private static final int ANNOUNCEMENT_ID = 12;
 
 	static {
 		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -44,6 +46,10 @@ public class IUContentProvider extends ContentProvider {
 				DB.CourseDetails.TABLE_NAME, COURSE_DETAILS);
 		sUriMatcher.addURI(DB.CourseDetails.AUTHORITY,
 				DB.CourseDetails.TABLE_NAME + "/*", COURSE_DETAILS_ID);
+		sUriMatcher.addURI(DB.Announce.AUTHORITY,
+				DB.Announce.TABLE_NAME, ANNOUNCEMENT);
+		sUriMatcher.addURI(DB.Announce.AUTHORITY,
+				DB.Announce.TABLE_NAME + "/*", ANNOUNCEMENT_ID);
 	}
 
 	private static DBHelper dbHelper;
@@ -78,6 +84,10 @@ public class IUContentProvider extends ContentProvider {
 			return DB.CourseDetails.CONTENT_TYPE;
 		case COURSE_DETAILS_ID:
 			return DB.CourseDetails.CONTENT_ITEM_TYPE;
+		case ANNOUNCEMENT:
+			return DB.Announce.CONTENT_TYPE;
+		case ANNOUNCEMENT_ID:
+			return DB.Announce.CONTENT_ITEM_TYPE;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -131,6 +141,14 @@ public class IUContentProvider extends ContentProvider {
 			queryBuilder.appendWhere(DB.CourseDetails.ID + " = '"
 					+ uri.getLastPathSegment() + "'");
 			break;
+		case ANNOUNCEMENT:
+			queryBuilder.setTables(DB.Announce.TABLE_NAME);
+			break;
+		case ANNOUNCEMENT_ID:
+			queryBuilder.setTables(DB.Announce.TABLE_NAME);
+			queryBuilder.appendWhere(DB.Announce._ID + " = '"
+					+ uri.getLastPathSegment() + "'");
+			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -173,14 +191,20 @@ public class IUContentProvider extends ContentProvider {
 					rowId);
 			break;
 		case COURSE:
-			rowId = db.insertWithOnConflict(DB.Courses.TABLE_NAME, null, values,
-					SQLiteDatabase.CONFLICT_REPLACE);
+			rowId = db.insertWithOnConflict(DB.Courses.TABLE_NAME, null,
+					values, SQLiteDatabase.CONFLICT_REPLACE);
 			noteUri = ContentUris.withAppendedId(DB.Courses.CONTENT_URI, rowId);
 			break;
 		case COURSE_DETAILS:
 			rowId = db.insertWithOnConflict(DB.CourseDetails.TABLE_NAME, null,
 					values, SQLiteDatabase.CONFLICT_REPLACE);
 			noteUri = ContentUris.withAppendedId(DB.CourseDetails.CONTENT_URI,
+					rowId);
+			break;
+		case ANNOUNCEMENT:
+			rowId = db.insertWithOnConflict(DB.Announce.TABLE_NAME, null,
+					values, SQLiteDatabase.CONFLICT_REPLACE);
+			noteUri = ContentUris.withAppendedId(DB.Announce.CONTENT_URI,
 					rowId);
 			break;
 		default:
@@ -267,6 +291,20 @@ public class IUContentProvider extends ContentProvider {
 						DB.CourseDetails.ID + " = '" + uri.getLastPathSegment()
 								+ "' AND " + selection, selectionArgs);
 			break;
+		case ANNOUNCEMENT:
+			rowsDeleted = db.delete(DB.Courses.TABLE_NAME, selection,
+					selectionArgs);
+			break;
+		case ANNOUNCEMENT_ID:
+			if (TextUtils.isEmpty(selection))
+				rowsDeleted = db.delete(DB.Announce.TABLE_NAME,
+						DB.Announce._ID + " = '" + uri.getLastPathSegment()
+								+ "'", null);
+			else
+				rowsDeleted = db.delete(DB.Announce.TABLE_NAME,
+						DB.Announce._ID + " = '" + uri.getLastPathSegment()
+								+ "' AND " + selection, selectionArgs);
+			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -328,9 +366,9 @@ public class IUContentProvider extends ContentProvider {
 			break;
 		case COURSE_ID:
 			if (TextUtils.isEmpty(selection))
-				rowsUpdated = db.update(DB.Courses.TABLE_NAME, values,
-						DB.Courses.ID + " = '" + uri.getLastPathSegment() + "'",
-						null);
+				rowsUpdated = db
+						.update(DB.Courses.TABLE_NAME, values, DB.Courses.ID
+								+ " = '" + uri.getLastPathSegment() + "'", null);
 			else
 				rowsUpdated = db.update(DB.Courses.TABLE_NAME, values,
 						DB.Courses.ID + " = '" + uri.getLastPathSegment()
@@ -348,6 +386,20 @@ public class IUContentProvider extends ContentProvider {
 			else
 				rowsUpdated = db.update(DB.CourseDetails.TABLE_NAME, values,
 						DB.CourseDetails.ID + " = '" + uri.getLastPathSegment()
+								+ "' AND " + selection, selectionArgs);
+			break;
+		case ANNOUNCEMENT:
+			rowsUpdated = db.update(DB.Announce.TABLE_NAME, values, selection,
+					selectionArgs);
+			break;
+		case ANNOUNCEMENT_ID:
+			if (TextUtils.isEmpty(selection))
+				rowsUpdated = db
+						.update(DB.Announce.TABLE_NAME, values, DB.Announce._ID
+								+ " = '" + uri.getLastPathSegment() + "'", null);
+			else
+				rowsUpdated = db.update(DB.Announce.TABLE_NAME, values,
+						DB.Announce._ID + " = '" + uri.getLastPathSegment()
 								+ "' AND " + selection, selectionArgs);
 			break;
 		default:

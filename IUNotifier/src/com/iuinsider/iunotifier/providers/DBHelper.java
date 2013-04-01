@@ -51,7 +51,7 @@ public class DBHelper extends SQLiteOpenHelper {
 			+ DB.CourseDetails.LECTURER + " TEXT, " + DB.CourseDetails.THEORY
 			+ " TEXT, " + DB.CourseDetails.LAB + " TEXT, "
 			+ DB.CourseDetails.CREDIT + " INTEGER, "
-			+ DB.CourseDetails.PREREQUISIT + " TEXT, "
+			+ DB.CourseDetails.PREREQUISITE + " TEXT, "
 			+ DB.CourseDetails.UPDATED_AT + " TEXT)";
 	// ----------------------------------------------------------------------------------
 	private static final String DELETE_TABLE_COURSE_DETAILS = "DROP TABLE IF EXISTS "
@@ -67,13 +67,14 @@ public class DBHelper extends SQLiteOpenHelper {
 			+ DB.UserCourses.TABLE_NAME;
 	// ----------------------------------------------------------------------------------
 	private static final String CREATE_TABLE_COURSE_ANNOUNCEMENTS = "CREATE TABLE "
-			+ DB.CourseAnnouncements.TABLE_NAME + " (" + DB.CourseAnnouncements._ID
-			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.CourseAnnouncements.ID
-			+ " TEXT UNIQUE, " + DB.CourseAnnouncements.MESSAGE + " TEXT, "
-			+ DB.CourseAnnouncements.UPDATED_AT + " TEXT)";
+			+ DB.Announce.TABLE_NAME + " (" + DB.Announce._ID
+			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Announce.PARSE_ID
+			+ " TEXT UNIQUE, " + DB.Announce.COURSE_ID + " TEXT, " + DB.Announce.MESSAGE + " TEXT, "
+			+ DB.Announce.UPDATED_AT + " TEXT)";
 	// ----------------------------------------------------------------------------------
 	private static final String DELETE_TABLE_COURSE_ANNOUNCEMENTS = "DROP TABLE IF EXISTS "
-			+ DB.CourseAnnouncements.TABLE_NAME;
+			+ DB.Announce.TABLE_NAME;
+
 	// ----------------------------------------------------------------------------------
 	public DBHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);

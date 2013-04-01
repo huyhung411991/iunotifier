@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.text.TextUtils;
@@ -18,13 +17,12 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 public class DBRetriever {
-	private static ContentResolver contentResolver = null;
 	private static Context context = null;
 
 	public static String DateToString(Date date) {
 		if (date == null)
 			return "";
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
 				Locale.US);
 		String string = sdf.format(date);
@@ -35,7 +33,7 @@ public class DBRetriever {
 	public static Date StringToDate(String string) {
 		if (TextUtils.isEmpty(string))
 			return null;
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
 				Locale.US);
 		Date date = null;
@@ -48,11 +46,11 @@ public class DBRetriever {
 		return date;
 	}
 
-	public static void allNewsQuery(ContentResolver resolver) {
-		contentResolver = resolver;
+	public static void allNewsQuery(Context c) {
+		context = c;
 
 		// Clear local database table
-		contentResolver.delete(DB.News.CONTENT_URI, null, null);
+		context.getContentResolver().delete(DB.News.CONTENT_URI, null, null);
 
 		ParseQuery query = new ParseQuery(DB.News.TABLE_NAME);
 		// query.orderByDescending(DB.News.PARSE_ID);
@@ -64,13 +62,14 @@ public class DBRetriever {
 				if (e == null) {
 					ListIterator<ParseObject> li = list.listIterator();
 					while (li.hasNext()) {
-						ParseObject newsObject = li.next();
+						ParseObject parseObject = li.next();
 						ContentValues news = new ContentValues();
 						news.put(DB.News.TITLE,
-								newsObject.getString(DB.News.TITLE));
+								parseObject.getString(DB.News.TITLE));
 						news.put(DB.News.LINK,
-								newsObject.getString(DB.News.LINK));
-						contentResolver.insert(DB.News.CONTENT_URI, news);
+								parseObject.getString(DB.News.LINK));
+						context.getContentResolver().insert(
+								DB.News.CONTENT_URI, news);
 					}
 
 					Log.d(DB.News.TABLE_NAME, "Retrieved " + list.size()
@@ -82,12 +81,11 @@ public class DBRetriever {
 		});
 	}
 
-	public static void allEventsQuery(ContentResolver resolver,
-			String sortCondition) {
-		contentResolver = resolver;
+	public static void allEventsQuery(Context c, String sortCondition) {
+		context = c;
 
 		// Clear local database table
-		contentResolver.delete(DB.Events.CONTENT_URI, null, null);
+		context.getContentResolver().delete(DB.Events.CONTENT_URI, null, null);
 
 		ParseQuery query = new ParseQuery(DB.Events.TABLE_NAME);
 
@@ -111,17 +109,18 @@ public class DBRetriever {
 				if (e == null) {
 					ListIterator<ParseObject> li = list.listIterator();
 					while (li.hasNext()) {
-						ParseObject eventObject = li.next();
+						ParseObject parseObject = li.next();
 						ContentValues event = new ContentValues();
 						event.put(DB.Events.TITLE,
-								eventObject.getString(DB.Events.TITLE));
+								parseObject.getString(DB.Events.TITLE));
 						event.put(DB.Events.DESCRIPTION,
-								eventObject.getString(DB.Events.DESCRIPTION));
+								parseObject.getString(DB.Events.DESCRIPTION));
 						event.put(DB.Events.PLACE,
-								eventObject.getString(DB.Events.PLACE));
-						Date date = eventObject.getDate(DB.Events.DATE);
+								parseObject.getString(DB.Events.PLACE));
+						Date date = parseObject.getDate(DB.Events.DATE);
 						event.put(DB.Events.DATE, DateToString(date));
-						contentResolver.insert(DB.Events.CONTENT_URI, event);
+						context.getContentResolver().insert(
+								DB.Events.CONTENT_URI, event);
 					}
 
 					Log.d(DB.Events.TABLE_NAME, "Retrieved " + list.size()
@@ -133,8 +132,7 @@ public class DBRetriever {
 		});
 	}
 
-	public static void departmentsQuery(Context c,
-			String timeCondition) {
+	public static void departmentsQuery(Context c, String timeCondition) {
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Departments.TABLE_NAME);
@@ -144,7 +142,8 @@ public class DBRetriever {
 			if (date != null)
 				query.whereGreaterThan(DB.Departments.UPDATED_AT, date);
 		} else {
-			context.getContentResolver().delete(DB.Departments.CONTENT_URI, null, null);
+			context.getContentResolver().delete(DB.Departments.CONTENT_URI,
+					null, null);
 		}
 
 		query.findInBackground(new FindCallback() {
@@ -153,17 +152,17 @@ public class DBRetriever {
 				if (e == null) {
 					ListIterator<ParseObject> li = list.listIterator();
 					while (li.hasNext()) {
-						ParseObject departmentObject = li.next();
+						ParseObject parseObject = li.next();
 						ContentValues department = new ContentValues();
-						department.put(DB.Departments.ID, departmentObject
-								.getString(DB.Departments.ID));
+						department.put(DB.Departments.ID,
+								parseObject.getString(DB.Departments.ID));
 						department.put(DB.Departments.NAME,
-								departmentObject.getString(DB.Departments.NAME));
-						Date date = departmentObject.getUpdatedAt();
+								parseObject.getString(DB.Departments.NAME));
+						Date date = parseObject.getUpdatedAt();
 						department.put(DB.Departments.UPDATED_AT,
 								DateToString(date));
-						context.getContentResolver().insert(DB.Departments.CONTENT_URI,
-								department);
+						context.getContentResolver().insert(
+								DB.Departments.CONTENT_URI, department);
 					}
 
 					Log.d(DB.Departments.TABLE_NAME, "Retrieved " + list.size()
@@ -175,12 +174,12 @@ public class DBRetriever {
 		});
 	}
 
-	public static void coursesQuery(Context c,
-			String departmentID, String timeAfter) {
+	public static void coursesQuery(Context c, String departmentID,
+			String timeAfter) {
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Courses.TABLE_NAME);
-		
+
 		if (!TextUtils.isEmpty(departmentID) && !departmentID.equals("ALL"))
 			query.whereEqualTo(DB.Courses.DEPARTMENT_ID, departmentID);
 
@@ -196,23 +195,67 @@ public class DBRetriever {
 				if (e == null) {
 					ListIterator<ParseObject> li = list.listIterator();
 					while (li.hasNext()) {
-						ParseObject courseObject = li.next();
+						ParseObject parseObject = li.next();
 						ContentValues course = new ContentValues();
 						course.put(DB.Courses.ID,
-								courseObject.getString(DB.Courses.ID));
+								parseObject.getString(DB.Courses.ID));
 						course.put(DB.Courses.NAME,
-								courseObject.getString(DB.Courses.NAME));
+								parseObject.getString(DB.Courses.NAME));
 						course.put(DB.Courses.DEPARTMENT_ID,
-								courseObject.getString(DB.Courses.DEPARTMENT_ID));
-						Date date = courseObject.getUpdatedAt();
+								parseObject.getString(DB.Courses.DEPARTMENT_ID));
+						Date date = parseObject.getUpdatedAt();
 						course.put(DB.Courses.UPDATED_AT, DateToString(date));
-						context.getContentResolver().insert(DB.Courses.CONTENT_URI, course);
+						context.getContentResolver().insert(
+								DB.Courses.CONTENT_URI, course);
 					}
 
 					Log.d(DB.Courses.TABLE_NAME, "Retrieved " + list.size()
 							+ " items");
 				} else {
 					Log.d(DB.Courses.TABLE_NAME, "Error: " + e.getMessage());
+				}
+			}
+		});
+	}
+
+	public static void announcementsQuery(Context c, String courseID) {
+		context = c;
+
+		ParseQuery query = new ParseQuery(DB.Announce.TABLE_NAME);
+
+		if (!TextUtils.isEmpty(courseID) && !courseID.equals("ALL"))
+			query.whereEqualTo(DB.Announce.COURSE_ID, courseID);
+
+		//context.getContentResolver().delete(DB.Announce.CONTENT_URI, null, null);
+		
+		// if (!TextUtils.isEmpty(timeAfter)) {
+		// Date date = StringToDate(timeAfter);
+		// if (date != null)
+		// query.whereGreaterThan(DB.Courses.UPDATED_AT, date);
+		// }
+
+		query.findInBackground(new FindCallback() {
+			@Override
+			public void done(List<ParseObject> list, ParseException e) {
+				if (e == null) {
+					ListIterator<ParseObject> li = list.listIterator();
+					while (li.hasNext()) {
+						ParseObject parseObject = li.next();
+						ContentValues announce = new ContentValues();
+						announce.put(DB.Announce.COURSE_ID,
+								parseObject.getString(DB.Announce.COURSE_ID));
+						announce.put(DB.Announce.MESSAGE,
+								parseObject.getString(DB.Announce.MESSAGE));
+						Date date = parseObject.getUpdatedAt();
+						announce.put(DB.Announce.UPDATED_AT, DateToString(date));
+						context.getContentResolver().insert(
+								DB.Announce.CONTENT_URI, announce);
+					}
+
+					Log.d(DB.Announce.TABLE_NAME, "Retrieved " + list.size()
+							+ " items");
+				} else {
+					Log.d(DB.Announce.TABLE_NAME, "Error: " + e.getMessage());
 				}
 			}
 		});

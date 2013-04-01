@@ -97,7 +97,7 @@ public class DB {
 		public static final String THEORY = "theory";
 		public static final String LAB = "lab";
 		public static final String CREDIT = "credit";
-		public static final String PREREQUISIT = "prerequisit";
+		public static final String PREREQUISITE = "prerequisite";
 		public static final String UPDATED_AT = "updatedAt";
 		
 		public static final String AUTHORITY = "com.iuinsider.iunotifier.provider";
@@ -109,10 +109,11 @@ public class DB {
 				+ "/" + AUTHORITY + "." + TABLE_NAME;
 	}
 	
-	public static abstract class CourseAnnouncements implements BaseColumns {
-		public static final String TABLE_NAME = "CourseAnnouncementS";
-		public static final String ID = "courseID";
-		public static final String MESSAGE = "courseMsg";
+	public static abstract class Announce implements BaseColumns {
+		public static final String TABLE_NAME = "Announcements";
+		public static final String PARSE_ID = "announceID";
+		public static final String COURSE_ID = "courseID";
+		public static final String MESSAGE = "announceMsg";
 		public static final String UPDATED_AT = "updatedAt";
 		
 		public static final String AUTHORITY = "com.iuinsider.iunotifier.provider";
