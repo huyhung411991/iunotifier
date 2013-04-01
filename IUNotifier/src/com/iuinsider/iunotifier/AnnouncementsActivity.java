@@ -123,15 +123,15 @@ public class AnnouncementsActivity extends ListActivity implements
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
-//		if (courseID == null || courseID.equals("ALL"))
+		if (courseID == null || courseID.equals("ALL"))
 			return new CursorLoader(this, DB.Announce.CONTENT_URI, PROJECTION,
 					SELECTION, null, SORTORDER);
-//		else {
-//			String newSelection = SELECTION + " AND "
-//					+ DB.Announce.COURSE_ID + " = '" + courseID + "'";
-//			return new CursorLoader(this, DB.Announce.CONTENT_URI, PROJECTION,
-//					newSelection, null, SORTORDER);
-//		}
+		else {
+			String newSelection = SELECTION + " AND "
+					+ DB.Announce.COURSE_ID + " = '" + courseID + "'";
+			return new CursorLoader(this, DB.Announce.CONTENT_URI, PROJECTION,
+					newSelection, null, SORTORDER);
+		}
 	}
 
 	// =========================================================================================
