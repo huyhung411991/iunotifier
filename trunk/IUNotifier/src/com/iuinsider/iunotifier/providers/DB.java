@@ -85,6 +85,7 @@ public class DB {
 		public static final String LAB = "lab";
 		public static final String CREDIT = "credit";
 		public static final String PREREQUISIT = "prerequisit";
+		public static final String UPDATED_AT = "updatedAt";
 		
 		public static final String AUTHORITY = "com.iuinsider.iunotifier.provider";
 		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
