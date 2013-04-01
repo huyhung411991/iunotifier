@@ -115,33 +115,58 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iuinsider.iunotifier.EventsActivity" />
         </activity>
+        
         <!-- ====================================================================== -->
         <activity
-            android:name="com.iuinsider.iunotifier.CourseActivity"
-            android:label="@string/title_activity_course"
+            android:name="com.iuinsider.iunotifier.PushAnnouncementActivity"
+            android:label="@string/title_activity_push_announcement"
             android:parentActivityName="com.iuinsider.iunotifier.MainMenuActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iuinsider.iunotifier.MainMenuActivity" />
         </activity>
+        
         <!-- ====================================================================== -->
         <activity
-            android:name="com.iuinsider.iunotifier.DepartmentActivity"
+            android:name="com.iuinsider.iunotifier.DepartmentsActivity"
             android:label="@string/title_activity_department"
             android:parentActivityName="com.iuinsider.iunotifier.MainMenuActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iuinsider.iunotifier.MainMenuActivity" />
         </activity>
+        
         <!-- ====================================================================== -->
         <activity
             android:name="com.iuinsider.iunotifier.CoursesActivity"
             android:label="@string/title_activity_courses"
-            android:parentActivityName="com.iuinsider.iunotifier.DepartmentActivity" >
+            android:parentActivityName="com.iuinsider.iunotifier.DepartmentsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iuinsider.iunotifier.DepartmentActivity" />
         </activity>
+        
+        <!-- ====================================================================== -->
+        <activity
+            android:name="com.iuinsider.iunotifier.CourseDetailsActivity"
+            android:label="@string/title_activity_course_details"
+            android:parentActivityName="com.iuinsider.iunotifier.CoursesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iuinsider.iunotifier.CoursesActivity" />
+        </activity>
+        
+        <!-- ====================================================================== -->
+        <activity
+            android:name="com.iuinsider.iunotifier.Announcements"
+            android:label="@string/title_activity_announcements"
+            android:parentActivityName="com.iuinsider.iunotifier.CourseDetailsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iuinsider.iunotifier.CourseDetailsActivity" />
+        </activity>
+        
+        <!-- ====================================================================== -->
     </application>
 
 </manifest>

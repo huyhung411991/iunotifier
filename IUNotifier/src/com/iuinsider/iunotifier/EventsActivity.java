@@ -32,8 +32,8 @@ public class EventsActivity extends ListActivity implements
 	private String sortCondition = "All";
 
 	// These are the Contacts rows that we will retrieve
-	private static final String[] PROJECTION = new String[] { DB.Event._ID,
-			DB.Event.TITLE, DB.Event.DESCRIPTION, DB.Event.DATE, DB.Event.PLACE };
+	private static final String[] PROJECTION = new String[] { DB.Events._ID,
+			DB.Events.TITLE, DB.Events.DESCRIPTION, DB.Events.DATE, DB.Events.PLACE };
 
 	private static final String SELECTION = "";
 
@@ -53,7 +53,7 @@ public class EventsActivity extends ListActivity implements
 		DBRetriever.allEventsQuery(contentResolver, sortCondition);
 
 		// For the cursor adapter, specify which columns go into which views
-		String[] fromColumns = { DB.Event.TITLE };
+		String[] fromColumns = { DB.Events.TITLE };
 		int[] toViews = { android.R.id.text1 }; // The TextView in
 												// simple_list_item_1
 
@@ -168,7 +168,7 @@ public class EventsActivity extends ListActivity implements
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
-		return new CursorLoader(this, DB.Event.CONTENT_URI, PROJECTION,
+		return new CursorLoader(this, DB.Events.CONTENT_URI, PROJECTION,
 				SELECTION, null, null);
 	}
 
@@ -202,16 +202,16 @@ public class EventsActivity extends ListActivity implements
 
 		String eventTitle, eventDescription, eventPlace, eventDateTime;
 
-		int columnIndex = mCursor.getColumnIndex(DB.Event.TITLE);
+		int columnIndex = mCursor.getColumnIndex(DB.Events.TITLE);
 		eventTitle = mCursor.getString(columnIndex);
 
-		columnIndex = mCursor.getColumnIndex(DB.Event.DESCRIPTION);
+		columnIndex = mCursor.getColumnIndex(DB.Events.DESCRIPTION);
 		eventDescription = mCursor.getString(columnIndex);
 
-		columnIndex = mCursor.getColumnIndex(DB.Event.PLACE);
+		columnIndex = mCursor.getColumnIndex(DB.Events.PLACE);
 		eventPlace = mCursor.getString(columnIndex);
 
-		columnIndex = mCursor.getColumnIndex(DB.Event.DATE);
+		columnIndex = mCursor.getColumnIndex(DB.Events.DATE);
 		eventDateTime = mCursor.getString(columnIndex);
 
 		Bundle bundle = new Bundle();
