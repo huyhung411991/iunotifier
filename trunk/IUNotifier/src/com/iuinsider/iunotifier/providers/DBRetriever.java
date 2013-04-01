@@ -87,9 +87,9 @@ public class DBRetriever {
 		contentResolver = resolver;
 
 		// Clear local database table
-		contentResolver.delete(DB.Event.CONTENT_URI, null, null);
+		contentResolver.delete(DB.Events.CONTENT_URI, null, null);
 
-		ParseQuery query = new ParseQuery(DB.Event.TABLE_NAME);
+		ParseQuery query = new ParseQuery(DB.Events.TABLE_NAME);
 
 		if (!TextUtils.isEmpty(sortCondition)) {
 			if (sortCondition.equals("Today")) {
@@ -104,7 +104,7 @@ public class DBRetriever {
 			}
 		}
 
-		query.orderByAscending(DB.Event.DATE);
+		query.orderByAscending(DB.Events.DATE);
 		query.findInBackground(new FindCallback() {
 			@Override
 			public void done(List<ParseObject> list, ParseException e) {
@@ -113,38 +113,38 @@ public class DBRetriever {
 					while (li.hasNext()) {
 						ParseObject eventObject = li.next();
 						ContentValues event = new ContentValues();
-						event.put(DB.Event.TITLE,
-								eventObject.getString(DB.Event.TITLE));
-						event.put(DB.Event.DESCRIPTION,
-								eventObject.getString(DB.Event.DESCRIPTION));
-						event.put(DB.Event.PLACE,
-								eventObject.getString(DB.Event.PLACE));
-						Date date = eventObject.getDate(DB.Event.DATE);
-						event.put(DB.Event.DATE, DateToString(date));
-						contentResolver.insert(DB.Event.CONTENT_URI, event);
+						event.put(DB.Events.TITLE,
+								eventObject.getString(DB.Events.TITLE));
+						event.put(DB.Events.DESCRIPTION,
+								eventObject.getString(DB.Events.DESCRIPTION));
+						event.put(DB.Events.PLACE,
+								eventObject.getString(DB.Events.PLACE));
+						Date date = eventObject.getDate(DB.Events.DATE);
+						event.put(DB.Events.DATE, DateToString(date));
+						contentResolver.insert(DB.Events.CONTENT_URI, event);
 					}
 
-					Log.d(DB.Event.TABLE_NAME, "Retrieved " + list.size()
+					Log.d(DB.Events.TABLE_NAME, "Retrieved " + list.size()
 							+ " items");
 				} else {
-					Log.d(DB.Event.TABLE_NAME, "Error: " + e.getMessage());
+					Log.d(DB.Events.TABLE_NAME, "Error: " + e.getMessage());
 				}
 			}
 		});
 	}
 
-	public static void DepartmentQuery(Context c,
+	public static void departmentsQuery(Context c,
 			String timeCondition) {
 		context = c;
 
-		ParseQuery query = new ParseQuery(DB.Department.TABLE_NAME);
+		ParseQuery query = new ParseQuery(DB.Departments.TABLE_NAME);
 
 		if (!TextUtils.isEmpty(timeCondition)) {
 			Date date = StringToDate(timeCondition);
 			if (date != null)
-				query.whereGreaterThan(DB.Department.UPDATED_AT, date);
+				query.whereGreaterThan(DB.Departments.UPDATED_AT, date);
 		} else {
-			context.getContentResolver().delete(DB.Department.CONTENT_URI, null, null);
+			context.getContentResolver().delete(DB.Departments.CONTENT_URI, null, null);
 		}
 
 		query.findInBackground(new FindCallback() {
@@ -155,39 +155,39 @@ public class DBRetriever {
 					while (li.hasNext()) {
 						ParseObject departmentObject = li.next();
 						ContentValues department = new ContentValues();
-						department.put(DB.Department.ID, departmentObject
-								.getString(DB.Department.ID));
-						department.put(DB.Department.NAME,
-								departmentObject.getString(DB.Department.NAME));
+						department.put(DB.Departments.ID, departmentObject
+								.getString(DB.Departments.ID));
+						department.put(DB.Departments.NAME,
+								departmentObject.getString(DB.Departments.NAME));
 						Date date = departmentObject.getUpdatedAt();
-						department.put(DB.Department.UPDATED_AT,
+						department.put(DB.Departments.UPDATED_AT,
 								DateToString(date));
-						context.getContentResolver().insert(DB.Department.CONTENT_URI,
+						context.getContentResolver().insert(DB.Departments.CONTENT_URI,
 								department);
 					}
 
-					Log.d(DB.Department.TABLE_NAME, "Retrieved " + list.size()
+					Log.d(DB.Departments.TABLE_NAME, "Retrieved " + list.size()
 							+ " items");
 				} else {
-					Log.d(DB.Department.TABLE_NAME, "Error: " + e.getMessage());
+					Log.d(DB.Departments.TABLE_NAME, "Error: " + e.getMessage());
 				}
 			}
 		});
 	}
 
-	public static void CourseQuery(Context c,
+	public static void coursesQuery(Context c,
 			String departmentID, String timeAfter) {
 		context = c;
 
-		ParseQuery query = new ParseQuery(DB.Course.TABLE_NAME);
+		ParseQuery query = new ParseQuery(DB.Courses.TABLE_NAME);
 		
 		if (!TextUtils.isEmpty(departmentID) && !departmentID.equals("ALL"))
-			query.whereEqualTo(DB.Course.DEPARTMENT_ID, departmentID);
+			query.whereEqualTo(DB.Courses.DEPARTMENT_ID, departmentID);
 
 		if (!TextUtils.isEmpty(timeAfter)) {
 			Date date = StringToDate(timeAfter);
 			if (date != null)
-				query.whereGreaterThan(DB.Course.UPDATED_AT, date);
+				query.whereGreaterThan(DB.Courses.UPDATED_AT, date);
 		}
 
 		query.findInBackground(new FindCallback() {
@@ -198,21 +198,21 @@ public class DBRetriever {
 					while (li.hasNext()) {
 						ParseObject courseObject = li.next();
 						ContentValues course = new ContentValues();
-						course.put(DB.Course.ID,
-								courseObject.getString(DB.Course.ID));
-						course.put(DB.Course.NAME,
-								courseObject.getString(DB.Course.NAME));
-						course.put(DB.Course.DEPARTMENT_ID,
-								courseObject.getString(DB.Course.DEPARTMENT_ID));
+						course.put(DB.Courses.ID,
+								courseObject.getString(DB.Courses.ID));
+						course.put(DB.Courses.NAME,
+								courseObject.getString(DB.Courses.NAME));
+						course.put(DB.Courses.DEPARTMENT_ID,
+								courseObject.getString(DB.Courses.DEPARTMENT_ID));
 						Date date = courseObject.getUpdatedAt();
-						course.put(DB.Course.UPDATED_AT, DateToString(date));
-						context.getContentResolver().insert(DB.Course.CONTENT_URI, course);
+						course.put(DB.Courses.UPDATED_AT, DateToString(date));
+						context.getContentResolver().insert(DB.Courses.CONTENT_URI, course);
 					}
 
-					Log.d(DB.Course.TABLE_NAME, "Retrieved " + list.size()
+					Log.d(DB.Courses.TABLE_NAME, "Retrieved " + list.size()
 							+ " items");
 				} else {
-					Log.d(DB.Course.TABLE_NAME, "Error: " + e.getMessage());
+					Log.d(DB.Courses.TABLE_NAME, "Error: " + e.getMessage());
 				}
 			}
 		});

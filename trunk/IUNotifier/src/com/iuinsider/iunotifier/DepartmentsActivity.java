@@ -6,6 +6,7 @@ import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -24,57 +25,44 @@ import android.widget.SimpleCursorAdapter;
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
 
-public class CoursesActivity extends ListActivity implements
+public class DepartmentsActivity extends ListActivity implements
 		LoaderManager.LoaderCallbacks<Cursor> {
 
 	private SimpleCursorAdapter mAdapter = null;
-	private String departmentID;
 
-	private static final String LAST_UPDATE = ".com.iuinsider.iunotifier.LAST_UPDATE";
+	private static final String LAST_UPDATE = ".com.iuinsider.iunotifier.LAST_UPDATE.DEPARTMENTS";
 	private static final String EXTRA_DEPARTMENT = ".com.iuinsider.iunotifier.DEPARTMENT";
 
 	// These are the Contacts rows that we will retrieve
-	private static final String[] PROJECTION = new String[] { DB.Courses._ID,
-			DB.Courses.ID, DB.Courses.NAME };
+	private static final String[] PROJECTION = new String[] {
+			DB.Departments._ID, DB.Departments.ID, DB.Departments.NAME };
 
 	// This is the select criteria
-	private static final String SELECTION = DB.Courses.NAME + " NOTNULL AND "
-			+ DB.Courses.NAME + " != ''";
+	private static final String SELECTION = "((" + DB.Departments.NAME
+			+ " NOTNULL) AND (" + DB.Departments.NAME + " != '' ))";
 
 	// This is the sorting order
-	private static final String SORTORDER = DB.Courses.ID + " ASC";
+	private static final String SORTORDER = DB.Departments.ID + " ASC";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_courses);
+		setContentView(R.layout.activity_department);
 
 		ProgressBar progressBar = (ProgressBar) this
-				.findViewById(R.id.course_progressBar);
+				.findViewById(R.id.department_progressBar);
 		getListView().setEmptyView(progressBar);
-
-		departmentID = getIntent().getStringExtra(EXTRA_DEPARTMENT);
-		if (departmentID == null)
-			departmentID = "ALL";
 
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 		if (activeNetwork != null && activeNetwork.isConnected()) {
 			SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
 			SharedPreferences.Editor prefEdit = pref.edit();
-			String lastAllUpdate = pref.getString(LAST_UPDATE + ".ALL", null);
-			String lastCourseUpdate = pref.getString(LAST_UPDATE + "."
-					+ departmentID, null);
+			String lastUpdate = pref.getString(LAST_UPDATE, null);
 
-			if ((lastCourseUpdate == null && lastAllUpdate == null)
-					|| (lastCourseUpdate == null)
-					|| (lastAllUpdate != null && lastCourseUpdate
-							.compareTo(lastAllUpdate) <= 0))
-				DBRetriever.coursesQuery(this, departmentID, lastAllUpdate);
-			else
-				DBRetriever.coursesQuery(this, departmentID, lastCourseUpdate);
+			DBRetriever.departmentsQuery(this, lastUpdate);
 
-			prefEdit.putString(LAST_UPDATE + "." + departmentID,
+			prefEdit.putString(LAST_UPDATE,
 					DBRetriever.DateToString(new Date()));
 			prefEdit.commit();
 			Log.d("Network", "Network available");
@@ -83,7 +71,7 @@ public class CoursesActivity extends ListActivity implements
 		}
 
 		// For the cursor adapter, specify which columns go into which views
-		String[] fromColumns = { DB.Courses.NAME, DB.Courses.ID };
+		String[] fromColumns = { DB.Departments.NAME, DB.Departments.ID };
 		int[] toViews = { android.R.id.text1, android.R.id.text2 };
 
 		// Create an empty adapter we will use to display the loaded data.
@@ -115,7 +103,7 @@ public class CoursesActivity extends ListActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.courses, menu);
+		getMenuInflater().inflate(R.menu.department, menu);
 		return true;
 	}
 
@@ -143,15 +131,8 @@ public class CoursesActivity extends ListActivity implements
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
-		if (departmentID == null || departmentID.equals("ALL"))
-			return new CursorLoader(this, DB.Courses.CONTENT_URI, PROJECTION,
-					SELECTION, null, SORTORDER);
-		else {
-			String newSelection = SELECTION + " AND " + DB.Courses.DEPARTMENT_ID
-					+ " = '" + departmentID + "'";
-			return new CursorLoader(this, DB.Courses.CONTENT_URI, PROJECTION,
-					newSelection, null, SORTORDER);
-		}
+		return new CursorLoader(this, DB.Departments.CONTENT_URI, PROJECTION,
+				SELECTION, null, SORTORDER);
 	}
 
 	// =========================================================================================
@@ -178,18 +159,20 @@ public class CoursesActivity extends ListActivity implements
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		/*
-		 * Cursor mCursor = mAdapter.getCursor();
-		 * mCursor.moveToPosition(position); String columnName = DB.News.LINK;
-		 * int columnIndex = mCursor.getColumnIndex(columnName); String link =
-		 * mCursor.getString(columnIndex);
-		 * 
-		 * Intent intent = new Intent(this, WebViewActivity.class);
-		 * intent.putExtra(EXTRA_LINK, link); startActivityForResult(intent, 0);
-		 * // startActivity(intent);
-		 * 
-		 * // New, more advanced and easy to use transition animation
-		 * overridePendingTransition(R.anim.slide_in_right, 0);
-		 */
+
+		Cursor mCursor = mAdapter.getCursor();
+		mCursor.moveToPosition(position);
+		String columnName = DB.Departments.ID;
+		int columnIndex = mCursor.getColumnIndex(columnName);
+		String department = mCursor.getString(columnIndex);
+
+		Intent intent = new Intent(this, CoursesActivity.class);
+		intent.putExtra(EXTRA_DEPARTMENT, department);
+		startActivity(intent);
+
+		// New, more advanced and easy to use transition animation
+		overridePendingTransition(R.anim.slide_in_right, 0);
+
 	}
+
 }

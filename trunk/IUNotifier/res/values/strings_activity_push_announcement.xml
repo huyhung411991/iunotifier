@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_push_announcement">Push Announcement</string>
+    <string name="button_announce">Announce!</string>
+    
+</resources>
