@@ -144,7 +144,7 @@ public class DBRetriever {
 			if (date != null)
 				query.whereGreaterThan(DB.Department.UPDATED_AT, date);
 		} else {
-			contentResolver.delete(DB.Department.CONTENT_URI, null, null);
+			context.getContentResolver().delete(DB.Department.CONTENT_URI, null, null);
 		}
 
 		query.findInBackground(new FindCallback() {
@@ -180,7 +180,7 @@ public class DBRetriever {
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Course.TABLE_NAME);
-		if (!TextUtils.isEmpty(departmentID))
+		if (!TextUtils.isEmpty(departmentID) || departmentID.equals("ALL"))
 			query.whereEqualTo(DB.Course.DEPARTMENT_ID, departmentID);
 
 		if (!TextUtils.isEmpty(timeAfter)) {
@@ -201,7 +201,7 @@ public class DBRetriever {
 								courseObject.getString(DB.Course.ID));
 						course.put(DB.Course.NAME,
 								courseObject.getString(DB.Course.NAME));
-						Date date = courseObject.getDate(DB.Course.UPDATED_AT);
+						Date date = courseObject.getUpdatedAt();
 						course.put(DB.Course.UPDATED_AT, DateToString(date));
 						context.getContentResolver().insert(DB.Course.CONTENT_URI, course);
 					}

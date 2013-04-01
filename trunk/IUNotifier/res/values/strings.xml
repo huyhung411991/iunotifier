@@ -10,5 +10,6 @@
     <string name="title_activity_web_view">Web View</string>
     <string name="title_activity_department">DepartmentActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_courses">CoursesActivity</string>
 
 </resources>

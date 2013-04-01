@@ -6,7 +6,6 @@ import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -25,44 +24,55 @@ import android.widget.SimpleCursorAdapter;
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
 
-public class DepartmentActivity extends ListActivity implements
+public class CoursesActivity extends ListActivity implements
 		LoaderManager.LoaderCallbacks<Cursor> {
 
 	private SimpleCursorAdapter mAdapter = null;
 
-	private static final String LAST_UPDATE = ".com.iuinsider.iunotifier.LAST_UPDATE.DEPARTMENTS";
+	private static final String LAST_UPDATE = ".com.iuinsider.iunotifier.LAST_UPDATE";
 	private static final String EXTRA_DEPARTMENT = ".com.iuinsider.iunotifier.DEPARTMENT";
 
 	// These are the Contacts rows that we will retrieve
-	private static final String[] PROJECTION = new String[] {
-			DB.Department._ID, DB.Department.ID, DB.Department.NAME };
+	private static final String[] PROJECTION = new String[] { DB.Course._ID,
+			DB.Course.ID, DB.Course.NAME };
 
 	// This is the select criteria
-	private static final String SELECTION = "((" + DB.Department.NAME
-			+ " NOTNULL) AND (" + DB.Department.NAME + " != '' ))";
+	private static final String SELECTION = "((" + DB.Course.NAME
+			+ " NOTNULL) AND (" + DB.Course.NAME + " != '' ))";
 
 	// This is the sorting order
-	private static final String SORTORDER = DB.Department.ID + " ASC";
+	private static final String SORTORDER = DB.Course.ID + " ASC";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_department);
+		setContentView(R.layout.activity_courses);
 
 		ProgressBar progressBar = (ProgressBar) this
-				.findViewById(R.id.department_progressBar);
+				.findViewById(R.id.course_progressBar);
 		getListView().setEmptyView(progressBar);
+
+		String departmentID = getIntent().getStringExtra(EXTRA_DEPARTMENT);
+		if (departmentID == null)
+			departmentID = "ALL";
 
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 		if (activeNetwork != null && activeNetwork.isConnected()) {
 			SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
 			SharedPreferences.Editor prefEdit = pref.edit();
-			String lastUpdate = pref.getString(LAST_UPDATE, null);
+			String lastAllUpdate = pref.getString(LAST_UPDATE + ".ALL", null);
+			String lastCourseUpdate = pref.getString(
+					LAST_UPDATE + "." + departmentID, null);
 
-			DBRetriever.DepartmentQuery(this, lastUpdate);
+			if ((lastCourseUpdate == null && lastAllUpdate == null)
+					|| (lastCourseUpdate == null)
+					|| (lastAllUpdate != null && lastCourseUpdate.compareTo(lastAllUpdate) <= 0))
+				DBRetriever.CourseQuery(this, departmentID, lastAllUpdate);
+			else
+				DBRetriever.CourseQuery(this, departmentID, lastCourseUpdate);
 
-			prefEdit.putString(LAST_UPDATE,
+			prefEdit.putString(LAST_UPDATE + "." + departmentID,
 					DBRetriever.DateToString(new Date()));
 			prefEdit.commit();
 			Log.d("Network", "Network available");
@@ -71,7 +81,7 @@ public class DepartmentActivity extends ListActivity implements
 		}
 
 		// For the cursor adapter, specify which columns go into which views
-		String[] fromColumns = { DB.Department.NAME, DB.Department.ID };
+		String[] fromColumns = { DB.Course.NAME, DB.Course.ID };
 		int[] toViews = { android.R.id.text1, android.R.id.text2 };
 
 		// Create an empty adapter we will use to display the loaded data.
@@ -103,7 +113,7 @@ public class DepartmentActivity extends ListActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.department, menu);
+		getMenuInflater().inflate(R.menu.courses, menu);
 		return true;
 	}
 
@@ -131,7 +141,7 @@ public class DepartmentActivity extends ListActivity implements
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
-		return new CursorLoader(this, DB.Department.CONTENT_URI, PROJECTION,
+		return new CursorLoader(this, DB.Course.CONTENT_URI, PROJECTION,
 				SELECTION, null, SORTORDER);
 	}
 
@@ -159,20 +169,18 @@ public class DepartmentActivity extends ListActivity implements
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-
-		Cursor mCursor = mAdapter.getCursor();
-		mCursor.moveToPosition(position);
-		String columnName = DB.Department.ID;
-		int columnIndex = mCursor.getColumnIndex(columnName);
-		String department = mCursor.getString(columnIndex);
-
-		Intent intent = new Intent(this, CoursesActivity.class);
-		intent.putExtra(EXTRA_DEPARTMENT, department);
-		startActivity(intent);
-
-		// New, more advanced and easy to use transition animation
-		overridePendingTransition(R.anim.slide_in_right, 0);
-
+		/*
+		 * Cursor mCursor = mAdapter.getCursor();
+		 * mCursor.moveToPosition(position); String columnName = DB.News.LINK;
+		 * int columnIndex = mCursor.getColumnIndex(columnName); String link =
+		 * mCursor.getString(columnIndex);
+		 * 
+		 * Intent intent = new Intent(this, WebViewActivity.class);
+		 * intent.putExtra(EXTRA_LINK, link); startActivityForResult(intent, 0);
+		 * // startActivity(intent);
+		 * 
+		 * // New, more advanced and easy to use transition animation
+		 * overridePendingTransition(R.anim.slide_in_right, 0);
+		 */
 	}
-
 }

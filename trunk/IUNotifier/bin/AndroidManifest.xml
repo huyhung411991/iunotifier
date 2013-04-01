@@ -26,7 +26,8 @@
             android:authorities="com.iuinsider.iunotifier.provider"
             tools:ignore="ExportedContentProvider" >
         </provider>
-        <service android:name="com.parse.PushService" />
+
+        <service android:name="com.parse.PushService" />
 
         <receiver android:name="com.parse.ParseBroadcastReceiver" >
             <intent-filter>
@@ -133,6 +134,14 @@
                 android:value="com.iuinsider.iunotifier.MainMenuActivity" />
         </activity>
         <!-- ====================================================================== -->
+        <activity
+            android:name="com.iuinsider.iunotifier.CoursesActivity"
+            android:label="@string/title_activity_courses"
+            android:parentActivityName="com.iuinsider.iunotifier.DepartmentActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iuinsider.iunotifier.DepartmentActivity" />
+        </activity>
     </application>
 
 </manifest>
