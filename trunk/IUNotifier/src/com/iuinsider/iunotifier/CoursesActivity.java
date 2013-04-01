@@ -28,6 +28,7 @@ public class CoursesActivity extends ListActivity implements
 		LoaderManager.LoaderCallbacks<Cursor> {
 
 	private SimpleCursorAdapter mAdapter = null;
+	private String departmentID;
 
 	private static final String LAST_UPDATE = ".com.iuinsider.iunotifier.LAST_UPDATE";
 	private static final String EXTRA_DEPARTMENT = ".com.iuinsider.iunotifier.DEPARTMENT";
@@ -37,8 +38,8 @@ public class CoursesActivity extends ListActivity implements
 			DB.Course.ID, DB.Course.NAME };
 
 	// This is the select criteria
-	private static final String SELECTION = "((" + DB.Course.NAME
-			+ " NOTNULL) AND (" + DB.Course.NAME + " != '' ))";
+	private static final String SELECTION = DB.Course.NAME
+			+ " NOTNULL AND " + DB.Course.NAME + " != ''";
 
 	// This is the sorting order
 	private static final String SORTORDER = DB.Course.ID + " ASC";
@@ -52,7 +53,7 @@ public class CoursesActivity extends ListActivity implements
 				.findViewById(R.id.course_progressBar);
 		getListView().setEmptyView(progressBar);
 
-		String departmentID = getIntent().getStringExtra(EXTRA_DEPARTMENT);
+		departmentID = getIntent().getStringExtra(EXTRA_DEPARTMENT);
 		if (departmentID == null)
 			departmentID = "ALL";
 
@@ -62,12 +63,13 @@ public class CoursesActivity extends ListActivity implements
 			SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
 			SharedPreferences.Editor prefEdit = pref.edit();
 			String lastAllUpdate = pref.getString(LAST_UPDATE + ".ALL", null);
-			String lastCourseUpdate = pref.getString(
-					LAST_UPDATE + "." + departmentID, null);
+			String lastCourseUpdate = pref.getString(LAST_UPDATE + "."
+					+ departmentID, null);
 
 			if ((lastCourseUpdate == null && lastAllUpdate == null)
 					|| (lastCourseUpdate == null)
-					|| (lastAllUpdate != null && lastCourseUpdate.compareTo(lastAllUpdate) <= 0))
+					|| (lastAllUpdate != null && lastCourseUpdate
+							.compareTo(lastAllUpdate) <= 0))
 				DBRetriever.CourseQuery(this, departmentID, lastAllUpdate);
 			else
 				DBRetriever.CourseQuery(this, departmentID, lastCourseUpdate);
@@ -141,8 +143,14 @@ public class CoursesActivity extends ListActivity implements
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
-		return new CursorLoader(this, DB.Course.CONTENT_URI, PROJECTION,
-				SELECTION, null, SORTORDER);
+		if (departmentID == null || departmentID.equals("ALL"))
+			return new CursorLoader(this, DB.Course.CONTENT_URI, PROJECTION,
+					SELECTION, null, SORTORDER);
+		else {
+			String newSelection = SELECTION + " AND " + DB.Course.DEPARTMENT_ID + " = '" + departmentID + "'";
+			return new CursorLoader(this, DB.Course.CONTENT_URI, PROJECTION,
+					newSelection, null, SORTORDER);
+		}
 	}
 
 	// =========================================================================================
