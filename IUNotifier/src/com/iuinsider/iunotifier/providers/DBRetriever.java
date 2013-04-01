@@ -143,6 +143,8 @@ public class DBRetriever {
 			Date date = StringToDate(timeCondition);
 			if (date != null)
 				query.whereGreaterThan(DB.Department.UPDATED_AT, date);
+		} else {
+			contentResolver.delete(DB.Department.CONTENT_URI, null, null);
 		}
 
 		query.findInBackground(new FindCallback() {
