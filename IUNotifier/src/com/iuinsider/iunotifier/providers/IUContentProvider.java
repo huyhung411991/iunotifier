@@ -9,7 +9,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.os.Bundle;
 import android.text.TextUtils;
 
 public class IUContentProvider extends ContentProvider {
@@ -459,57 +458,5 @@ public class IUContentProvider extends ContentProvider {
 
 		getContext().getContentResolver().notifyChange(uri, null);
 		return rowsUpdated;
-	}
-
-	public Bundle getLastUpdate(Uri uri, String arg, Bundle extras) {
-
-		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-
-		switch (sUriMatcher.match(uri)) {
-		case DEPARTMENT:
-			queryBuilder.setTables(DB.Departments.TABLE_NAME);
-			break;
-		case COURSE:
-			queryBuilder.setTables(DB.Courses.TABLE_NAME);
-			break;
-		case COURSE_ID:
-			queryBuilder.setTables(DB.Courses.TABLE_NAME);
-			queryBuilder.appendWhere(DB.Courses.DEPARTMENT_ID + " = '"
-					+ uri.getLastPathSegment() + "'");
-			break;
-		case USER_COURSE:
-			queryBuilder.setTables(DB.UserCourses.TABLE_NAME);
-			break;
-		case COURSE_DETAILS_ID:
-			queryBuilder.setTables(DB.CourseDetails.TABLE_NAME);
-			queryBuilder.appendWhere(DB.CourseDetails.ID + " = '"
-					+ uri.getLastPathSegment() + "'");
-			break;
-		case ANNOUNCEMENT:
-			queryBuilder.setTables(DB.Announce.TABLE_NAME);
-			break;
-		case ANNOUNCEMENT_ID:
-			queryBuilder.setTables(DB.Announce.TABLE_NAME);
-			queryBuilder.appendWhere(DB.Announce.COURSE_ID + " = '"
-					+ uri.getLastPathSegment() + "'");
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown URI " + uri);
-		}
-
-		db = dbHelper.getReadableDatabase();
-		Cursor cursor = queryBuilder.query(db,
-				new String[] { "lastUpdate = MAX(updateAt)" }, null, null,
-				null, null, null);
-
-		cursor.moveToFirst();
-		String lastUpdate = cursor.getString(0);
-		Bundle bundle = new Bundle();
-		bundle.putString("lastUpdate", lastUpdate);
-		return bundle;
-
-		// Make sure that potential listeners are getting notified
-		// cursor.setNotificationUri(getContext().getContentResolver(), uri);
-		// return cursor;
 	}
 }

@@ -8,6 +8,8 @@ import java.util.Locale;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -44,6 +46,31 @@ public class DBRetriever {
 		}
 
 		return date;
+	}
+
+	public static String getLastUpdate(Context c, Uri uri,
+			String projectedColumn, String selectedColumn, String selectedValue) {
+		if (c == null || uri == null || TextUtils.isEmpty(projectedColumn))
+			return null;
+
+		Cursor cursor = null;
+		if (TextUtils.isEmpty(selectedValue) || selectedValue.equals("ALL"))
+			cursor = c.getContentResolver().query(uri,
+					new String[] { "MAX(" + projectedColumn + ")" }, null,
+					null, null);
+		else
+			cursor = c.getContentResolver().query(uri,
+					new String[] { "MAX(" + projectedColumn + ")" },
+					"(" + selectedColumn + " = '" + selectedValue + "')", null,
+					null);
+
+		String lastUpdate = null;
+		if (cursor.getCount() > 0) {
+			cursor.moveToFirst();
+			lastUpdate = cursor.getString(0);
+		}
+		cursor.close();
+		return lastUpdate;
 	}
 
 	public static void allNewsQuery(Context c) {
@@ -132,18 +159,17 @@ public class DBRetriever {
 		});
 	}
 
-	public static void departmentsQuery(Context c, String timeCondition) {
+	public static void departmentsQuery(Context c) {
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Departments.TABLE_NAME);
+		String lastUpdate = getLastUpdate(context, DB.Departments.CONTENT_URI,
+				DB.Departments.UPDATED_AT, null, null);
 
-		if (!TextUtils.isEmpty(timeCondition)) {
-			Date date = StringToDate(timeCondition);
+		if (!TextUtils.isEmpty(lastUpdate)) {
+			Date date = StringToDate(lastUpdate);
 			if (date != null)
 				query.whereGreaterThan(DB.Departments.UPDATED_AT, date);
-		} else {
-			context.getContentResolver().delete(DB.Departments.CONTENT_URI,
-					null, null);
 		}
 
 		query.findInBackground(new FindCallback() {
@@ -174,17 +200,18 @@ public class DBRetriever {
 		});
 	}
 
-	public static void coursesQuery(Context c, String departmentID,
-			String timeAfter) {
+	public static void coursesQuery(Context c, String departmentID) {
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Courses.TABLE_NAME);
+		String lastUpdate = getLastUpdate(context, DB.Courses.CONTENT_URI,
+				DB.Courses.UPDATED_AT, DB.Courses.DEPARTMENT_ID, departmentID);
 
 		if (!TextUtils.isEmpty(departmentID) && !departmentID.equals("ALL"))
 			query.whereEqualTo(DB.Courses.DEPARTMENT_ID, departmentID);
 
-		if (!TextUtils.isEmpty(timeAfter)) {
-			Date date = StringToDate(timeAfter);
+		if (!TextUtils.isEmpty(lastUpdate)) {
+			Date date = StringToDate(lastUpdate);
 			if (date != null)
 				query.whereGreaterThan(DB.Courses.UPDATED_AT, date);
 		}
@@ -217,20 +244,23 @@ public class DBRetriever {
 			}
 		});
 	}
-	
+
 	public static void courseDetailsQuery(Context c, String courseID) {
+		if (TextUtils.isEmpty(courseID) || courseID == null)
+			return;
+		
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.CourseDetails.TABLE_NAME);
+		String lastUpdate = getLastUpdate(context, DB.CourseDetails.CONTENT_URI,
+				DB.CourseDetails.UPDATED_AT, DB.CourseDetails.ID, courseID);
 
-		if (!TextUtils.isEmpty(courseID) && !courseID.equals("ALL"))
-			query.whereEqualTo(DB.CourseDetails.ID, courseID);
-
-//		if (!TextUtils.isEmpty(timeAfter)) {
-//			Date date = StringToDate(timeAfter);
-//			if (date != null)
-//				query.whereGreaterThan(DB.Courses.UPDATED_AT, date);
-//		}
+		query.whereEqualTo(DB.CourseDetails.ID, courseID);
+		if (!TextUtils.isEmpty(lastUpdate)) {
+			Date date = StringToDate(lastUpdate);
+			if (date != null)
+				query.whereGreaterThan(DB.CourseDetails.UPDATED_AT, date);
+		}
 
 		query.findInBackground(new FindCallback() {
 			@Override
@@ -245,25 +275,30 @@ public class DBRetriever {
 						courseDetails.put(DB.CourseDetails.NAME,
 								parseObject.getString(DB.CourseDetails.NAME));
 						courseDetails.put(DB.CourseDetails.LECTURER,
-								parseObject.getString(DB.CourseDetails.LECTURER));
+								parseObject
+										.getString(DB.CourseDetails.LECTURER));
 						courseDetails.put(DB.CourseDetails.THEORY,
 								parseObject.getString(DB.CourseDetails.THEORY));
 						courseDetails.put(DB.CourseDetails.LAB,
 								parseObject.getString(DB.CourseDetails.LAB));
 						courseDetails.put(DB.CourseDetails.CREDIT,
 								parseObject.getLong(DB.CourseDetails.CREDIT));
-						courseDetails.put(DB.CourseDetails.PREREQUISITE,
-								parseObject.getString(DB.CourseDetails.PREREQUISITE));
+						courseDetails.put(
+								DB.CourseDetails.PREREQUISITE,
+								parseObject
+										.getString(DB.CourseDetails.PREREQUISITE));
 						Date date = parseObject.getUpdatedAt();
-						courseDetails.put(DB.CourseDetails.UPDATED_AT, DateToString(date));
+						courseDetails.put(DB.CourseDetails.UPDATED_AT,
+								DateToString(date));
 						context.getContentResolver().insert(
 								DB.CourseDetails.CONTENT_URI, courseDetails);
 					}
 
-					Log.d(DB.CourseDetails.TABLE_NAME, "Retrieved " + list.size()
-							+ " items");
+					Log.d(DB.CourseDetails.TABLE_NAME,
+							"Retrieved " + list.size() + " items");
 				} else {
-					Log.d(DB.CourseDetails.TABLE_NAME, "Error: " + e.getMessage());
+					Log.d(DB.CourseDetails.TABLE_NAME,
+							"Error: " + e.getMessage());
 				}
 			}
 		});
@@ -273,17 +308,16 @@ public class DBRetriever {
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Announce.TABLE_NAME);
+		String lastUpdate = getLastUpdate(context, DB.Announce.CONTENT_URI,
+				DB.Announce.UPDATED_AT, DB.Announce.COURSE_ID, courseID);
 
 		if (!TextUtils.isEmpty(courseID) && !courseID.equals("ALL"))
 			query.whereEqualTo(DB.Announce.COURSE_ID, courseID);
-
-		context.getContentResolver().delete(DB.Announce.CONTENT_URI, null, null);
-		
-		// if (!TextUtils.isEmpty(timeAfter)) {
-		// Date date = StringToDate(timeAfter);
-		// if (date != null)
-		// query.whereGreaterThan(DB.Courses.UPDATED_AT, date);
-		// }
+		if (!TextUtils.isEmpty(lastUpdate)) {
+			Date date = StringToDate(lastUpdate);
+			if (date != null)
+				query.whereGreaterThan(DB.Announce.UPDATED_AT, date);
+		}
 
 		query.findInBackground(new FindCallback() {
 			@Override
