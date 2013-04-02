@@ -1,5 +1,7 @@
 package com.iuinsider.iunotifier;
 
+import com.iuinsider.iunotifier.providers.DBRetriever;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -22,6 +24,7 @@ public class CourseDetailsActivity extends Activity {
 		courseID = getIntent().getStringExtra(EXTRA_COURSE);
 		if (courseID == null)
 			finish();
+		DBRetriever.courseDetailsQuery(this, courseID);
 		
 		
 		// Show the Up button in the action bar.

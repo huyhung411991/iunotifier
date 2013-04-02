@@ -1,14 +1,11 @@
 package com.iuinsider.iunotifier;
 
-import java.util.Date;
-
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -30,7 +27,6 @@ public class DepartmentsActivity extends ListActivity implements
 
 	private SimpleCursorAdapter mAdapter = null;
 
-	private static final String LAST_UPDATE = ".com.iuinsider.iunotifier.LAST_UPDATE.DEPARTMENTS";
 	private static final String EXTRA_DEPARTMENT = ".com.iuinsider.iunotifier.DEPARTMENT";
 
 	// These are the Contacts rows that we will retrieve
@@ -42,7 +38,7 @@ public class DepartmentsActivity extends ListActivity implements
 			+ " NOTNULL) AND (" + DB.Departments.NAME + " != '' ))";
 
 	// This is the sorting order
-	private static final String SORTORDER = DB.Departments.ID + " ASC";
+	private static final String SORTORDER = DB.Departments.NAME + " ASC";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +52,7 @@ public class DepartmentsActivity extends ListActivity implements
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 		if (activeNetwork != null && activeNetwork.isConnected()) {
-			SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
-			SharedPreferences.Editor prefEdit = pref.edit();
-			String lastUpdate = pref.getString(LAST_UPDATE, null);
-
-			DBRetriever.departmentsQuery(this, lastUpdate);
-
-			prefEdit.putString(LAST_UPDATE,
-					DBRetriever.DateToString(new Date()));
-			prefEdit.commit();
+			DBRetriever.departmentsQuery(this);
 			Log.d("Network", "Network available");
 		} else {
 			Log.d("Network", "Network unavailable");

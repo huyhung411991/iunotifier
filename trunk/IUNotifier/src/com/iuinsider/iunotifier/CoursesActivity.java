@@ -1,14 +1,11 @@
 package com.iuinsider.iunotifier;
 
-import java.util.Date;
-
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -31,7 +28,6 @@ public class CoursesActivity extends ListActivity implements
 	private SimpleCursorAdapter mAdapter = null;
 	private String departmentID;
 
-	private static final String LAST_UPDATE = ".com.iuinsider.iunotifier.LAST_UPDATE";
 	private static final String EXTRA_DEPARTMENT = ".com.iuinsider.iunotifier.DEPARTMENT";
 	private static final String EXTRA_COURSE = ".com.iuinsider.iunotifier.COURSE";
 
@@ -44,7 +40,7 @@ public class CoursesActivity extends ListActivity implements
 			+ DB.Courses.NAME + " != ''";
 
 	// This is the sorting order
-	private static final String SORTORDER = DB.Courses.ID + " ASC";
+	private static final String SORTORDER = DB.Courses.NAME + " ASC";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,29 +52,11 @@ public class CoursesActivity extends ListActivity implements
 		getListView().setEmptyView(progressBar);
 
 		departmentID = getIntent().getStringExtra(EXTRA_DEPARTMENT);
-		if (departmentID == null)
-			departmentID = "ALL";
 
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 		if (activeNetwork != null && activeNetwork.isConnected()) {
-			SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
-			SharedPreferences.Editor prefEdit = pref.edit();
-			String lastAllUpdate = pref.getString(LAST_UPDATE + ".ALL", null);
-			String lastCourseUpdate = pref.getString(LAST_UPDATE + "."
-					+ departmentID, null);
-
-			if ((lastCourseUpdate == null && lastAllUpdate == null)
-					|| (lastCourseUpdate == null)
-					|| (lastAllUpdate != null && lastCourseUpdate
-							.compareTo(lastAllUpdate) <= 0))
-				DBRetriever.coursesQuery(this, departmentID, lastAllUpdate);
-			else
-				DBRetriever.coursesQuery(this, departmentID, lastCourseUpdate);
-
-			prefEdit.putString(LAST_UPDATE + "." + departmentID,
-					DBRetriever.DateToString(new Date()));
-			prefEdit.commit();
+			DBRetriever.coursesQuery(this, departmentID);
 			Log.d("Network", "Network available");
 		} else {
 			Log.d("Network", "Network unavailable");
@@ -180,7 +158,7 @@ public class CoursesActivity extends ListActivity implements
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		
+
 		Cursor mCursor = mAdapter.getCursor();
 		mCursor.moveToPosition(position);
 		String columnName = DB.Courses.ID;
