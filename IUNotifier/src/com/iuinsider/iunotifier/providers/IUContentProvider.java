@@ -9,6 +9,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 public class IUContentProvider extends ContentProvider {
@@ -26,6 +27,8 @@ public class IUContentProvider extends ContentProvider {
 	private static final int COURSE_DETAILS_ID = 10;
 	private static final int ANNOUNCEMENT = 11;
 	private static final int ANNOUNCEMENT_ID = 12;
+	private static final int USER_COURSE = 13;
+	private static final int USER_COURSE_ID = 14;
 
 	static {
 		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -46,10 +49,14 @@ public class IUContentProvider extends ContentProvider {
 				DB.CourseDetails.TABLE_NAME, COURSE_DETAILS);
 		sUriMatcher.addURI(DB.CourseDetails.AUTHORITY,
 				DB.CourseDetails.TABLE_NAME + "/*", COURSE_DETAILS_ID);
-		sUriMatcher.addURI(DB.Announce.AUTHORITY,
-				DB.Announce.TABLE_NAME, ANNOUNCEMENT);
+		sUriMatcher.addURI(DB.Announce.AUTHORITY, DB.Announce.TABLE_NAME,
+				ANNOUNCEMENT);
 		sUriMatcher.addURI(DB.Announce.AUTHORITY,
 				DB.Announce.TABLE_NAME + "/*", ANNOUNCEMENT_ID);
+		sUriMatcher.addURI(DB.UserCourses.AUTHORITY, DB.UserCourses.TABLE_NAME,
+				USER_COURSE);
+		sUriMatcher.addURI(DB.UserCourses.AUTHORITY, DB.UserCourses.TABLE_NAME
+				+ "/*", USER_COURSE_ID);
 	}
 
 	private static DBHelper dbHelper;
@@ -88,6 +95,10 @@ public class IUContentProvider extends ContentProvider {
 			return DB.Announce.CONTENT_TYPE;
 		case ANNOUNCEMENT_ID:
 			return DB.Announce.CONTENT_ITEM_TYPE;
+		case USER_COURSE:
+			return DB.UserCourses.CONTENT_TYPE;
+		case USER_COURSE_ID:
+			return DB.UserCourses.CONTENT_ITEM_TYPE;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -98,7 +109,6 @@ public class IUContentProvider extends ContentProvider {
 			String[] selectionArgs, String sortOrder) {
 
 		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-		queryBuilder.setTables(DB.News.TABLE_NAME);
 
 		switch (sUriMatcher.match(uri)) {
 		case NEWS:
@@ -147,6 +157,14 @@ public class IUContentProvider extends ContentProvider {
 		case ANNOUNCEMENT_ID:
 			queryBuilder.setTables(DB.Announce.TABLE_NAME);
 			queryBuilder.appendWhere(DB.Announce._ID + " = '"
+					+ uri.getLastPathSegment() + "'");
+			break;
+		case USER_COURSE:
+			queryBuilder.setTables(DB.UserCourses.TABLE_NAME);
+			break;
+		case USER_COURSE_ID:
+			queryBuilder.setTables(DB.UserCourses.TABLE_NAME);
+			queryBuilder.appendWhere(DB.UserCourses.ID + " = '"
 					+ uri.getLastPathSegment() + "'");
 			break;
 		default:
@@ -204,7 +222,13 @@ public class IUContentProvider extends ContentProvider {
 		case ANNOUNCEMENT:
 			rowId = db.insertWithOnConflict(DB.Announce.TABLE_NAME, null,
 					values, SQLiteDatabase.CONFLICT_REPLACE);
-			noteUri = ContentUris.withAppendedId(DB.Announce.CONTENT_URI,
+			noteUri = ContentUris
+					.withAppendedId(DB.Announce.CONTENT_URI, rowId);
+			break;
+		case USER_COURSE:
+			rowId = db.insertWithOnConflict(DB.UserCourses.TABLE_NAME, null,
+					values, SQLiteDatabase.CONFLICT_REPLACE);
+			noteUri = ContentUris.withAppendedId(DB.UserCourses.CONTENT_URI,
 					rowId);
 			break;
 		default:
@@ -292,17 +316,30 @@ public class IUContentProvider extends ContentProvider {
 								+ "' AND " + selection, selectionArgs);
 			break;
 		case ANNOUNCEMENT:
-			rowsDeleted = db.delete(DB.Courses.TABLE_NAME, selection,
+			rowsDeleted = db.delete(DB.Announce.TABLE_NAME, selection,
 					selectionArgs);
 			break;
 		case ANNOUNCEMENT_ID:
 			if (TextUtils.isEmpty(selection))
-				rowsDeleted = db.delete(DB.Announce.TABLE_NAME,
-						DB.Announce._ID + " = '" + uri.getLastPathSegment()
+				rowsDeleted = db.delete(DB.Announce.TABLE_NAME, DB.Announce._ID
+						+ " = '" + uri.getLastPathSegment() + "'", null);
+			else
+				rowsDeleted = db.delete(DB.Announce.TABLE_NAME, DB.Announce._ID
+						+ " = '" + uri.getLastPathSegment() + "' AND "
+						+ selection, selectionArgs);
+			break;
+		case USER_COURSE:
+			rowsDeleted = db.delete(DB.UserCourses.TABLE_NAME, selection,
+					selectionArgs);
+			break;
+		case USER_COURSE_ID:
+			if (TextUtils.isEmpty(selection))
+				rowsDeleted = db.delete(DB.UserCourses.TABLE_NAME,
+						DB.UserCourses.ID + " = '" + uri.getLastPathSegment()
 								+ "'", null);
 			else
-				rowsDeleted = db.delete(DB.Announce.TABLE_NAME,
-						DB.Announce._ID + " = '" + uri.getLastPathSegment()
+				rowsDeleted = db.delete(DB.UserCourses.TABLE_NAME,
+						DB.UserCourses.ID + " = '" + uri.getLastPathSegment()
 								+ "' AND " + selection, selectionArgs);
 			break;
 		default:
@@ -394,12 +431,26 @@ public class IUContentProvider extends ContentProvider {
 			break;
 		case ANNOUNCEMENT_ID:
 			if (TextUtils.isEmpty(selection))
-				rowsUpdated = db
-						.update(DB.Announce.TABLE_NAME, values, DB.Announce._ID
-								+ " = '" + uri.getLastPathSegment() + "'", null);
+				rowsUpdated = db.update(DB.Announce.TABLE_NAME, values,
+						DB.Announce._ID + " = '" + uri.getLastPathSegment()
+								+ "'", null);
 			else
 				rowsUpdated = db.update(DB.Announce.TABLE_NAME, values,
 						DB.Announce._ID + " = '" + uri.getLastPathSegment()
+								+ "' AND " + selection, selectionArgs);
+			break;
+		case USER_COURSE:
+			rowsUpdated = db.update(DB.UserCourses.TABLE_NAME, values,
+					selection, selectionArgs);
+			break;
+		case USER_COURSE_ID:
+			if (TextUtils.isEmpty(selection))
+				rowsUpdated = db.update(DB.UserCourses.TABLE_NAME, values,
+						DB.UserCourses.ID + " = '" + uri.getLastPathSegment()
+								+ "'", null);
+			else
+				rowsUpdated = db.update(DB.UserCourses.TABLE_NAME, values,
+						DB.UserCourses.ID + " = '" + uri.getLastPathSegment()
 								+ "' AND " + selection, selectionArgs);
 			break;
 		default:
@@ -408,5 +459,57 @@ public class IUContentProvider extends ContentProvider {
 
 		getContext().getContentResolver().notifyChange(uri, null);
 		return rowsUpdated;
+	}
+
+	public Bundle getLastUpdate(Uri uri, String arg, Bundle extras) {
+
+		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+
+		switch (sUriMatcher.match(uri)) {
+		case DEPARTMENT:
+			queryBuilder.setTables(DB.Departments.TABLE_NAME);
+			break;
+		case COURSE:
+			queryBuilder.setTables(DB.Courses.TABLE_NAME);
+			break;
+		case COURSE_ID:
+			queryBuilder.setTables(DB.Courses.TABLE_NAME);
+			queryBuilder.appendWhere(DB.Courses.DEPARTMENT_ID + " = '"
+					+ uri.getLastPathSegment() + "'");
+			break;
+		case USER_COURSE:
+			queryBuilder.setTables(DB.UserCourses.TABLE_NAME);
+			break;
+		case COURSE_DETAILS_ID:
+			queryBuilder.setTables(DB.CourseDetails.TABLE_NAME);
+			queryBuilder.appendWhere(DB.CourseDetails.ID + " = '"
+					+ uri.getLastPathSegment() + "'");
+			break;
+		case ANNOUNCEMENT:
+			queryBuilder.setTables(DB.Announce.TABLE_NAME);
+			break;
+		case ANNOUNCEMENT_ID:
+			queryBuilder.setTables(DB.Announce.TABLE_NAME);
+			queryBuilder.appendWhere(DB.Announce.COURSE_ID + " = '"
+					+ uri.getLastPathSegment() + "'");
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown URI " + uri);
+		}
+
+		db = dbHelper.getReadableDatabase();
+		Cursor cursor = queryBuilder.query(db,
+				new String[] { "lastUpdate = MAX(updateAt)" }, null, null,
+				null, null, null);
+
+		cursor.moveToFirst();
+		String lastUpdate = cursor.getString(0);
+		Bundle bundle = new Bundle();
+		bundle.putString("lastUpdate", lastUpdate);
+		return bundle;
+
+		// Make sure that potential listeners are getting notified
+		// cursor.setNotificationUri(getContext().getContentResolver(), uri);
+		// return cursor;
 	}
 }

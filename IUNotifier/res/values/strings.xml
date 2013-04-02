@@ -13,7 +13,8 @@
     <string name="title_activity_department">Departments</string>
     <string name="title_activity_courses">Courses</string>
     <string name="title_activity_course_details">Course Details</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_activity_announcements">Announcements</string>
+    <string name="textview_my_courses">My Courses</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
