@@ -2,6 +2,7 @@ package com.iuinsider.iunotifier.providers;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
@@ -16,6 +17,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.FunctionCallback;
@@ -415,6 +417,28 @@ public class DBRetriever {
 									+ list.length() + " items");
 						} else {
 							Log.d(DB.UserCourses.TABLE_NAME,
+									"Error: " + e.getMessage());
+						}
+					}
+				});
+	}
+
+	// --------------------------------------------------------------------------------
+	public static void pushAnnouncement(String courseID, String message,
+			TextView state) {
+		final TextView stateMessage = state;
+
+		HashMap<String, Object> params = new HashMap<String, Object>();
+
+		params.put("courseid", courseID);
+		params.put("message", message);
+		ParseCloud.callFunctionInBackground("pushAnnouncement", params,
+				new FunctionCallback<String>() {
+					public void done(String returnMsg, ParseException e) {
+						if (e == null) {
+							stateMessage.setText(returnMsg);
+						} else {
+							Log.d(DB.Announce.TABLE_NAME,
 									"Error: " + e.getMessage());
 						}
 					}

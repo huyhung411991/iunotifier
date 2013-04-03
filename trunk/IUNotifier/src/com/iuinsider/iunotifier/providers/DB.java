@@ -118,10 +118,11 @@ public class DB {
 	// /////////////////////////////////////////////////////////////////////////////////////////////
 	public static abstract class Announce implements BaseColumns {
 		public static final String TABLE_NAME = "Announcements";
-		public static final String PARSE_ID = "announceID";
 		public static final String COURSE_ID = "courseID";
 		public static final String MESSAGE = "announceMsg";
 		public static final String UPDATED_AT = "updatedAt";
+		public static final String SUCCESSFUL_MSG = "Push Successful";
+		public static final String FAILED_MSG = "Push Failed";
 
 		public static final String AUTHORITY = "com.iuinsider.iunotifier.provider";
 		public static final Uri CONTENT_URI = Uri.parse("content://"

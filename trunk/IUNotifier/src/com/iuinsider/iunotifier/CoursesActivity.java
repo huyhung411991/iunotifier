@@ -33,16 +33,21 @@ public class CoursesActivity extends ListActivity implements
 	private static final String EXTRA_DEPARTMENT = ".com.iuinsider.iunotifier.DEPARTMENT";
 	private static final String EXTRA_COURSE = ".com.iuinsider.iunotifier.COURSE";
 
-	// These are the Contacts rows that we will retrieve
-	private static final String[] PROJECTION = new String[] { DB.Courses._ID,
+	// These are the column that we will retrieve
+	private static final String[] COURSES_PROJECTION = new String[] { DB.Courses._ID,
 			DB.Courses.ID, DB.Courses.NAME };
+	private static final String[] USER_COURSES_PROJECTION = new String[] { DB.UserCourses._ID,
+		DB.UserCourses.ID, DB.UserCourses.NAME };
 
 	// This is the select criteria
-	private static final String SELECTION = DB.Courses.NAME + " NOTNULL AND "
+	private static final String COURSES_SELECTION = DB.Courses.NAME + " NOTNULL AND "
 			+ DB.Courses.NAME + " != ''";
+	private static final String USER_COURSES_SELECTION = DB.UserCourses.NAME + " NOTNULL AND "
+			+ DB.UserCourses.NAME + " != ''";
 
 	// This is the sorting order
-	private static final String SORTORDER = DB.Courses.NAME + " ASC";
+	private static final String COURSES_SORTORDER = DB.Courses.NAME + " ASC";
+	private static final String USER_COURSES_SORTORDER = DB.UserCourses.NAME + " ASC";
 
 	// =========================================================================================
 	@Override
@@ -50,31 +55,38 @@ public class CoursesActivity extends ListActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_courses);
 
-		currentUser = ParseUser.getCurrentUser();
-
 		ProgressBar progressBar = (ProgressBar) this
 				.findViewById(R.id.course_progressBar);
 		getListView().setEmptyView(progressBar);
 
+		currentUser = ParseUser.getCurrentUser();
 		departmentID = getIntent().getStringExtra(EXTRA_DEPARTMENT);
 
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 		if (activeNetwork != null && activeNetwork.isConnected()) {
-			DBRetriever.coursesQuery(this, departmentID);
+			if (departmentID == null || !departmentID.equals("USER"))
+				DBRetriever.coursesQuery(this, departmentID);
+			else
+				DBRetriever.userCoursesQuery(this, currentUser);
 			Log.d("Network", "Network available");
 		} else {
 			Log.d("Network", "Network unavailable");
 		}
 
 		// For the cursor adapter, specify which columns go into which views
-		String[] fromColumns = { DB.Courses.NAME, DB.Courses.ID };
+		String[] fromCoursesColumns = { DB.Courses.NAME, DB.Courses.ID };
+		String[] fromUserCoursesColumns = { DB.UserCourses.NAME, DB.UserCourses.ID };
 		int[] toViews = { android.R.id.text1, android.R.id.text2 };
 
 		// Create an empty adapter we will use to display the loaded data.
 		// We pass null for the cursor, then update it in onLoadFinished()
-		mAdapter = new SimpleCursorAdapter(this, R.layout.simple_list_item_2,
-				null, fromColumns, toViews, 0);
+		if (departmentID == null || !departmentID.equals("USER"))
+			mAdapter = new SimpleCursorAdapter(this, R.layout.simple_list_item_2,
+				null, fromCoursesColumns, toViews, 0);
+		else
+			mAdapter = new SimpleCursorAdapter(this, R.layout.simple_list_item_2,
+					null, fromUserCoursesColumns, toViews, 0);
 		setListAdapter(mAdapter);
 
 		// Prepare the loader. Either re-connect with an existing one,
@@ -187,14 +199,16 @@ public class CoursesActivity extends ListActivity implements
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
 		if (departmentID == null || departmentID.equals("ALL"))
-			return new CursorLoader(this, DB.Courses.CONTENT_URI, PROJECTION,
-					SELECTION, null, SORTORDER);
-		else {
-			String newSelection = SELECTION + " AND "
+			return new CursorLoader(this, DB.Courses.CONTENT_URI, COURSES_PROJECTION,
+					COURSES_SELECTION, null, COURSES_SORTORDER);
+		else if (!departmentID.equals("USER")){
+			String newSelection = COURSES_SELECTION + " AND "
 					+ DB.Courses.DEPARTMENT_ID + " = '" + departmentID + "'";
-			return new CursorLoader(this, DB.Courses.CONTENT_URI, PROJECTION,
-					newSelection, null, SORTORDER);
-		}
+			return new CursorLoader(this, DB.Courses.CONTENT_URI, COURSES_PROJECTION,
+					newSelection, null, COURSES_SORTORDER);
+		} else
+			return new CursorLoader(this, DB.UserCourses.CONTENT_URI, USER_COURSES_PROJECTION,
+					USER_COURSES_SELECTION, null, USER_COURSES_SORTORDER);
 	}
 
 	// =========================================================================================
