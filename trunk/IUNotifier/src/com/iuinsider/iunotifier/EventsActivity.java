@@ -33,14 +33,10 @@ public class EventsActivity extends ListActivity implements
 
 	// These are the Contacts rows that we will retrieve
 	private static final String[] PROJECTION = new String[] { DB.Events._ID,
-			DB.Events.TITLE, DB.Events.DESCRIPTION, DB.Events.DATE, DB.Events.PLACE,
-			DB.Events.CREATED_AT};
+			DB.Events.TITLE, DB.Events.DESCRIPTION, DB.Events.DATE,
+			DB.Events.PLACE, DB.Events.CREATED_AT };
 
-	// This is the select criteria
-		private static final String SELECTION = "";
-
-		// This is the sorting order
-		private static final String SORTORDER = DB.Events.CREATED_AT + " DESC";
+	private static final String SELECTION = "";
 
 	// =========================================================================================
 	@Override
@@ -59,14 +55,16 @@ public class EventsActivity extends ListActivity implements
 
 		// For the cursor adapter, specify which columns go into which views
 		String[] fromColumns = { DB.Events.TITLE, DB.Events.CREATED_AT };
-		int[] toViews = { android.R.id.text1, android.R.id.text2 }; // The TextView in
-												// simple_list_item_1
+		int[] toViews = { android.R.id.text1, android.R.id.text2 }; // The
+																	// TextView
+																	// in
+		// simple_list_item_1
 
 		// Create an empty adapter we will use to display the loaded data.
 		// We pass null for the cursor, then update it in onLoadFinished()
 		mAdapter = new SimpleCursorAdapter(this,
-				R.layout.custom_simple_list_item_2, null, fromColumns,
-				toViews, 0);
+				R.layout.custom_simple_list_item_2, null, fromColumns, toViews,
+				0);
 		setListAdapter(mAdapter);
 
 		// Check the toogle buttons
@@ -117,14 +115,16 @@ public class EventsActivity extends ListActivity implements
 	@Override
 	public void onBackPressed() {
 		if (!isTaskRoot()) {
+			Intent in = new Intent();
+			setResult(1, in);
 			EventsActivity.this.finish();
-			overridePendingTransition(0, R.anim.slide_out_right);
+			overridePendingTransition(0, R.anim.slide_out_right);	
 		} else {
 			Intent newIntent = new Intent(this, MainMenuActivity.class);
 			EventsActivity.this.finish();
 			startActivity(newIntent);
 			overridePendingTransition(0, R.anim.slide_out_right);
-		}	
+		}
 	}
 
 	// =========================================================================================
@@ -154,10 +154,24 @@ public class EventsActivity extends ListActivity implements
 	// =========================================================================================
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+		
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			onBackPressed();
 			return true;
+		case R.id.action_login:
+			// Logout current user before login
+			if (currentUser != null) {
+				intent = new Intent(this, LogoutActivity.class);
+				startActivityForResult(intent, 0);
+			}
+			// Go to user login page
+			else {
+				intent = new Intent(this, LoginActivity.class);
+				startActivityForResult(intent, 0);
+			}
+			break;
 		case R.id.action_refresh:
 			DBRetriever.allEventsQuery(this, sortCondition);
 			break;
@@ -168,13 +182,37 @@ public class EventsActivity extends ListActivity implements
 	}
 
 	// =========================================================================================
+		// Doan code nay dung de check sau khi user login thanh cong thi icon user
+		// se chuyen mau xanh
+		@Override
+		protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+			super.onActivityResult(requestCode, resultCode, data);
+
+			if (resultCode == 1) {
+				EventsActivity.this.invalidateOptionsMenu();
+			}
+		}
+
+		@Override
+		public boolean onPrepareOptionsMenu(Menu menu) {
+			currentUser = ParseUser.getCurrentUser();
+			MenuItem switchButton = menu.findItem(R.id.action_login);
+			if (currentUser != null) {
+				switchButton.setIcon(R.drawable.sign_in);
+			} else {
+				switchButton.setIcon(R.drawable.not_sign_in);
+			}
+			return true;
+		}
+		
+	// =========================================================================================
 	@Override
 	// Called when a new Loader needs to be created
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
 		return new CursorLoader(this, DB.Events.CONTENT_URI, PROJECTION,
-				SELECTION, null, SORTORDER);
+				SELECTION, null, null);
 	}
 
 	// =========================================================================================

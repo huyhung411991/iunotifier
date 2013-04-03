@@ -21,7 +21,7 @@ public class MainMenuActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
-
+		
 		// Load icon
 		loadGridViewIcons();
 	}
@@ -82,8 +82,7 @@ public class MainMenuActivity extends Activity {
 			MainMenuActivity.this.invalidateOptionsMenu();
 		}
 	}
-
-	// =========================================================================================
+	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		currentUser = ParseUser.getCurrentUser();
@@ -125,7 +124,7 @@ public class MainMenuActivity extends Activity {
 	/** Called when the user clicks the News button */
 	public void openNews(View view) {
 		Intent intent = new Intent(this, NewsActivity.class);
-		startActivity(intent);
+		startActivityForResult(intent, 0);
 
 		// Transition animation
 		overridePendingTransition(R.anim.slide_in_right, 0);
@@ -134,7 +133,7 @@ public class MainMenuActivity extends Activity {
 	/** Called when the user clicks the Events button */
 	public void openEvents(View view) {
 		Intent intent = new Intent(this, EventsActivity.class);
-		startActivity(intent);
+		startActivityForResult(intent, 0);
 
 		// Transition animation
 		overridePendingTransition(R.anim.slide_in_right, 0);
@@ -143,7 +142,7 @@ public class MainMenuActivity extends Activity {
 	/** Called when the user clicks the Course button */
 	public void openCourse(View view) {
 		Intent intent = new Intent(this, DepartmentsActivity.class);
-		startActivity(intent);
+		startActivityForResult(intent, 0);
 
 		// Transition animation
 		overridePendingTransition(R.anim.slide_in_right, 0);

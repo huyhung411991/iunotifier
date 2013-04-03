@@ -32,11 +32,7 @@ public class NewsActivity extends ListActivity implements
 	private static final String[] PROJECTION = new String[] { DB.News._ID,
 			DB.News.TITLE, DB.News.LINK, DB.News.SOURCE, DB.News.CREATED_AT };
 
-	// This is the select criteria
 	private static final String SELECTION = "";
-
-	// This is the sorting order
-	private static final String SORTORDER = DB.News.CREATED_AT + " DESC";
 
 	// =========================================================================================
 	@Override
@@ -76,6 +72,8 @@ public class NewsActivity extends ListActivity implements
 	@Override
 	public void onBackPressed() {
 		if (!isTaskRoot()) {
+			Intent in = new Intent();
+			setResult(1, in);
 			NewsActivity.this.finish();
 			overridePendingTransition(0, R.anim.slide_out_right);
 		} else {
@@ -113,10 +111,25 @@ public class NewsActivity extends ListActivity implements
 	// =========================================================================================
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			onBackPressed();
 			return true;
+
+		case R.id.action_login:
+			// Logout current user before login
+			if (currentUser != null) {
+				intent = new Intent(this, LogoutActivity.class);
+				startActivityForResult(intent, 0);
+			}
+			// Go to user login page
+			else {
+				intent = new Intent(this, LoginActivity.class);
+				startActivityForResult(intent, 0);
+			}
+			break;
 		case R.id.action_refresh:
 			DBRetriever.allNewsQuery(this);
 			break;
@@ -127,13 +140,37 @@ public class NewsActivity extends ListActivity implements
 	}
 
 	// =========================================================================================
+	// Doan code nay dung de check sau khi user login thanh cong thi icon user
+	// se chuyen mau xanh
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == 1) {
+			NewsActivity.this.invalidateOptionsMenu();
+		}
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		currentUser = ParseUser.getCurrentUser();
+		MenuItem switchButton = menu.findItem(R.id.action_login);
+		if (currentUser != null) {
+			switchButton.setIcon(R.drawable.sign_in);
+		} else {
+			switchButton.setIcon(R.drawable.not_sign_in);
+		}
+		return true;
+	}
+
+	// =========================================================================================
 	@Override
 	// Called when a new Loader needs to be created
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
 		return new CursorLoader(this, DB.News.CONTENT_URI, PROJECTION,
-				SELECTION, null, SORTORDER);
+				SELECTION, null, null);
 	}
 
 	// =========================================================================================
