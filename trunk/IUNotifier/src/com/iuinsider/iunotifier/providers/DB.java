@@ -83,7 +83,6 @@ public class DB {
 		public static final String TABLE_NAME = "UserCourses";
 		public static final String ID = "courseID";
 		public static final String NAME = "courseName";
-		public static final String UPDATED_AT = "updatedAt";
 
 		public static final String AUTHORITY = "com.iuinsider.iunotifier.provider";
 		public static final Uri CONTENT_URI = Uri.parse("content://"

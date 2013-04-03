@@ -15,7 +15,7 @@ Parse.Cloud.afterSave("News", function(request) {
         }, {
             success: function() {
                 // Push was successful
-                console.log("Push successfully");
+                console.log("Push successful");
             },
             error: function(error) {
                 // Handle error
@@ -24,7 +24,7 @@ Parse.Cloud.afterSave("News", function(request) {
         });
     }
 });
- 
+
 Parse.Cloud.afterSave("Events", function(request) {
     console.log("afterSave(Event) was called");
     var eventID = request.object.get("eventID");
@@ -44,7 +44,7 @@ Parse.Cloud.afterSave("Events", function(request) {
         }, {
             success: function() {
                 // Push was successful
-                console.log("Push successfully");
+                console.log("Push successful");
             },
             error: function(error) {
                 console.log("Push failed: " + error);
@@ -52,18 +52,19 @@ Parse.Cloud.afterSave("Events", function(request) {
         });
     }
 });
- 
+
 Parse.Cloud.define("makeCourseAnnouncement", function(request, response) {
+    console.log("makeCourseAnnouncement was called");
     var message = request.params.message;
     Parse.Push.send({
-        channels: ["CourseAnnouncement"],
+        channels: ["course"],
         data: {
             alert: message
         }
     }, {
         success: function() {
             // Push was successful
-            console.log("Push successfully");
+            console.log("Push successful");
         },
         error: function(error) {
             // Handle error
@@ -72,42 +73,7 @@ Parse.Cloud.define("makeCourseAnnouncement", function(request, response) {
     });
     response.success("Complete Announcement");
 });
- 
-Parse.Cloud.define("checkNews", function(request, response) {
-    console.log(request.params);
-    var query = new Parse.Query("News");
-    query.descending("createdAt");
-    query.find({
-        success: function(results) {
-            var obsolete = "false";
-            var createdTime = results[0].get("createdAt");
-            var hourOnDb = createdTime.getHours();
-            var dateOnDb = createdTime.getDate();
-            var monthOnDb = createdTime.getMonth();
-            var yearOnDb = createdTime.getFullYear();
-            var hourOnDevice = request.params.hour;
-            var dateOnDevice = request.params.date;
-            var monthOnDevice = request.params.month;
-            var yearOnDevice = request.params.year;
- 
-            if (yearOnDevice < yearOnDb)
-                obsolete = "true";
-            else if (monthOnDevice < monthOnDb)
-                obsolete = "true";
-            else if (dateOnDevice < dateOnDb)
-                obsolete = "true";
-            else if (hourOnDevice < hourOnDb)
-                obsolete = "true";
- 
-            if (obsolete == "true")
-                response.success(obsolete);
-        },
-        error: function() {
-            response.error("error");
-        }
-    });
-});
- 
+
 Parse.Cloud.define("getNewsList", function(request, response) {
     var query = new Parse.Query("News");
     query.descending("newsID");
@@ -126,4 +92,42 @@ Parse.Cloud.define("getNewsList", function(request, response) {
             response.error("NewsList not found");
         }
     });
+});
+
+Parse.Cloud.define("getUserCourses", function(request, response) {
+    console.log("getUserCourses was called");
+
+    var parseUser = request.user;
+    var username = parseUser.getUsername();
+    if (username !== undefined && username.length > 0) {
+        var userQuery = new Parse.Query("User");
+        userQuery.equalTo("username", username);
+        userQuery.find({
+            success: function(results_1) {
+                var courseIDList = results_1[0].get("courses");
+                var coursesQuery = new Parse.Query("Courses");
+                coursesQuery.containedIn("courseID", courseIDList);
+                coursesQuery.find({
+                    success: function(results_2) {
+                        var courseList = new Array();
+                        for (var i = 0; i < results_2.length; i++) {
+                            var courseID = results_2[i].get("courseID");
+                            var courseName = results_2[i].get("courseName");
+                            courseList[i] = {"courseID": courseID, "courseName": courseName}
+                        }
+                        console.log("Query successful with " + results_2.length + " items");
+                        response.success(courseList);
+                    },
+                    error: function() {
+                        console.log("Query failed at step 2");
+                        response.error("userCourses lookup failed");
+                    }
+                });
+            },
+            error: function() {
+                console.log("Query failed at step 1");
+                response.error("userCourses lookup failed");
+            }
+        });
+    }
 });
