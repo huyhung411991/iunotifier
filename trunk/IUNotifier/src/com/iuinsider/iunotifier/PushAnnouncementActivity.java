@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -13,9 +14,11 @@ import android.widget.TextView;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 public class PushAnnouncementActivity extends Activity {
 
+	private ParseUser currentUser = null;
 	private EditText announcementContent;
 	private TextView stateMessage;
 	private Button announceButton;
@@ -59,6 +62,27 @@ public class PushAnnouncementActivity extends Activity {
 	}
 
 	// =========================================================================================
+	// This override the default animation of the Android Device "Back" Button
+	@Override
+	public void onBackPressed() {
+		PushAnnouncementActivity.this.finish();
+		overridePendingTransition(0, R.anim.slide_out_right);
+	}
+
+	// =========================================================================================
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.events, menu);
+
+		if (currentUser != null) {
+			MenuItem switchButton = menu.findItem(R.id.action_login);
+			switchButton.setIcon(R.drawable.sign_in);
+		}
+		return true;
+	}
+
+	// =========================================================================================
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -66,19 +90,11 @@ public class PushAnnouncementActivity extends Activity {
 			onBackPressed();
 			return true;
 		case R.id.action_refresh:
-			// DBRetriever.allEventsQuery(contentResolver, sortCondition);
+			
 			break;
 		default:
 			break;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	// =========================================================================================
-	// This override the default animation of the Android Device "Back" Button
-	@Override
-	public void onBackPressed() {
-		PushAnnouncementActivity.this.finish();
-		overridePendingTransition(0, R.anim.slide_out_right);
 	}
 }
