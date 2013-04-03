@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -36,8 +37,8 @@ public class AnnouncementsActivity extends ListActivity implements
 			DB.Announce.MESSAGE };
 
 	// This is the select criteria
-	private static final String SELECTION = DB.Announce.MESSAGE + " NOTNULL AND "
-			+ DB.Announce.MESSAGE + " != ''";
+	private static final String SELECTION = DB.Announce.MESSAGE
+			+ " NOTNULL AND " + DB.Announce.MESSAGE + " != ''";
 
 	// This is the sorting order
 	private static final String SORTORDER = DB.Announce.UPDATED_AT + " DESC";
@@ -58,7 +59,7 @@ public class AnnouncementsActivity extends ListActivity implements
 
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-		if (activeNetwork != null && activeNetwork.isConnected()) {			
+		if (activeNetwork != null && activeNetwork.isConnected()) {
 			DBRetriever.announcementsQuery(this, courseID);
 			Log.d("Network", "Network available");
 		} else {
@@ -85,51 +86,98 @@ public class AnnouncementsActivity extends ListActivity implements
 	}
 
 	// =========================================================================================
-		// This override the default animation of the Android Device "Back" Button
-		@Override
-		public void onBackPressed() {
+	// This override the default animation of the Android Device "Back" Button
+	@Override
+	public void onBackPressed() {
+		if (!isTaskRoot()) {
+			Intent in = new Intent();
+			setResult(1, in);
 			AnnouncementsActivity.this.finish();
 			overridePendingTransition(0, R.anim.slide_out_right);
+		} else {
+			Intent newIntent = new Intent(this, MainMenuActivity.class);
+			AnnouncementsActivity.this.finish();
+			startActivity(newIntent);
+			overridePendingTransition(0, R.anim.slide_out_right);
 		}
+	}
 
-		// =========================================================================================
-		/**
-		 * Set up the {@link android.app.ActionBar}.
-		 */
-		private void setupActionBar() {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				getActionBar().setDisplayHomeAsUpEnabled(true);
-			}
+	// =========================================================================================
+	/**
+	 * Set up the {@link android.app.ActionBar}.
+	 */
+	private void setupActionBar() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
+	}
 
-		// =========================================================================================
-		@Override
-		public boolean onCreateOptionsMenu(Menu menu) {
-			// Inflate the menu; this adds items to the action bar if it is present.
-			getMenuInflater().inflate(R.menu.events, menu);
+	// =========================================================================================
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.events, menu);
 
-			if (currentUser != null) {
-				MenuItem switchButton = menu.findItem(R.id.action_login);
-				switchButton.setIcon(R.drawable.sign_in);
-			}
+		if (currentUser != null) {
+			MenuItem switchButton = menu.findItem(R.id.action_login);
+			switchButton.setIcon(R.drawable.sign_in);
+		}
+		return true;
+	}
+
+	// =========================================================================================
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			onBackPressed();
 			return true;
-		}
-
-		// =========================================================================================
-		@Override
-		public boolean onOptionsItemSelected(MenuItem item) {
-			switch (item.getItemId()) {
-			case android.R.id.home:
-				onBackPressed();
-				return true;
-			case R.id.action_refresh:
-				DBRetriever.announcementsQuery(this, courseID);
-				break;
-			default:
-				break;
+		case R.id.action_login:
+			// Logout current user before login
+			if (currentUser != null) {
+				intent = new Intent(this, LogoutActivity.class);
+				startActivityForResult(intent, 0);
 			}
-			return super.onOptionsItemSelected(item);
+			// Go to user login page
+			else {
+				intent = new Intent(this, LoginActivity.class);
+				startActivityForResult(intent, 0);
+			}
+			break;
+		case R.id.action_refresh:
+			DBRetriever.announcementsQuery(this, courseID);
+			break;
+		default:
+			break;
 		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	// =========================================================================================
+	// Doan code nay dung de check sau khi user login thanh cong thi icon user
+	// se chuyen mau xanh
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == 1) {
+			AnnouncementsActivity.this.invalidateOptionsMenu();
+		}
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		currentUser = ParseUser.getCurrentUser();
+		MenuItem switchButton = menu.findItem(R.id.action_login);
+		if (currentUser != null) {
+			switchButton.setIcon(R.drawable.sign_in);
+		} else {
+			switchButton.setIcon(R.drawable.not_sign_in);
+		}
+		return true;
+	}
 
 	// =========================================================================================
 	@Override
@@ -141,8 +189,8 @@ public class AnnouncementsActivity extends ListActivity implements
 			return new CursorLoader(this, DB.Announce.CONTENT_URI, PROJECTION,
 					SELECTION, null, SORTORDER);
 		else {
-			String newSelection = SELECTION + " AND "
-					+ DB.Announce.COURSE_ID + " = '" + courseID + "'";
+			String newSelection = SELECTION + " AND " + DB.Announce.COURSE_ID
+					+ " = '" + courseID + "'";
 			return new CursorLoader(this, DB.Announce.CONTENT_URI, PROJECTION,
 					newSelection, null, SORTORDER);
 		}
