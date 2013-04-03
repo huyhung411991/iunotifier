@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -373,35 +377,42 @@ public class DBRetriever {
 			}
 		});
 	}
-	
+
 	// --------------------------------------------------------------------------------
 	public static void userCoursesQuery(Context c, ParseUser parseUser) {
 		context = c;
 
 		if (parseUser == null)
 			return;
-		
+
 		// Clear local database table
-		context.getContentResolver().delete(DB.UserCourses.CONTENT_URI, null, null);
+		context.getContentResolver().delete(DB.UserCourses.CONTENT_URI, null,
+				null);
 
 		ParseCloud.callFunctionInBackground("getUserCourses", null,
-				new FunctionCallback<List<ParseObject>>() {
+				new FunctionCallback<JSONArray>() {
 					@Override
-					public void done(List<ParseObject> list, ParseException e) {
+					public void done(JSONArray list, ParseException e) {
 						if (e == null) {
-							ListIterator<ParseObject> li = list.listIterator();
-							while (li.hasNext()) {
-								ParseObject parseObject = li.next();
-								ContentValues course = new ContentValues();
-								course.put(DB.UserCourses.ID,
-										parseObject.getString(DB.UserCourses.ID));
-								course.put(DB.UserCourses.NAME,
-										parseObject.getString(DB.UserCourses.NAME));
-								context.getContentResolver().insert(
-										DB.UserCourses.CONTENT_URI, course);
+							for (int index = 0; index < list.length(); index++) {
+								JSONObject object = null;
+								try {
+									object = list.getJSONObject(index);
+									ContentValues course = new ContentValues();
+									course.put(DB.UserCourses.ID,
+											object.getString(DB.UserCourses.ID));
+									course.put(DB.UserCourses.NAME, object
+											.getString(DB.UserCourses.NAME));
+									context.getContentResolver().insert(
+											DB.UserCourses.CONTENT_URI, course);
+								} catch (JSONException e1) {
+									Log.d(DB.UserCourses.TABLE_NAME, "Error: "
+											+ e1.getMessage());
+								}
+
 							}
 							Log.d(DB.UserCourses.TABLE_NAME, "Retrieved "
-									+ list.size() + " items");
+									+ list.length() + " items");
 						} else {
 							Log.d(DB.UserCourses.TABLE_NAME,
 									"Error: " + e.getMessage());

@@ -62,25 +62,16 @@ public class DBHelper extends SQLiteOpenHelper {
 	private static final String CREATE_TABLE_USER_COURSES = "CREATE TABLE "
 			+ DB.UserCourses.TABLE_NAME + " (" + DB.UserCourses._ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.UserCourses.ID
-			+ " TEXT UNIQUE, " + DB.UserCourses.NAME + " TEXT, "
-			+ DB.UserCourses.UPDATED_AT + " TEXT)";
+			+ " TEXT UNIQUE, " + DB.UserCourses.NAME + " TEXT)";
 	// ----------------------------------------------------------------------------------
 	private static final String DELETE_TABLE_USER_COURSES = "DROP TABLE IF EXISTS "
 			+ DB.UserCourses.TABLE_NAME;
 	// ----------------------------------------------------------------------------------
 	private static final String CREATE_TABLE_COURSE_ANNOUNCEMENTS = "CREATE TABLE "
-			+ DB.Announce.TABLE_NAME
-			+ " ("
-			+ DB.Announce._ID
-			+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
-			+ DB.Announce.PARSE_ID
-			+ " TEXT UNIQUE, "
-			+ DB.Announce.COURSE_ID
-			+ " TEXT, "
-			+ DB.Announce.MESSAGE
-			+ " TEXT, "
-			+ DB.Announce.UPDATED_AT
-			+ " TEXT)";
+			+ DB.Announce.TABLE_NAME + " (" + DB.Announce._ID 
+			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Announce.PARSE_ID
+			+ " TEXT UNIQUE, " + DB.Announce.COURSE_ID + " TEXT, "
+			+ DB.Announce.MESSAGE + " TEXT, " + DB.Announce.UPDATED_AT + " TEXT)";
 	// ----------------------------------------------------------------------------------
 	private static final String DELETE_TABLE_COURSE_ANNOUNCEMENTS = "DROP TABLE IF EXISTS "
 			+ DB.Announce.TABLE_NAME;
