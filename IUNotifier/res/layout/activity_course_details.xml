@@ -47,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:onClick="openPushAnnouncement"
-                android:src="@drawable/add"
+                android:src="@drawable/megaphone"
                 tools:ignore="ContentDescription" />
         </TableRow>
     </TableLayout>
