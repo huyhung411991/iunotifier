@@ -9,8 +9,8 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,10 +21,12 @@ import android.widget.SimpleCursorAdapter;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
+import com.parse.ParseUser;
 
 public class CoursesActivity extends ListActivity implements
 		LoaderManager.LoaderCallbacks<Cursor> {
 
+	private ParseUser currentUser = null;
 	private SimpleCursorAdapter mAdapter = null;
 	private String departmentID;
 
@@ -42,11 +44,14 @@ public class CoursesActivity extends ListActivity implements
 	// This is the sorting order
 	private static final String SORTORDER = DB.Courses.NAME + " ASC";
 
+	// =========================================================================================
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_courses);
 
+		currentUser = ParseUser.getCurrentUser();
+		
 		ProgressBar progressBar = (ProgressBar) this
 				.findViewById(R.id.course_progressBar);
 		getListView().setEmptyView(progressBar);
@@ -69,7 +74,7 @@ public class CoursesActivity extends ListActivity implements
 		// Create an empty adapter we will use to display the loaded data.
 		// We pass null for the cursor, then update it in onLoadFinished()
 		mAdapter = new SimpleCursorAdapter(this,
-				android.R.layout.simple_list_item_2, null, fromColumns,
+				R.layout.simple_list_item_2, null, fromColumns,
 				toViews, 0);
 		setListAdapter(mAdapter);
 
@@ -82,40 +87,58 @@ public class CoursesActivity extends ListActivity implements
 	}
 
 	// =========================================================================================
-	/**
-	 * Set up the {@link android.app.ActionBar}.
-	 */
-	private void setupActionBar() {
+		// This override the default animation of the Android Device "Back" Button
+		@Override
+		public void onBackPressed() {
+			if (!isTaskRoot()) {
+				CoursesActivity.this.finish();
+				overridePendingTransition(0, R.anim.slide_out_right);
+			} else {
+				Intent newIntent = new Intent(this, MainMenuActivity.class);
+				CoursesActivity.this.finish();
+				startActivity(newIntent);
+				overridePendingTransition(0, R.anim.slide_out_right);
+			}
+		}
 
-		getActionBar().setDisplayHomeAsUpEnabled(true);
 
-	}
+		// =========================================================================================
+		/**
+		 * Set up the {@link android.app.ActionBar}.
+		 */
+		private void setupActionBar() {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				getActionBar().setDisplayHomeAsUpEnabled(true);
+			}
+		}
 
-	// =========================================================================================
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.courses, menu);
-		return true;
-	}
+		// =========================================================================================
+		@Override
+		public boolean onCreateOptionsMenu(Menu menu) {
+			// Inflate the menu; this adds items to the action bar if it is present.
+			getMenuInflater().inflate(R.menu.events, menu);
 
-	// =========================================================================================
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
+			if (currentUser != null) {
+				MenuItem switchButton = menu.findItem(R.id.action_login);
+				switchButton.setIcon(R.drawable.sign_in);
+			}
 			return true;
 		}
-		return super.onOptionsItemSelected(item);
-	}
+		// =========================================================================================
+		@Override
+		public boolean onOptionsItemSelected(MenuItem item) {
+			switch (item.getItemId()) {
+			case android.R.id.home:
+				onBackPressed();
+				return true;
+			case R.id.action_refresh:
+				DBRetriever.departmentsQuery(this);
+				break;
+			default:
+				break;
+			}
+			return super.onOptionsItemSelected(item);
+		}
 
 	// =========================================================================================
 	@Override

@@ -18,25 +18,46 @@
 <TwoLineListItem xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="68dp"
-    android:mode="oneLine" >
+    android:minHeight="80dp"
+    android:mode="twoLine" >
 
     <TextView
         android:id="@android:id/text1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginTop="12dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/black"
         android:textIsSelectable="false" />
 
-    <!--
-    <TextView
-        android:id="@android:id/text2"
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@android:id/text1"
         android:layout_below="@android:id/text1"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-    -->
+        android:paddingBottom="12dp"
+        android:stretchColumns="1" >
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@android:id/text2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/mediumgray"
+                android:textIsSelectable="false" />
+
+            <TextView
+                android:id="@+id/text3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/mediumgray"
+                android:textIsSelectable="false" />
+        </TableRow>
+    </TableLayout>
 
 </TwoLineListItem>

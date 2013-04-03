@@ -11,7 +11,8 @@ public class DBHelper extends SQLiteOpenHelper {
 	private static final String CREATE_TABLE_NEWS = "CREATE TABLE "
 			+ DB.News.TABLE_NAME + " (" + DB.News._ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.News.TITLE
-			+ " TEXT, " + DB.News.LINK + " TEXT)";
+			+ " TEXT, " + DB.News.LINK + " TEXT, " + DB.News.SOURCE + " TEXT, "
+			+ DB.News.CREATED_AT + " TEXT)";
 	// ----------------------------------------------------------------------------------
 	private static final String DELETE_TABLE_NEWS = "DROP TABLE IF EXISTS "
 			+ DB.News.TABLE_NAME;
@@ -20,7 +21,8 @@ public class DBHelper extends SQLiteOpenHelper {
 			+ DB.Events.TABLE_NAME + " (" + DB.Events._ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Events.TITLE
 			+ " TEXT, " + DB.Events.DESCRIPTION + " TEXT, " + DB.Events.DATE
-			+ " TEXT, " + DB.Events.TIME + " TEXT, " + DB.Events.PLACE + " TEXT)";
+			+ " TEXT, " + DB.Events.TIME + " TEXT, " + DB.Events.PLACE + " TEXT, " + 
+			DB.Events.CREATED_AT + " TEXT)";
 	// ----------------------------------------------------------------------------------
 	private static final String DELETE_TABLE_EVENTS = "DROP TABLE IF EXISTS "
 			+ DB.Events.TABLE_NAME;
