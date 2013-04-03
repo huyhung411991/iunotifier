@@ -19,8 +19,7 @@
         android:id="@+id/course_details_button_tableLayout"
         style="@android:style/Widget.Holo.Light.ActionBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-         >
+        android:layout_height="wrap_content" >
 
         <TableRow
             style="@android:style/Widget.Holo.Light.ActionBar.TabBar"
@@ -31,6 +30,7 @@
                 style="@android:style/Widget.Holo.Light.ActionButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="openAnnouncements"
                 android:src="@drawable/comments"
                 tools:ignore="ContentDescription" />
 
@@ -46,6 +46,7 @@
                 style="@android:style/Widget.Holo.Light.ActionButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="openPushAnnouncement"
                 android:src="@drawable/add"
                 tools:ignore="ContentDescription" />
         </TableRow>

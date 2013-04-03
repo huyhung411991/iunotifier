@@ -31,21 +31,6 @@ public class CourseDetailsActivity extends Activity {
 
 		// Show the Up button in the action bar.
 		setupActionBar();
-		
-		findViewById(R.id.course_details_announcements_button).setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						openAnnouncements(view);
-					}
-				});
-		findViewById(R.id.course_details_pushAnnouncement_button).setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						openPushAnnouncement(view);
-					}
-				});
 	}
 
 	// =========================================================================================

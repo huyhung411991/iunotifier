@@ -21,8 +21,8 @@ public class DBHelper extends SQLiteOpenHelper {
 			+ DB.Events.TABLE_NAME + " (" + DB.Events._ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Events.TITLE
 			+ " TEXT, " + DB.Events.DESCRIPTION + " TEXT, " + DB.Events.DATE
-			+ " TEXT, " + DB.Events.TIME + " TEXT, " + DB.Events.PLACE
-			+ " TEXT, " + DB.Events.CREATED_AT + " TEXT)";
+			+ " TEXT, " + DB.Events.PLACE + " TEXT, " + DB.Events.CREATED_AT
+			+ " TEXT)";
 	// ----------------------------------------------------------------------------------
 	private static final String DELETE_TABLE_EVENTS = "DROP TABLE IF EXISTS "
 			+ DB.Events.TABLE_NAME;
@@ -31,8 +31,7 @@ public class DBHelper extends SQLiteOpenHelper {
 			+ DB.Departments.TABLE_NAME + " (" + DB.Departments._ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Departments.ID
 			+ " TEXT UNIQUE, " + DB.Departments.NAME + " TEXT, "
-			+ DB.Departments.UPDATED_AT + " TEXT, " + DB.Departments.ID_NUMBER
-			+ " TEXT)";
+			+ DB.Departments.UPDATED_AT + " TEXT)";
 	// ----------------------------------------------------------------------------------
 	private static final String DELETE_TABLE_DEPARTMENTS = "DROP TABLE IF EXISTS "
 			+ DB.Departments.TABLE_NAME;

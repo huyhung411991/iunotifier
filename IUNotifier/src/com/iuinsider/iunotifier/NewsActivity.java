@@ -32,7 +32,11 @@ public class NewsActivity extends ListActivity implements
 	private static final String[] PROJECTION = new String[] { DB.News._ID,
 			DB.News.TITLE, DB.News.LINK, DB.News.SOURCE, DB.News.CREATED_AT };
 
+	// This is the select criteria
 	private static final String SELECTION = "";
+
+	// This is the sorting order
+	private static final String SORTORDER = DB.News.CREATED_AT + " DESC";
 
 	// =========================================================================================
 	@Override
@@ -129,7 +133,7 @@ public class NewsActivity extends ListActivity implements
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
 		return new CursorLoader(this, DB.News.CONTENT_URI, PROJECTION,
-				SELECTION, null, null);
+				SELECTION, null, SORTORDER);
 	}
 
 	// =========================================================================================
