@@ -36,7 +36,11 @@ public class EventsActivity extends ListActivity implements
 			DB.Events.TITLE, DB.Events.DESCRIPTION, DB.Events.DATE,
 			DB.Events.PLACE, DB.Events.CREATED_AT };
 
+	// This is the select criteria
 	private static final String SELECTION = "";
+
+	// This is the sorting order
+	private static final String SORTORDER = DB.Events.CREATED_AT + " DESC";
 
 	// =========================================================================================
 	@Override
@@ -212,7 +216,7 @@ public class EventsActivity extends ListActivity implements
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
 		return new CursorLoader(this, DB.Events.CONTENT_URI, PROJECTION,
-				SELECTION, null, null);
+				SELECTION, null, SORTORDER);
 	}
 
 	// =========================================================================================
