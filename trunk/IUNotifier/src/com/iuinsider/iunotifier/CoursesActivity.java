@@ -51,7 +51,7 @@ public class CoursesActivity extends ListActivity implements
 		setContentView(R.layout.activity_courses);
 
 		currentUser = ParseUser.getCurrentUser();
-		
+
 		ProgressBar progressBar = (ProgressBar) this
 				.findViewById(R.id.course_progressBar);
 		getListView().setEmptyView(progressBar);
@@ -73,9 +73,8 @@ public class CoursesActivity extends ListActivity implements
 
 		// Create an empty adapter we will use to display the loaded data.
 		// We pass null for the cursor, then update it in onLoadFinished()
-		mAdapter = new SimpleCursorAdapter(this,
-				R.layout.simple_list_item_2, null, fromColumns,
-				toViews, 0);
+		mAdapter = new SimpleCursorAdapter(this, R.layout.simple_list_item_2,
+				null, fromColumns, toViews, 0);
 		setListAdapter(mAdapter);
 
 		// Prepare the loader. Either re-connect with an existing one,
@@ -87,58 +86,99 @@ public class CoursesActivity extends ListActivity implements
 	}
 
 	// =========================================================================================
-		// This override the default animation of the Android Device "Back" Button
-		@Override
-		public void onBackPressed() {
-			if (!isTaskRoot()) {
-				CoursesActivity.this.finish();
-				overridePendingTransition(0, R.anim.slide_out_right);
-			} else {
-				Intent newIntent = new Intent(this, MainMenuActivity.class);
-				CoursesActivity.this.finish();
-				startActivity(newIntent);
-				overridePendingTransition(0, R.anim.slide_out_right);
-			}
+	// This override the default animation of the Android Device "Back" Button
+	@Override
+	public void onBackPressed() {
+		if (!isTaskRoot()) {
+			Intent in = new Intent();
+			setResult(1, in);
+			CoursesActivity.this.finish();
+			overridePendingTransition(0, R.anim.slide_out_right);
+		} else {
+			Intent newIntent = new Intent(this, MainMenuActivity.class);
+			CoursesActivity.this.finish();
+			startActivity(newIntent);
+			overridePendingTransition(0, R.anim.slide_out_right);
 		}
 
+	}
 
-		// =========================================================================================
-		/**
-		 * Set up the {@link android.app.ActionBar}.
-		 */
-		private void setupActionBar() {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				getActionBar().setDisplayHomeAsUpEnabled(true);
-			}
+	// =========================================================================================
+	/**
+	 * Set up the {@link android.app.ActionBar}.
+	 */
+	private void setupActionBar() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
+	}
 
-		// =========================================================================================
-		@Override
-		public boolean onCreateOptionsMenu(Menu menu) {
-			// Inflate the menu; this adds items to the action bar if it is present.
-			getMenuInflater().inflate(R.menu.events, menu);
+	// =========================================================================================
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.events, menu);
 
-			if (currentUser != null) {
-				MenuItem switchButton = menu.findItem(R.id.action_login);
-				switchButton.setIcon(R.drawable.sign_in);
-			}
+		if (currentUser != null) {
+			MenuItem switchButton = menu.findItem(R.id.action_login);
+			switchButton.setIcon(R.drawable.sign_in);
+		}
+		return true;
+	}
+
+	// =========================================================================================
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			onBackPressed();
 			return true;
-		}
-		// =========================================================================================
-		@Override
-		public boolean onOptionsItemSelected(MenuItem item) {
-			switch (item.getItemId()) {
-			case android.R.id.home:
-				onBackPressed();
-				return true;
-			case R.id.action_refresh:
-				DBRetriever.departmentsQuery(this);
-				break;
-			default:
-				break;
+		case R.id.action_login:
+			// Logout current user before login
+			if (currentUser != null) {
+				intent = new Intent(this, LogoutActivity.class);
+				startActivityForResult(intent, 0);
 			}
-			return super.onOptionsItemSelected(item);
+			// Go to user login page
+			else {
+				intent = new Intent(this, LoginActivity.class);
+				startActivityForResult(intent, 0);
+			}
+			break;
+		case R.id.action_refresh:
+			DBRetriever.departmentsQuery(this);
+			break;
+		default:
+			break;
 		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	// =========================================================================================
+	// Doan code nay dung de check sau khi user login thanh cong thi icon user
+	// se chuyen mau xanh
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == 1) {
+			CoursesActivity.this.invalidateOptionsMenu();
+		}
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		currentUser = ParseUser.getCurrentUser();
+		MenuItem switchButton = menu.findItem(R.id.action_login);
+		if (currentUser != null) {
+			switchButton.setIcon(R.drawable.sign_in);
+		} else {
+			switchButton.setIcon(R.drawable.not_sign_in);
+		}
+		return true;
+	}
 
 	// =========================================================================================
 	@Override
@@ -190,7 +230,7 @@ public class CoursesActivity extends ListActivity implements
 
 		Intent intent = new Intent(this, CourseDetailsActivity.class);
 		intent.putExtra(EXTRA_COURSE, courseID);
-		startActivity(intent);
+		startActivityForResult(intent, 0);
 
 		// New, more advanced and easy to use transition animation
 		overridePendingTransition(R.anim.slide_in_right, 0);
