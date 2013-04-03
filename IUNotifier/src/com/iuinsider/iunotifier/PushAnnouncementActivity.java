@@ -1,7 +1,5 @@
 package com.iuinsider.iunotifier;
 
-import java.util.HashMap;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,9 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.parse.FunctionCallback;
-import com.parse.ParseCloud;
-import com.parse.ParseException;
+import com.iuinsider.iunotifier.providers.DBRetriever;
 import com.parse.ParseUser;
 
 public class PushAnnouncementActivity extends Activity {
@@ -22,12 +18,18 @@ public class PushAnnouncementActivity extends Activity {
 	private EditText announcementContent;
 	private TextView stateMessage;
 	private Button announceButton;
+	private String courseID;
+	
+	private static final String EXTRA_COURSE = ".com.iuinsider.iunotifier.COURSE";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_push_announcement);
+		
+		courseID = getIntent().getStringExtra(EXTRA_COURSE);
+		if (courseID == null)
+			finish();
 
 		announcementContent = (EditText) findViewById(R.id.announcement_content);
 		stateMessage = (TextView) findViewById(R.id.state_message);
@@ -35,28 +37,7 @@ public class PushAnnouncementActivity extends Activity {
 		announceButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				String message = announcementContent.getText().toString();
-				// ParsePush push = new ParsePush();
-				// push.setChannel("CourseAnnouncement");
-				// push.setMessage(message);
-				// push.sendInBackground(new SendCallback() {
-				//
-				// @Override
-				// public void done(ParseException e) {
-				// // TODO Auto-generated method stub
-				// stateMessage.setText("Complete Announcement");
-				// }
-				// });
-				HashMap<String, Object> params = new HashMap<String, Object>();
-				params.put("message", message);
-				ParseCloud.callFunctionInBackground("makeCourseAnnouncement",
-						params, new FunctionCallback<String>() {
-							public void done(String messageReturned,
-									ParseException e) {
-								if (e == null) {
-									stateMessage.setText(messageReturned);
-								}
-							}
-						});
+				DBRetriever.pushAnnouncement(courseID, message, stateMessage);
 			}
 		});
 	}

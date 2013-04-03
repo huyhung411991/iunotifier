@@ -4,6 +4,7 @@ Parse.Cloud.afterSave("News", function(request) {
     var newsID = request.object.get("newsID");
     var newsTitle = request.object.get("newsTitle");
     var newsLink = request.object.get("newsLink");
+
     if (newsID !== undefined && newsTitle !== undefined && newsLink !== undefined
             && newsTitle.length > 0 && newsLink.length > 0) {
         var notificationContent = "Latest news: " + newsTitle;
@@ -32,10 +33,12 @@ Parse.Cloud.afterSave("Events", function(request) {
     var eventDescription = request.object.get("eventDescription");
     var eventDate = request.object.get("eventDate");
     var eventPlace = request.object.get("eventPlace");
+
     if (eventID !== undefined && eventTitle !== undefined && eventDescription !== undefined
             && eventDate !== undefined && eventPlace !== undefined && eventTitle.length > 0
             && eventDescription.length > 0 && eventPlace.length > 0) {
         var notificationContent = "Latest event: " + eventTitle;
+
         Parse.Push.send({
             channels: ["events"],
             data: {
@@ -53,43 +56,30 @@ Parse.Cloud.afterSave("Events", function(request) {
     }
 });
 
-Parse.Cloud.define("makeCourseAnnouncement", function(request, response) {
-    console.log("makeCourseAnnouncement was called");
+Parse.Cloud.define("pushAnnouncement", function(request, response) {
+    console.log("pushAnnouncement was called");
+
+    var courseid = request.params.courseid;
     var message = request.params.message;
+
+    var announcement = new Parse.Object("Announcements");
+    announcement.set("announceMsg", message);
+    announcement.set("courseID", courseid);
+    announcement.save();
+
     Parse.Push.send({
-        channels: ["course"],
+        channels: [courseid],
         data: {
             alert: message
         }
     }, {
         success: function() {
-            // Push was successful
             console.log("Push successful");
+            response.success("Push Announcement successful");
         },
         error: function(error) {
-            // Handle error
             console.log("Push failed: " + error);
-        }
-    });
-    response.success("Complete Announcement");
-});
-
-Parse.Cloud.define("getNewsList", function(request, response) {
-    var query = new Parse.Query("News");
-    query.descending("newsID");
-    query.find({
-        success: function(results) {
-            var newsList = new Array();
-            for (var i = 0; i < results.length; i++) {
-                var news = new Parse.Object();
-                news.add("newsID", resuilt[i].get("newsID"));
-                news.add("newsTitle"), resuilt[i].get("newsTitle");
-                newsList[i] = news;
-            }
-            response.success(newsList);
-        },
-        error: function() {
-            response.error("NewsList not found");
+            response.success("Push Announcement failed");
         }
     });
 });
@@ -99,17 +89,21 @@ Parse.Cloud.define("getUserCourses", function(request, response) {
 
     var parseUser = request.user;
     var username = parseUser.getUsername();
+
     if (username !== undefined && username.length > 0) {
         var userQuery = new Parse.Query("User");
+
         userQuery.equalTo("username", username);
         userQuery.find({
             success: function(results_1) {
                 var courseIDList = results_1[0].get("courses");
                 var coursesQuery = new Parse.Query("Courses");
+
                 coursesQuery.containedIn("courseID", courseIDList);
                 coursesQuery.find({
                     success: function(results_2) {
                         var courseList = new Array();
+
                         for (var i = 0; i < results_2.length; i++) {
                             var courseID = results_2[i].get("courseID");
                             var courseName = results_2[i].get("courseName");

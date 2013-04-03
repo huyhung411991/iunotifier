@@ -231,7 +231,7 @@ public class DepartmentsActivity extends ListActivity implements
 		}
 		
 		// Intent intent = new Intent(this, CoursesActivity.class);
-		// intent.putExtra(EXTRA_COURSE, userID);
+		// intent.putExtra(EXTRA_DEPARTMENT, "USER");
 		// startActivity(intent);
 
 		// Transition animation
