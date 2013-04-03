@@ -33,7 +33,8 @@ public class EventsActivity extends ListActivity implements
 
 	// These are the Contacts rows that we will retrieve
 	private static final String[] PROJECTION = new String[] { DB.Events._ID,
-			DB.Events.TITLE, DB.Events.DESCRIPTION, DB.Events.DATE, DB.Events.PLACE };
+			DB.Events.TITLE, DB.Events.DESCRIPTION, DB.Events.DATE, DB.Events.PLACE,
+			DB.Events.CREATED_AT};
 
 	private static final String SELECTION = "";
 
@@ -53,8 +54,8 @@ public class EventsActivity extends ListActivity implements
 		DBRetriever.allEventsQuery(this, sortCondition);
 
 		// For the cursor adapter, specify which columns go into which views
-		String[] fromColumns = { DB.Events.TITLE };
-		int[] toViews = { android.R.id.text1 }; // The TextView in
+		String[] fromColumns = { DB.Events.TITLE, DB.Events.CREATED_AT };
+		int[] toViews = { android.R.id.text1, android.R.id.text2 }; // The TextView in
 												// simple_list_item_1
 
 		// Create an empty adapter we will use to display the loaded data.
