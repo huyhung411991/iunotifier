@@ -30,7 +30,6 @@ public class DB {
 		public static final String DESCRIPTION = "eventDescription";
 		public static final String TITLE = "eventTitle";
 		public static final String DATE = "eventDate";
-		public static final String TIME = "eventTime";
 		public static final String PLACE = "eventPlace";
 		public static final String CREATED_AT = "createdAt";
 
@@ -50,7 +49,6 @@ public class DB {
 		public static final String ID = "departmentID";
 		public static final String NAME = "departmentName";
 		public static final String UPDATED_AT = "updatedAt";
-		public static final String ID_NUMBER = "departmentIDNumber";
 
 		public static final String AUTHORITY = "com.iuinsider.iunotifier.provider";
 		public static final Uri CONTENT_URI = Uri.parse("content://"

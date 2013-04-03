@@ -26,7 +26,7 @@ public class DBRetriever {
 		if (date == null)
 			return "";
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS",
 				Locale.US);
 		String string = sdf.format(date);
 
@@ -47,7 +47,7 @@ public class DBRetriever {
 		if (TextUtils.isEmpty(string))
 			return null;
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS",
 				Locale.US);
 		Date date = null;
 		try {
@@ -93,7 +93,6 @@ public class DBRetriever {
 		context.getContentResolver().delete(DB.News.CONTENT_URI, null, null);
 
 		ParseQuery query = new ParseQuery(DB.News.TABLE_NAME);
-		query.orderByDescending(DB.News.CREATED_AT);
 
 		query.findInBackground(new FindCallback() {
 			@Override
@@ -147,7 +146,6 @@ public class DBRetriever {
 			}
 		}
 
-		query.orderByAscending(DB.Events.DATE);
 		query.findInBackground(new FindCallback() {
 			@Override
 			public void done(List<ParseObject> list, ParseException e) {
@@ -211,8 +209,6 @@ public class DBRetriever {
 						Date date = parseObject.getUpdatedAt();
 						department.put(DB.Departments.UPDATED_AT,
 								DateToString(date));
-						department.put(DB.Departments.ID_NUMBER,
-								parseObject.getString(DB.Departments.ID_NUMBER));
 						context.getContentResolver().insert(
 								DB.Departments.CONTENT_URI, department);
 					}
