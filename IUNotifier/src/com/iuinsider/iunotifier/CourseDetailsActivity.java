@@ -38,6 +38,8 @@ public class CourseDetailsActivity extends Activity {
 	@Override
 	public void onBackPressed() {
 		if (!isTaskRoot()) {
+			Intent in = new Intent();
+			setResult(1, in);
 			CourseDetailsActivity.this.finish();
 			overridePendingTransition(0, R.anim.slide_out_right);
 		} else {
@@ -74,10 +76,24 @@ public class CourseDetailsActivity extends Activity {
 	// =========================================================================================
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			onBackPressed();
 			return true;
+		case R.id.action_login:
+			// Logout current user before login
+			if (currentUser != null) {
+				intent = new Intent(this, LogoutActivity.class);
+				startActivityForResult(intent, 0);
+			}
+			// Go to user login page
+			else {
+				intent = new Intent(this, LoginActivity.class);
+				startActivityForResult(intent, 0);
+			}
+			break;
 		case R.id.action_refresh:
 			DBRetriever.courseDetailsQuery(this, courseID);
 			break;
@@ -88,11 +104,35 @@ public class CourseDetailsActivity extends Activity {
 	}
 
 	// =========================================================================================
+	// Doan code nay dung de check sau khi user login thanh cong thi icon user
+	// se chuyen mau xanh
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == 1) {
+			CourseDetailsActivity.this.invalidateOptionsMenu();
+		}
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		currentUser = ParseUser.getCurrentUser();
+		MenuItem switchButton = menu.findItem(R.id.action_login);
+		if (currentUser != null) {
+			switchButton.setIcon(R.drawable.sign_in);
+		} else {
+			switchButton.setIcon(R.drawable.not_sign_in);
+		}
+		return true;
+	}
+
+	// =========================================================================================
 	/** Called when the user clicks the Announcements button */
 	public void openAnnouncements(View view) {
 		Intent intent = new Intent(this, AnnouncementsActivity.class);
 		intent.putExtra(EXTRA_COURSE, courseID);
-		startActivity(intent);
+		startActivityForResult(intent, 0);
 
 		// Transition animation
 		overridePendingTransition(R.anim.slide_in_right, 0);
@@ -100,9 +140,15 @@ public class CourseDetailsActivity extends Activity {
 
 	/** Called when the user clicks the Push Announcement button */
 	public void openPushAnnouncement(View view) {
+		if (currentUser == null) {
+			Intent intent = new Intent(this, LoginActivity.class);
+			startActivityForResult(intent, 0);
+		} //else if (currentUser != moderator) {}
+		//else {}
+		
 		Intent intent = new Intent(this, PushAnnouncementActivity.class);
 		intent.putExtra(EXTRA_COURSE, courseID);
-		startActivity(intent);
+		startActivityForResult(intent, 0);
 
 		// Transition animation
 		overridePendingTransition(R.anim.slide_in_right, 0);
