@@ -39,7 +39,7 @@ public class DepartmentsActivity extends ListActivity implements
 			+ " NOTNULL) AND (" + DB.Departments.NAME + " != '' ))";
 
 	// This is the sorting order
-	private static final String SORTORDER = DB.Departments.ID_NUMBER + " ASC";
+	private static final String SORTORDER = DB.Departments.ID + " ASC";
 
 	// =========================================================================================
 	@Override

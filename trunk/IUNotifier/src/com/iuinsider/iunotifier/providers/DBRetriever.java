@@ -14,11 +14,13 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.parse.FindCallback;
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
-////////////////////////////////////////////////////////////////////////////
 public class DBRetriever {
 	private static Context context = null;
 
@@ -59,7 +61,7 @@ public class DBRetriever {
 		return date;
 	}
 
-	// //////////////////////////////////////////////////////////////////////////
+	// --------------------------------------------------------------------------------
 	public static String getLastUpdate(Context c, Uri uri,
 			String projectedColumn, String selectedColumn, String selectedValue) {
 		if (c == null || uri == null || TextUtils.isEmpty(projectedColumn))
@@ -124,7 +126,7 @@ public class DBRetriever {
 		});
 	}
 
-	// //////////////////////////////////////////////////////////////////////////
+	// --------------------------------------------------------------------------------
 	public static void allEventsQuery(Context c, String sortCondition) {
 		context = c;
 
@@ -180,7 +182,7 @@ public class DBRetriever {
 		});
 	}
 
-	// //////////////////////////////////////////////////////////////////////////
+	// --------------------------------------------------------------------------------
 	public static void departmentsQuery(Context c) {
 		context = c;
 
@@ -222,7 +224,7 @@ public class DBRetriever {
 		});
 	}
 
-	// //////////////////////////////////////////////////////////////////////////
+	// --------------------------------------------------------------------------------
 	public static void coursesQuery(Context c, String departmentID) {
 		context = c;
 
@@ -268,7 +270,7 @@ public class DBRetriever {
 		});
 	}
 
-	// //////////////////////////////////////////////////////////////////////////
+	// --------------------------------------------------------------------------------
 	public static void courseDetailsQuery(Context c, String courseID) {
 		if (TextUtils.isEmpty(courseID) || courseID == null)
 			return;
@@ -329,7 +331,7 @@ public class DBRetriever {
 		});
 	}
 
-	// //////////////////////////////////////////////////////////////////////////
+	// --------------------------------------------------------------------------------
 	public static void announcementsQuery(Context c, String courseID) {
 		context = c;
 
@@ -370,5 +372,41 @@ public class DBRetriever {
 				}
 			}
 		});
+	}
+	
+	// --------------------------------------------------------------------------------
+	public static void userCoursesQuery(Context c, ParseUser parseUser) {
+		context = c;
+
+		if (parseUser == null)
+			return;
+		
+		// Clear local database table
+		context.getContentResolver().delete(DB.UserCourses.CONTENT_URI, null, null);
+
+		ParseCloud.callFunctionInBackground("getUserCourses", null,
+				new FunctionCallback<List<ParseObject>>() {
+					@Override
+					public void done(List<ParseObject> list, ParseException e) {
+						if (e == null) {
+							ListIterator<ParseObject> li = list.listIterator();
+							while (li.hasNext()) {
+								ParseObject parseObject = li.next();
+								ContentValues course = new ContentValues();
+								course.put(DB.UserCourses.ID,
+										parseObject.getString(DB.UserCourses.ID));
+								course.put(DB.UserCourses.NAME,
+										parseObject.getString(DB.UserCourses.NAME));
+								context.getContentResolver().insert(
+										DB.UserCourses.CONTENT_URI, course);
+							}
+							Log.d(DB.UserCourses.TABLE_NAME, "Retrieved "
+									+ list.size() + " items");
+						} else {
+							Log.d(DB.UserCourses.TABLE_NAME,
+									"Error: " + e.getMessage());
+						}
+					}
+				});
 	}
 }
