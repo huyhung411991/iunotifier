@@ -14,15 +14,17 @@ import android.view.View;
 public class CourseDetailsActivity extends Activity {
 
 	private ParseUser currentUser = null;
-
 	private String courseID = null;
-
 	private static final String EXTRA_COURSE = ".com.iuinsider.iunotifier.COURSE";
 
+	// =========================================================================================
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_course_details);
+		
+		currentUser = ParseUser.getCurrentUser();
+		checkUser();
 
 		courseID = getIntent().getStringExtra(EXTRA_COURSE);
 		if (courseID == null)
@@ -83,13 +85,10 @@ public class CourseDetailsActivity extends Activity {
 			onBackPressed();
 			return true;
 		case R.id.action_login:
-			// Logout current user before login
-			if (currentUser != null) {
+			if (currentUser != null) { // Logout current user before login
 				intent = new Intent(this, LogoutActivity.class);
 				startActivityForResult(intent, 0);
-			}
-			// Go to user login page
-			else {
+			} else { // Go to user login page
 				intent = new Intent(this, LoginActivity.class);
 				startActivityForResult(intent, 0);
 			}
@@ -124,7 +123,25 @@ public class CourseDetailsActivity extends Activity {
 		} else {
 			switchButton.setIcon(R.drawable.not_sign_in);
 		}
+		checkUser();
 		return true;
+	}
+
+	// =========================================================================================
+	private void checkUser() {
+		if (currentUser == null) {
+			findViewById(R.id.course_details_pushAnnouncement_button)
+					.setVisibility(View.INVISIBLE);
+		} else {
+			String userRole = currentUser.getString("Permission");
+			if (userRole.equals("admin"))
+				findViewById(R.id.course_details_pushAnnouncement_button)
+						.setVisibility(View.VISIBLE);
+			else {
+				findViewById(R.id.course_details_pushAnnouncement_button)
+						.setVisibility(View.INVISIBLE);
+			}
+		}
 	}
 
 	// =========================================================================================
@@ -138,14 +155,9 @@ public class CourseDetailsActivity extends Activity {
 		overridePendingTransition(R.anim.slide_in_right, 0);
 	}
 
+	// =========================================================================================
 	/** Called when the user clicks the Push Announcement button */
 	public void openPushAnnouncement(View view) {
-		if (currentUser == null) {
-			Intent intent = new Intent(this, LoginActivity.class);
-			startActivityForResult(intent, 0);
-		} //else if (currentUser != moderator) {}
-		//else {}
-		
 		Intent intent = new Intent(this, PushAnnouncementActivity.class);
 		intent.putExtra(EXTRA_COURSE, courseID);
 		startActivityForResult(intent, 0);

@@ -45,7 +45,7 @@ public class DBRetriever {
 		if (date == null)
 			return "";
 
-		SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 		String string = sdf2.format(date);
 
 		return string;

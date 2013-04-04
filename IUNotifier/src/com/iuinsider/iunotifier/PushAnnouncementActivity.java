@@ -22,10 +22,12 @@ public class PushAnnouncementActivity extends Activity {
 	
 	private static final String EXTRA_COURSE = ".com.iuinsider.iunotifier.COURSE";
 
+	// =========================================================================================
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_push_announcement);
+		currentUser = ParseUser.getCurrentUser();
 		
 		courseID = getIntent().getStringExtra(EXTRA_COURSE);
 		if (courseID == null)
