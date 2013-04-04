@@ -5,5 +5,6 @@
     <color name="mediumgray">#8F8F8F</color>
     <color name="black">#222222</color>
     <color name="lightblue">#43BAE6</color>
-
+	<color name="white">#FFFFFF</color>
+	<color name="darkblue">#324462</color>
 </resources>

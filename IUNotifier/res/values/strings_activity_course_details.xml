@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="button_announcements">Announcements</string>
     <string name="button_push_announcement">Push Announcement</string>
-    
+    <string name="textView_courseDetails">Course Details</string>
+    <string name="textView_courseSchedule">Course Schedule</string>
+    <string name="textView_courseID">Course ID: </string>
+    <string name="textView_courseCredit">Credits: </string>
+    <string name="textView_courseLecturer">Lecturer: </string>
+    <string name="textView_courseTheory">Theory: </string>
+    <string name="textView_courseLab">Lab: </string>
+    <string name="textView_coursePrerequisite">Prerequisite: </string>
+
 </resources>
