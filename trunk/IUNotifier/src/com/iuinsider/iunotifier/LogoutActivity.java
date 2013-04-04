@@ -1,12 +1,14 @@
 package com.iuinsider.iunotifier;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
-import com.iuinsider.iunotifier.providers.DB;
 import com.parse.ParseUser;
 import com.parse.PushService;
 
@@ -40,18 +42,16 @@ public class LogoutActivity extends Activity {
 	}
 
 	public void courseSubscribe(ParseUser user) {
-		String[] projection = new String[] { DB.UserCourses.ID };
-		Cursor courseCursor = getContentResolver().query(
-				DB.UserCourses.CONTENT_URI, projection, null, null, null);
-
-		while (courseCursor.moveToNext()) {
-			String courseID = courseCursor.getString(0);
-			PushService.unsubscribe(this, courseID);
+		JSONArray courses = user.getJSONArray("courses");
+		try {
+			for (int index = 0; index < courses.length(); index++) {
+				String courseID = courses.getString(index);
+				PushService.unsubscribe(this, courseID);
+			}
+			Log.d("ParsePush", "Unsubscribe to " + courses.length() + " channels");
+		} catch (JSONException e) {
+			Log.d("ParsePush", "Error: " + e.getMessage());
 		}
-		
-		courseCursor.close();
-		getContentResolver().delete(DB.UserCourses.CONTENT_URI, null, null);
-		
 	}
 
 }
