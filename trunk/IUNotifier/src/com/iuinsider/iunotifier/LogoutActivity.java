@@ -1,11 +1,14 @@
 package com.iuinsider.iunotifier;
 
-import com.parse.ParseUser;
-
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.Bundle;
 import android.view.View;
+
+import com.iuinsider.iunotifier.providers.DB;
+import com.parse.ParseUser;
+import com.parse.PushService;
 
 public class LogoutActivity extends Activity {
 
@@ -18,6 +21,8 @@ public class LogoutActivity extends Activity {
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
+						ParseUser user = ParseUser.getCurrentUser();
+						courseSubscribe(user);
 						ParseUser.logOut();
 						Intent in = new Intent();
 				        setResult(1, in);
@@ -34,5 +39,19 @@ public class LogoutActivity extends Activity {
 				});
 	}
 
+	public void courseSubscribe(ParseUser user) {
+		String[] projection = new String[] { DB.UserCourses.ID };
+		Cursor courseCursor = getContentResolver().query(
+				DB.UserCourses.CONTENT_URI, projection, null, null, null);
+
+		while (courseCursor.moveToNext()) {
+			String courseID = courseCursor.getString(0);
+			PushService.unsubscribe(this, courseID);
+		}
+		
+		courseCursor.close();
+		getContentResolver().delete(DB.UserCourses.CONTENT_URI, null, null);
+		
+	}
 
 }
