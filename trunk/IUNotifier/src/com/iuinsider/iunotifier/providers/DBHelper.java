@@ -68,9 +68,10 @@ public class DBHelper extends SQLiteOpenHelper {
 			+ DB.UserCourses.TABLE_NAME;
 	// ----------------------------------------------------------------------------------
 	private static final String CREATE_TABLE_COURSE_ANNOUNCEMENTS = "CREATE TABLE "
-			+ DB.Announce.TABLE_NAME + " (" + DB.Announce._ID 
-			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Announce.COURSE_ID + " TEXT, "
-			+ DB.Announce.MESSAGE + " TEXT, " + DB.Announce.UPDATED_AT + " TEXT)";
+			+ DB.Announce.TABLE_NAME + " (" + DB.Announce._ID
+			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Announce.ID + " TEXT, "
+			+ DB.Announce.COURSE_ID + " TEXT, " + DB.Announce.MESSAGE + " TEXT, "
+			+ DB.Announce.UPDATED_AT + " TEXT)";
 	// ----------------------------------------------------------------------------------
 	private static final String DELETE_TABLE_COURSE_ANNOUNCEMENTS = "DROP TABLE IF EXISTS "
 			+ DB.Announce.TABLE_NAME;

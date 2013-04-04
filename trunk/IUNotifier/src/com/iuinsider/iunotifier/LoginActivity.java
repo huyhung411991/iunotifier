@@ -105,7 +105,7 @@ public class LoginActivity extends Activity {
 		 * focusView = mPasswordView; cancel = true; }
 		 */
 
-		// Check for a valid username address.
+		// Check for a valid user name address.
 		if (TextUtils.isEmpty(mUsername)) {
 			mUsernameView.setError(getString(R.string.login_fieldRequired));
 			focusView = mUsernameView;
