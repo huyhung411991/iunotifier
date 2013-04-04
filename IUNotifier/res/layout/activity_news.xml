@@ -2,10 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin" >
+    android:paddingRight="@dimen/activity_horizontal_margin" >
 
     <ProgressBar
         android:id="@+id/news_progressBar"
@@ -15,10 +13,39 @@
         android:layout_centerInParent="true"
         android:indeterminate="true" />
 
-    <ListView
-        android:id="@android:id/list"
+    <TableLayout
+        android:id="@+id/news_newsSources_tableLayout"
+        style="@android:style/Widget.Holo.Light.ActionBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
+
+        <TableRow tools:ignore="UselessParent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/news_newsSource_Title"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/darkblue" />
+
+            <Spinner
+                android:id="@+id/news_newsSources_spinner"
+                style="@android:style/Widget.Holo.Light.Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp" />
+        </TableRow>
+    </TableLayout>
+
+    <ListView
+        android:layout_marginTop="10dp" 
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/news_newsSources_tableLayout"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/activity_vertical_margin" >
     </ListView>
 
 </RelativeLayout>

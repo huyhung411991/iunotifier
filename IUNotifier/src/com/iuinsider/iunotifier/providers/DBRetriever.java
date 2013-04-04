@@ -92,7 +92,7 @@ public class DBRetriever {
 	}
 
 	// --------------------------------------------------------------------------------
-	public static void allNewsQuery(Context c) {
+	public static void allNewsQuery(Context c, String sortCondition) {
 		context = c;
 
 		// Clear local database table
@@ -100,6 +100,9 @@ public class DBRetriever {
 
 		ParseQuery query = new ParseQuery(DB.News.TABLE_NAME);
 
+		if (!sortCondition.isEmpty()) {
+			query.whereEqualTo(DB.News.SOURCE, sortCondition);
+		}
 		query.findInBackground(new FindCallback() {
 			@Override
 			public void done(List<ParseObject> list, ParseException e) {

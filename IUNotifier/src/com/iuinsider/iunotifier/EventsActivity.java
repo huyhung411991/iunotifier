@@ -13,11 +13,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
-import android.widget.ToggleButton;
+import android.widget.Spinner;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
@@ -29,7 +31,7 @@ public class EventsActivity extends ListActivity implements
 	private ParseUser currentUser = null;
 	private SimpleCursorAdapter mAdapter = null;
 	private Context context;
-	private String sortCondition = "All";
+	private String sortCondition = "Upcoming";
 
 	// These are the Contacts rows that we will retrieve
 	private static final String[] PROJECTION = new String[] { DB.Events._ID,
@@ -71,38 +73,23 @@ public class EventsActivity extends ListActivity implements
 				0);
 		setListAdapter(mAdapter);
 
-		// Check the toogle buttons
-		final ToggleButton tg_all = (ToggleButton) findViewById(R.id.events_allEvents_button);
-		final ToggleButton tg_today = (ToggleButton) findViewById(R.id.events_todayEvents_button);
-		final ToggleButton tg_upcoming = (ToggleButton) findViewById(R.id.events_upcomingEvents_button);
+		// Set up new sources spinner
+		Spinner spinner = (Spinner) findViewById(R.id.events_eventsSort_spinner);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter
+				.createFromResource(this, R.array.events_sort,
+						android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(adapter);
 
-		tg_all.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				sortCondition = (String) tg_all.getText();
-				tg_today.setChecked(false);
-				tg_upcoming.setChecked(false);
-				DBRetriever.allEventsQuery(context, sortCondition);
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id) {
+				sortCondition = (String) parent.getItemAtPosition(pos);
+				DBRetriever.allNewsQuery(context, sortCondition);
 			}
-		});
 
-		tg_today.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				sortCondition = (String) tg_today.getText();
-				tg_all.setChecked(false);
-				tg_upcoming.setChecked(false);
-				DBRetriever.allEventsQuery(context, sortCondition);
-			}
-		});
-
-		tg_upcoming.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				sortCondition = (String) tg_upcoming.getText();
-				tg_today.setChecked(false);
-				tg_all.setChecked(false);
-				DBRetriever.allEventsQuery(context, sortCondition);
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// do nothing
 			}
 		});
 
@@ -122,7 +109,7 @@ public class EventsActivity extends ListActivity implements
 			Intent in = new Intent();
 			setResult(1, in);
 			EventsActivity.this.finish();
-			overridePendingTransition(0, R.anim.slide_out_right);	
+			overridePendingTransition(0, R.anim.slide_out_right);
 		} else {
 			Intent newIntent = new Intent(this, MainMenuActivity.class);
 			EventsActivity.this.finish();
@@ -159,7 +146,7 @@ public class EventsActivity extends ListActivity implements
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
-		
+
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			onBackPressed();
@@ -186,29 +173,29 @@ public class EventsActivity extends ListActivity implements
 	}
 
 	// =========================================================================================
-		// Doan code nay dung de check sau khi user login thanh cong thi icon user
-		// se chuyen mau xanh
-		@Override
-		protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-			super.onActivityResult(requestCode, resultCode, data);
+	// Doan code nay dung de check sau khi user login thanh cong thi icon user
+	// se chuyen mau xanh
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
 
-			if (resultCode == 1) {
-				EventsActivity.this.invalidateOptionsMenu();
-			}
+		if (resultCode == 1) {
+			EventsActivity.this.invalidateOptionsMenu();
 		}
+	}
 
-		@Override
-		public boolean onPrepareOptionsMenu(Menu menu) {
-			currentUser = ParseUser.getCurrentUser();
-			MenuItem switchButton = menu.findItem(R.id.action_login);
-			if (currentUser != null) {
-				switchButton.setIcon(R.drawable.sign_in);
-			} else {
-				switchButton.setIcon(R.drawable.not_sign_in);
-			}
-			return true;
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		currentUser = ParseUser.getCurrentUser();
+		MenuItem switchButton = menu.findItem(R.id.action_login);
+		if (currentUser != null) {
+			switchButton.setIcon(R.drawable.sign_in);
+		} else {
+			switchButton.setIcon(R.drawable.not_sign_in);
 		}
-		
+		return true;
+	}
+
 	// =========================================================================================
 	@Override
 	// Called when a new Loader needs to be created
