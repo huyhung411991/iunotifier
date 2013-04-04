@@ -55,9 +55,7 @@ public class EventsActivity extends ListActivity implements
 		getListView().setEmptyView(progressBar);
 
 		currentUser = ParseUser.getCurrentUser();
-		context = this;
-
-		DBRetriever.allEventsQuery(this, sortCondition);
+		//DBRetriever.allEventsQuery(this, sortCondition);
 
 		// For the cursor adapter, specify which columns go into which views
 		String[] fromColumns = { DB.Events.TITLE, DB.Events.CREATED_AT };
@@ -80,12 +78,13 @@ public class EventsActivity extends ListActivity implements
 						android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
-
+		
+		context = this;
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
 				sortCondition = (String) parent.getItemAtPosition(pos);
-				DBRetriever.allNewsQuery(context, sortCondition);
+				DBRetriever.allEventsQuery(context, sortCondition);
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {

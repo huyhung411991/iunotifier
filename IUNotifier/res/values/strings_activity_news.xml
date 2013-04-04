@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_activity_news">News</string>
+	<string name="news_newsSource_Title">News From:</string>
+    <string-array name="news_sources">
+        <item>HCMIU</item>
+        <item>Edusoft</item>
+        <item>IU Community</item>
+    </string-array>
+</resources>
