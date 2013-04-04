@@ -39,7 +39,7 @@ public class DepartmentsActivity extends ListActivity implements
 			+ " NOTNULL) AND (" + DB.Departments.NAME + " != '' ))";
 
 	// This is the sorting order
-	private static final String SORTORDER = DB.Departments.ID + " ASC";
+	private static final String SORTORDER = DB.Departments.NAME + " DESC";
 
 	// =========================================================================================
 	@Override
@@ -228,13 +228,13 @@ public class DepartmentsActivity extends ListActivity implements
 		if (currentUser == null) {
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivityForResult(intent, 0);
-		}
-		
-		// Intent intent = new Intent(this, CoursesActivity.class);
-		// intent.putExtra(EXTRA_DEPARTMENT, "USER");
-		// startActivity(intent);
+		} else {
+			Intent intent = new Intent(this, CoursesActivity.class);
+			intent.putExtra(EXTRA_DEPARTMENT, "USER");
+			startActivity(intent);
 
-		// Transition animation
-		// overridePendingTransition(R.anim.push_down_in, 0);
+			// Transition animation
+			overridePendingTransition(R.anim.push_down_in, 0);
+		}
 	}
 }

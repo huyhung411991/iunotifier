@@ -52,15 +52,13 @@ public class NewsActivity extends ListActivity implements
 		DBRetriever.allNewsQuery(this);
 
 		// For the cursor adapter, specify which columns go into which views
-		String[] fromColumns = { DB.News.TITLE, DB.News.SOURCE,
-				DB.News.CREATED_AT };
+		String[] fromColumns = { DB.News.TITLE, DB.News.SOURCE,	DB.News.CREATED_AT };
 		int[] toViews = { android.R.id.text1, android.R.id.text2, R.id.text3 };
 
 		// Create an empty adapter we will use to display the loaded data.
 		// We pass null for the cursor, then update it in onLoadFinished()
 		mAdapter = new SimpleCursorAdapter(this,
-				R.layout.custom_simple_list_item_2, null, fromColumns, toViews,
-				0);
+				R.layout.custom_simple_list_item_2, null, fromColumns, toViews,	0);
 		setListAdapter(mAdapter);
 
 		// Prepare the loader. Either re-connect with an existing one,
