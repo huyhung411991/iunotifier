@@ -6,6 +6,7 @@ import android.provider.BaseColumns;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 public class DB {
+	
 	public static abstract class News implements BaseColumns {
 		public static final String TABLE_NAME = "News";
 		public static final String PARSE_ID = "newsID";
@@ -118,6 +119,7 @@ public class DB {
 	// /////////////////////////////////////////////////////////////////////////////////////////////
 	public static abstract class Announce implements BaseColumns {
 		public static final String TABLE_NAME = "Announcements";
+		public static final String ID = "objectId";
 		public static final String COURSE_ID = "courseID";
 		public static final String MESSAGE = "announceMsg";
 		public static final String UPDATED_AT = "updatedAt";
@@ -131,6 +133,15 @@ public class DB {
 				+ "/" + AUTHORITY + "." + TABLE_NAME;
 		public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
 				+ "/" + AUTHORITY + "." + TABLE_NAME;
+	}
+	
+	public static class UserPermission {
+		public static final String USER_COLUMN = "Permission";
+		public static final String USER_ADMIN = "admin";
+		public static final String USER_MODERATOR = "moderator";
+		public static final String USER_STAFF = "staff";
+		public static final String USER_TEACHER = "teacher";
+		public static final String USER_STUDENT = "student";
 	}
 
 	private DB() {

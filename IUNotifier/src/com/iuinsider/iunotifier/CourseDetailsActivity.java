@@ -181,8 +181,8 @@ public class CourseDetailsActivity extends Activity {
 			findViewById(R.id.course_details_seperator).setVisibility(
 					View.INVISIBLE);
 		} else {
-			String userRole = currentUser.getString("Permission");
-			if (userRole.equals("admin")) {
+			String userRole = currentUser.getString(DB.UserPermission.USER_COLUMN);
+			if (userRole.equals(DB.UserPermission.USER_ADMIN)) {
 				findViewById(R.id.course_details_pushAnnouncement_button)
 						.setVisibility(View.VISIBLE);
 				findViewById(R.id.course_details_seperator).setVisibility(

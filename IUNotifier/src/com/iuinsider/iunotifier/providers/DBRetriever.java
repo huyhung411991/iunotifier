@@ -30,33 +30,31 @@ import com.parse.ParseUser;
 public class DBRetriever {
 	private static Context context = null;
 
-	public static String DateToString(Date date) {
+	public static String DateToString(Date date, int format) {
 		if (date == null)
 			return "";
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS",
-				Locale.US);
+		String[] formats = new String[] { 
+				"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+				"yyyy-MM-dd HH:mm:ss.SSS", 
+				"yyyy-MM-dd" };
+
+		SimpleDateFormat sdf = new SimpleDateFormat(formats[format], Locale.US);
 		String string = sdf.format(date);
 
 		return string;
 	}
 
-	public static String DateToString2(Date date) {
-		if (date == null)
-			return "";
-
-		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-		String string = sdf2.format(date);
-
-		return string;
-	}
-
-	public static Date StringToDate(String string) {
+	public static Date StringToDate(String string, int format) {
 		if (TextUtils.isEmpty(string))
 			return null;
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS",
-				Locale.US);
+		String[] formats = new String[] { 
+				"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+				"yyyy-MM-dd HH:mm:ss.SSS", 
+				"yyyy-MM-dd" };
+
+		SimpleDateFormat sdf = new SimpleDateFormat(formats[format], Locale.US);
 		Date date = null;
 		try {
 			date = sdf.parse(string);
@@ -93,7 +91,7 @@ public class DBRetriever {
 		return lastUpdate;
 	}
 
-	// //////////////////////////////////////////////////////////////////////////
+	// --------------------------------------------------------------------------------
 	public static void allNewsQuery(Context c) {
 		context = c;
 
@@ -118,7 +116,7 @@ public class DBRetriever {
 								parseObject.getString(DB.News.SOURCE));
 
 						Date date = parseObject.getCreatedAt();
-						news.put(DB.News.CREATED_AT, DateToString2(date));
+						news.put(DB.News.CREATED_AT, DateToString(date, 2));
 						context.getContentResolver().insert(
 								DB.News.CONTENT_URI, news);
 					}
@@ -170,11 +168,11 @@ public class DBRetriever {
 								parseObject.getString(DB.Events.PLACE));
 
 						Date date = parseObject.getDate(DB.Events.DATE);
-						event.put(DB.Events.DATE, DateToString(date));
+						event.put(DB.Events.DATE, DateToString(date, 1));
 
 						date = parseObject.getCreatedAt();
 						event.put(DB.Events.CREATED_AT, "Created on: "
-								+ DateToString2(date));
+								+ DateToString(date, 2));
 						context.getContentResolver().insert(
 								DB.Events.CONTENT_URI, event);
 					}
@@ -197,7 +195,7 @@ public class DBRetriever {
 				DB.Departments.UPDATED_AT, null, null);
 
 		if (!TextUtils.isEmpty(lastUpdate)) {
-			Date date = StringToDate(lastUpdate);
+			Date date = StringToDate(lastUpdate, 1);
 			if (date != null)
 				query.whereGreaterThan(DB.Departments.UPDATED_AT, date);
 		}
@@ -216,7 +214,7 @@ public class DBRetriever {
 								parseObject.getString(DB.Departments.NAME));
 						Date date = parseObject.getUpdatedAt();
 						department.put(DB.Departments.UPDATED_AT,
-								DateToString(date));
+								DateToString(date, 1));
 						context.getContentResolver().insert(
 								DB.Departments.CONTENT_URI, department);
 					}
@@ -234,6 +232,58 @@ public class DBRetriever {
 	public static void coursesQuery(Context c, String departmentID) {
 		context = c;
 
+		String lastUpdate = getLastUpdate(context, DB.Courses.CONTENT_URI,
+				DB.Courses.UPDATED_AT, DB.Courses.DEPARTMENT_ID, departmentID);
+
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("departmentID", departmentID);
+		params.put("lastUpdate", lastUpdate);
+
+		ParseCloud.callFunctionInBackground("getCourses", params,
+				new FunctionCallback<JSONArray>() {
+					@Override
+					public void done(JSONArray list, ParseException e) {
+						if (e == null) {
+							for (int index = 0; index < list.length(); index++) {
+								JSONObject object = null;
+								try {
+									object = list.getJSONObject(index);
+									ContentValues course = new ContentValues();
+									course.put(DB.Courses.ID,
+											object.getString(DB.Courses.ID));
+									course.put(DB.Courses.NAME,
+											object.getString(DB.Courses.NAME));
+									course.put(
+											DB.Courses.DEPARTMENT_ID,
+											object.getString(DB.Courses.DEPARTMENT_ID));
+									String string = object.getJSONObject(
+											DB.Courses.UPDATED_AT).getString(
+											"iso");
+									Date date = StringToDate(string, 0);
+									course.put(DB.Courses.UPDATED_AT,
+											DateToString(date, 1));
+									context.getContentResolver().insert(
+											DB.Courses.CONTENT_URI, course);
+								} catch (JSONException e1) {
+									Log.d(DB.Courses.TABLE_NAME,
+											"Error: " + e1.getMessage());
+								}
+
+							}
+							Log.d(DB.Courses.TABLE_NAME,
+									"Retrieved " + list.length() + " items");
+						} else {
+							Log.d(DB.Courses.TABLE_NAME,
+									"Error: " + e.getMessage());
+						}
+					}
+				});
+	}
+
+	// --------------------------------------------------------------------------------
+	public static void oldCoursesQuery(Context c, String departmentID) {
+		context = c;
+
 		ParseQuery query = new ParseQuery(DB.Courses.TABLE_NAME);
 		String lastUpdate = getLastUpdate(context, DB.Courses.CONTENT_URI,
 				DB.Courses.UPDATED_AT, DB.Courses.DEPARTMENT_ID, departmentID);
@@ -242,7 +292,7 @@ public class DBRetriever {
 			query.whereEqualTo(DB.Courses.DEPARTMENT_ID, departmentID);
 
 		if (!TextUtils.isEmpty(lastUpdate)) {
-			Date date = StringToDate(lastUpdate);
+			Date date = StringToDate(lastUpdate, 1);
 			if (date != null)
 				query.whereGreaterThan(DB.Courses.UPDATED_AT, date);
 		}
@@ -262,7 +312,7 @@ public class DBRetriever {
 						course.put(DB.Courses.DEPARTMENT_ID,
 								parseObject.getString(DB.Courses.DEPARTMENT_ID));
 						Date date = parseObject.getUpdatedAt();
-						course.put(DB.Courses.UPDATED_AT, DateToString(date));
+						course.put(DB.Courses.UPDATED_AT, DateToString(date, 1));
 						context.getContentResolver().insert(
 								DB.Courses.CONTENT_URI, course);
 					}
@@ -290,7 +340,7 @@ public class DBRetriever {
 
 		query.whereEqualTo(DB.CourseDetails.ID, courseID);
 		if (!TextUtils.isEmpty(lastUpdate)) {
-			Date date = StringToDate(lastUpdate);
+			Date date = StringToDate(lastUpdate, 1);
 			if (date != null)
 				query.whereGreaterThan(DB.CourseDetails.UPDATED_AT, date);
 		}
@@ -322,7 +372,7 @@ public class DBRetriever {
 										.getString(DB.CourseDetails.PREREQUISITE));
 						Date date = parseObject.getUpdatedAt();
 						courseDetails.put(DB.CourseDetails.UPDATED_AT,
-								DateToString(date));
+								DateToString(date, 1));
 						context.getContentResolver().insert(
 								DB.CourseDetails.CONTENT_URI, courseDetails);
 					}
@@ -348,7 +398,7 @@ public class DBRetriever {
 		if (!TextUtils.isEmpty(courseID) && !courseID.equals("ALL"))
 			query.whereEqualTo(DB.Announce.COURSE_ID, courseID);
 		if (!TextUtils.isEmpty(lastUpdate)) {
-			Date date = StringToDate(lastUpdate);
+			Date date = StringToDate(lastUpdate, 1);
 			if (date != null)
 				query.whereGreaterThan(DB.Announce.UPDATED_AT, date);
 		}
@@ -361,12 +411,15 @@ public class DBRetriever {
 					while (li.hasNext()) {
 						ParseObject parseObject = li.next();
 						ContentValues announce = new ContentValues();
+						announce.put(DB.Announce.ID,
+								parseObject.getString(DB.Announce.ID));
 						announce.put(DB.Announce.COURSE_ID,
 								parseObject.getString(DB.Announce.COURSE_ID));
 						announce.put(DB.Announce.MESSAGE,
 								parseObject.getString(DB.Announce.MESSAGE));
 						Date date = parseObject.getUpdatedAt();
-						announce.put(DB.Announce.UPDATED_AT, DateToString(date));
+						announce.put(DB.Announce.UPDATED_AT,
+								DateToString(date, 1));
 						context.getContentResolver().insert(
 								DB.Announce.CONTENT_URI, announce);
 					}
