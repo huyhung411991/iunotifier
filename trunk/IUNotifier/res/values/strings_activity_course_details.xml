@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="title_activity_course_details">Course Details</string>
     <string name="button_announcements">Announcements</string>
     <string name="button_push_announcement">Push Announcement</string>
     <string name="textView_courseDetails">Course Details</string>

@@ -3,6 +3,7 @@ package com.iuinsider.iunotifier;
 import android.annotation.TargetApi;
 import android.app.ListActivity;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -12,9 +13,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
@@ -25,7 +30,8 @@ public class NewsActivity extends ListActivity implements
 
 	private ParseUser currentUser = null;
 	private SimpleCursorAdapter mAdapter = null;
-
+	private Context context;
+	private static String sortCondition = "HCMIU";
 	private static final String EXTRA_LINK = ".com.iuinsider.iunotifier.LINK";
 
 	// These are the Contacts rows that we will retrieve
@@ -49,20 +55,43 @@ public class NewsActivity extends ListActivity implements
 		getListView().setEmptyView(progressBar);
 
 		currentUser = ParseUser.getCurrentUser();
-		DBRetriever.allNewsQuery(this);
+		context = this;
+		DBRetriever.allNewsQuery(context, sortCondition);
 
 		// For the cursor adapter, specify which columns go into which views
-		String[] fromColumns = { DB.News.TITLE, DB.News.SOURCE,	DB.News.CREATED_AT };
+		String[] fromColumns = { DB.News.TITLE, DB.News.SOURCE,
+				DB.News.CREATED_AT };
 		int[] toViews = { android.R.id.text1, android.R.id.text2, R.id.text3 };
 
 		// Create an empty adapter we will use to display the loaded data.
 		// We pass null for the cursor, then update it in onLoadFinished()
 		mAdapter = new SimpleCursorAdapter(this,
-				R.layout.custom_simple_list_item_2, null, fromColumns, toViews,	0);
+				R.layout.custom_simple_list_item_2, null, fromColumns, toViews,
+				0);
 		setListAdapter(mAdapter);
 
-		// Prepare the loader. Either re-connect with an existing one,
-		// or start a new one.
+		// Set up new sources spinner
+		Spinner spinner = (Spinner) findViewById(R.id.news_newsSources_spinner);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+				this, R.array.news_sources,
+				android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(adapter);
+
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id) {
+				sortCondition = (String) parent.getItemAtPosition(pos);
+				DBRetriever.allNewsQuery(context, sortCondition);
+			}
+
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// do nothing
+			}
+		});
+
+		// Prepare the loader. Either re-connect with an existing one, or start
+		// a new one.
 		getLoaderManager().initLoader(0, null, this);
 
 		// Show the Up button in the action bar.
@@ -133,7 +162,7 @@ public class NewsActivity extends ListActivity implements
 			}
 			break;
 		case R.id.action_refresh:
-			DBRetriever.allNewsQuery(this);
+			DBRetriever.allNewsQuery(this, sortCondition);
 			break;
 		default:
 			break;
