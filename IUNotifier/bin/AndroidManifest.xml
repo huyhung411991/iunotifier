@@ -115,7 +115,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iuinsider.iunotifier.EventsActivity" />
         </activity>
-        
+
         <!-- ====================================================================== -->
         <activity
             android:name="com.iuinsider.iunotifier.PushAnnouncementActivity"
@@ -125,7 +125,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iuinsider.iunotifier.MainMenuActivity" />
         </activity>
-        
+
         <!-- ====================================================================== -->
         <activity
             android:name="com.iuinsider.iunotifier.DepartmentsActivity"
@@ -135,7 +135,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iuinsider.iunotifier.MainMenuActivity" />
         </activity>
-        
+
         <!-- ====================================================================== -->
         <activity
             android:name="com.iuinsider.iunotifier.CoursesActivity"
@@ -145,7 +145,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iuinsider.iunotifier.DepartmentActivity" />
         </activity>
-        
+
         <!-- ====================================================================== -->
         <activity
             android:name="com.iuinsider.iunotifier.CourseDetailsActivity"
@@ -155,7 +155,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iuinsider.iunotifier.CoursesActivity" />
         </activity>
-        
+
         <!-- ====================================================================== -->
         <activity
             android:name="com.iuinsider.iunotifier.AnnouncementsActivity"
@@ -165,7 +165,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iuinsider.iunotifier.CourseDetailsActivity" />
         </activity>
-        
+
         <!-- ====================================================================== -->
     </application>
 
