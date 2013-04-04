@@ -1,35 +1,78 @@
 package com.iuinsider.iunotifier;
 
-import com.iuinsider.iunotifier.providers.DBRetriever;
-import com.parse.ParseUser;
-
-import android.os.Build;
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+
+import com.iuinsider.iunotifier.providers.DB;
+import com.iuinsider.iunotifier.providers.DBRetriever;
+import com.parse.ParseUser;
 
 public class CourseDetailsActivity extends Activity {
 
 	private ParseUser currentUser = null;
+
 	private String courseID = null;
+
 	private static final String EXTRA_COURSE = ".com.iuinsider.iunotifier.COURSE";
+
+	// These are the course columns that we will retrieve
+	private static final String[] PROJECTION = new String[] {
+			DB.CourseDetails.ID, DB.CourseDetails.NAME,
+			DB.CourseDetails.LECTURER, DB.CourseDetails.THEORY,
+			DB.CourseDetails.LAB, DB.CourseDetails.CREDIT,
+			DB.CourseDetails.PREREQUISITE };
+
+	// This is the select criteria
+	private static final String SELECTION = "";
 
 	// =========================================================================================
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_course_details);
-		
+
+		// Check current user
 		currentUser = ParseUser.getCurrentUser();
 		checkUser();
+
+		// ListView listView = (ListView)
+		// this.findViewById(R.id.course_details_list);
+		// ProgressBar progressBar = (ProgressBar)
+		// this.findViewById(R.id.course_details_progressBar);
+		// listView.setEmptyView(progressBar);
 
 		courseID = getIntent().getStringExtra(EXTRA_COURSE);
 		if (courseID == null)
 			finish();
 		DBRetriever.courseDetailsQuery(this, courseID);
+
+		Uri courseDetailsUri = Uri.withAppendedPath(
+				DB.CourseDetails.CONTENT_URI, courseID);
+		Cursor courseCursor = getContentResolver().query(courseDetailsUri,
+				PROJECTION, SELECTION, null, null);
+
+		if (courseCursor.getCount() == 0) {
+			// Course not found
+		} else {
+			loadCourseInfo(courseCursor, DB.CourseDetails.NAME, R.id.course_details_courseName_textView);
+			loadCourseInfo(courseCursor, DB.CourseDetails.ID, R.id.course_details_courseID_textView);
+			loadCourseInfo(courseCursor, DB.CourseDetails.LECTURER, R.id.course_details_courseLecturer_textView);
+			loadCourseInfo(courseCursor, DB.CourseDetails.THEORY, R.id.course_details_courseTheory_textView);
+			loadCourseInfo(courseCursor, DB.CourseDetails.LAB, R.id.course_details_courseLab_textView);
+			
+			int columnIndex = courseCursor.getColumnIndex(DB.CourseDetails.CREDIT);
+			long credit = courseCursor.getLong(columnIndex);
+			TextView t = (TextView) findViewById(R.id.course_details_courseCredit_textView);
+			t.setText(String.valueOf(credit));
+		}
 
 		// Show the Up button in the action bar.
 		setupActionBar();
@@ -85,10 +128,13 @@ public class CourseDetailsActivity extends Activity {
 			onBackPressed();
 			return true;
 		case R.id.action_login:
-			if (currentUser != null) { // Logout current user before login
+			// Logout current user before login
+			if (currentUser != null) {
 				intent = new Intent(this, LogoutActivity.class);
 				startActivityForResult(intent, 0);
-			} else { // Go to user login page
+			}
+			// Go to user login page
+			else {
 				intent = new Intent(this, LoginActivity.class);
 				startActivityForResult(intent, 0);
 			}
@@ -128,20 +174,34 @@ public class CourseDetailsActivity extends Activity {
 	}
 
 	// =========================================================================================
-	private void checkUser() {
+	public void checkUser() {
 		if (currentUser == null) {
 			findViewById(R.id.course_details_pushAnnouncement_button)
 					.setVisibility(View.INVISIBLE);
+			findViewById(R.id.course_details_seperator).setVisibility(
+					View.INVISIBLE);
 		} else {
 			String userRole = currentUser.getString("Permission");
-			if (userRole.equals("admin"))
+			if (userRole.equals("admin")) {
 				findViewById(R.id.course_details_pushAnnouncement_button)
 						.setVisibility(View.VISIBLE);
-			else {
+				findViewById(R.id.course_details_seperator).setVisibility(
+						View.VISIBLE);
+			} else {
 				findViewById(R.id.course_details_pushAnnouncement_button)
 						.setVisibility(View.INVISIBLE);
+				findViewById(R.id.course_details_seperator).setVisibility(
+						View.INVISIBLE);
 			}
 		}
+	}
+
+	// =========================================================================================
+	public void loadCourseInfo(Cursor courseCursor, String item, int viewID) {
+		int columnIndex = courseCursor.getColumnIndex(item);
+		String value = courseCursor.getString(columnIndex);
+		TextView t = (TextView) findViewById(viewID);
+		t.setText(value);
 	}
 
 	// =========================================================================================
