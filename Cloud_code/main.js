@@ -59,18 +59,21 @@ Parse.Cloud.afterSave("Events", function(request) {
 Parse.Cloud.define("pushAnnouncement", function(request, response) {
     console.log("pushAnnouncement was called");
 
-    var courseid = request.params.courseid;
+    var courseID = request.params.courseid;
     var message = request.params.message;
 
     var announcement = new Parse.Object("Announcements");
     announcement.set("announceMsg", message);
-    announcement.set("courseID", courseid);
+    announcement.set("courseID", courseID);
     announcement.save();
 
     Parse.Push.send({
-        channels: [courseid],
+        channels: [courseID],
         data: {
-            alert: message
+            alert: message,
+            //action: "com.iuinsider.iunotifier.COURSE_ANNOUNCEMENT",
+            //courseID: courseID, 
+            title: courseID + " Announcement!"
         }
     }, {
         success: function() {
@@ -124,4 +127,35 @@ Parse.Cloud.define("getUserCourses", function(request, response) {
             }
         });
     }
+});
+
+Parse.Cloud.define("getCourses", function(request, response) {
+    console.log("getCourses was called");
+
+    var departmentID = request.params.departmentID;
+    var lastUpdate = request.params.lastUpdate;
+    var query = new Parse.Query("Courses");
+
+    if (departmentID !== undefined && departmentID.length > 0 && departmentID !== "ALL")
+        query.equalTo("departmentID", departmentID);
+    if (lastUpdate !== undefined && lastUpdate.length > 0)
+        query.greaterThan("updatedAt", lastUpdate);
+    query.find({
+        success: function(results) {
+            var courseList = new Array();
+
+            for (var i = 0; i < results.length; i++) {
+                var courseID = results[i].get("courseID");
+                var courseName = results[i].get("courseName");
+                var departmentID = results[i].get("departmentID");
+                var updatedAt = results[i].updatedAt;
+                courseList[i] = {"courseID": courseID, "courseName": courseName, "departmentID": departmentID, "updatedAt": updatedAt}
+            }
+            console.log("Query successful with " + results.length + " items");
+            response.success(courseList);
+        }, error: function() {
+            console.log("Query failed");
+            response.error("Courses lookup failed");
+        }
+    });
 });
