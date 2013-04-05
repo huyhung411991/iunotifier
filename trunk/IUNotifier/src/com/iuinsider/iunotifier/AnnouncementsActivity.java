@@ -60,7 +60,7 @@ public class AnnouncementsActivity extends ListActivity implements
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 		if (activeNetwork != null && activeNetwork.isConnected()) {
-			DBRetriever.announcementsQuery(this, courseID);
+			DBRetriever.announcementsQuery(this, courseID, false);
 			Log.d("Network", "Network available");
 		} else {
 			Log.d("Network", "Network unavailable");
@@ -147,7 +147,7 @@ public class AnnouncementsActivity extends ListActivity implements
 			}
 			break;
 		case R.id.action_refresh:
-			DBRetriever.announcementsQuery(this, courseID);
+			DBRetriever.announcementsQuery(this, courseID, false);
 			break;
 		default:
 			break;

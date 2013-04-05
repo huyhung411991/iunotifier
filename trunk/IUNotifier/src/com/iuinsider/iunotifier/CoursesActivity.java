@@ -67,7 +67,7 @@ public class CoursesActivity extends ListActivity implements
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 		if (activeNetwork != null && activeNetwork.isConnected()) {
 			if (departmentID == null || !departmentID.equals("USER"))
-				DBRetriever.coursesQuery(this, departmentID);
+				DBRetriever.coursesQuery(this, departmentID, false);
 			Log.d("Network", "Network available");
 		} else {
 			Log.d("Network", "Network unavailable");
@@ -162,7 +162,7 @@ public class CoursesActivity extends ListActivity implements
 			}
 			break;
 		case R.id.action_refresh:
-			DBRetriever.departmentsQuery(this);
+			DBRetriever.departmentsQuery(this, false);
 			break;
 		default:
 			break;

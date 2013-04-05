@@ -56,7 +56,7 @@ public class CourseDetailsActivity extends Activity {
 		protected Void doInBackground(String... params) {
 			Context context = CourseDetailsActivity.this;
 			String courseID = params[0];
-			DBRetriever.courseDetailsQuery(context, courseID);
+			DBRetriever.courseDetailsQuery(context, courseID, false);
 
 			Uri courseDetailsUri = Uri.withAppendedPath(
 					DB.CourseDetails.CONTENT_URI, courseID);
@@ -86,12 +86,9 @@ public class CourseDetailsActivity extends Activity {
 						R.id.course_details_courseTheory_textView);
 				loadCourseInfo(courseCursor, DB.CourseDetails.LAB,
 						R.id.course_details_courseLab_textView);
-
-				int columnIndex = courseCursor
-						.getColumnIndex(DB.CourseDetails.CREDIT);
-				long credit = courseCursor.getLong(columnIndex);
-				TextView t = (TextView) findViewById(R.id.course_details_courseCredit_textView);
-				t.setText(String.valueOf(credit));
+				loadCourseInfo(courseCursor, DB.CourseDetails.CREDIT,
+						R.id.course_details_courseCredit_textView);
+				
 				CourseDetailsActivity.this.progressDialog.dismiss();
 			}
 		}
@@ -179,7 +176,7 @@ public class CourseDetailsActivity extends Activity {
 			}
 			break;
 		case R.id.action_refresh:
-			DBRetriever.courseDetailsQuery(this, courseID);
+			DBRetriever.courseDetailsQuery(this, courseID, false);
 			break;
 		default:
 			break;
@@ -238,10 +235,16 @@ public class CourseDetailsActivity extends Activity {
 
 	// =========================================================================================
 	public void loadCourseInfo(Cursor courseCursor, String item, int viewID) {
+		TextView textView = (TextView) findViewById(viewID);
 		int columnIndex = courseCursor.getColumnIndex(item);
-		String value = courseCursor.getString(columnIndex);
-		TextView t = (TextView) findViewById(viewID);
-		t.setText(value);
+		
+		if (item.equals(DB.CourseDetails.CREDIT)) {
+			long credit = courseCursor.getLong(columnIndex);
+			textView.setText(String.valueOf(credit));
+		} else {
+			String value = courseCursor.getString(columnIndex);
+			textView.setText(value);
+		}
 	}
 
 	// =========================================================================================

@@ -183,17 +183,24 @@ public class DBRetriever {
 	}
 
 	// --------------------------------------------------------------------------------
-	public static void departmentsQuery(Context c) {
+	public static void departmentsQuery(Context c, boolean reloadAll) {
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Departments.TABLE_NAME);
-		String lastUpdate = getLastUpdate(context, DB.Departments.CONTENT_URI,
-				DB.Departments.UPDATED_AT, null, null);
 
-		if (!TextUtils.isEmpty(lastUpdate)) {
-			Date date = StringToDate(lastUpdate, 1);
-			if (date != null)
-				query.whereGreaterThan(DB.Departments.UPDATED_AT, date);
+		if (reloadAll) {
+			// Clear local database table
+			context.getContentResolver().delete(DB.Departments.CONTENT_URI,
+					null, null);
+		} else {
+			String lastUpdate = getLastUpdate(context,
+					DB.Departments.CONTENT_URI, DB.Departments.UPDATED_AT,
+					null, null);
+			if (!TextUtils.isEmpty(lastUpdate)) {
+				Date date = StringToDate(lastUpdate, 1);
+				if (date != null)
+					query.whereGreaterThan(DB.Departments.UPDATED_AT, date);
+			}
 		}
 
 		query.findInBackground(new FindCallback() {
@@ -225,15 +232,23 @@ public class DBRetriever {
 	}
 
 	// --------------------------------------------------------------------------------
-	public static void coursesQuery(Context c, String departmentID) {
+	public static void coursesQuery(Context c, String departmentID,
+			boolean reloadAll) {
 		context = c;
-
-		String lastUpdate = getLastUpdate(context, DB.Courses.CONTENT_URI,
-				DB.Courses.UPDATED_AT, DB.Courses.DEPARTMENT_ID, departmentID);
 
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put("departmentID", departmentID);
-		params.put("lastUpdate", lastUpdate);
+
+		if (reloadAll) {
+			// Clear local database table
+			context.getContentResolver().delete(DB.Courses.CONTENT_URI, null,
+					null);
+		} else {
+			String lastUpdate = getLastUpdate(context, DB.Courses.CONTENT_URI,
+					DB.Courses.UPDATED_AT, DB.Courses.DEPARTMENT_ID,
+					departmentID);
+			params.put("lastUpdate", lastUpdate);
+		}
 
 		ParseCloud.callFunctionInBackground("getCourses", params,
 				new FunctionCallback<JSONArray>() {
@@ -277,53 +292,8 @@ public class DBRetriever {
 	}
 
 	// --------------------------------------------------------------------------------
-	public static void oldCoursesQuery(Context c, String departmentID) {
-		context = c;
-
-		ParseQuery query = new ParseQuery(DB.Courses.TABLE_NAME);
-		String lastUpdate = getLastUpdate(context, DB.Courses.CONTENT_URI,
-				DB.Courses.UPDATED_AT, DB.Courses.DEPARTMENT_ID, departmentID);
-
-		if (!TextUtils.isEmpty(departmentID) && !departmentID.equals("ALL"))
-			query.whereEqualTo(DB.Courses.DEPARTMENT_ID, departmentID);
-
-		if (!TextUtils.isEmpty(lastUpdate)) {
-			Date date = StringToDate(lastUpdate, 1);
-			if (date != null)
-				query.whereGreaterThan(DB.Courses.UPDATED_AT, date);
-		}
-
-		query.findInBackground(new FindCallback() {
-			@Override
-			public void done(List<ParseObject> list, ParseException e) {
-				if (e == null) {
-					ListIterator<ParseObject> li = list.listIterator();
-					while (li.hasNext()) {
-						ParseObject parseObject = li.next();
-						ContentValues course = new ContentValues();
-						course.put(DB.Courses.ID,
-								parseObject.getString(DB.Courses.ID));
-						course.put(DB.Courses.NAME,
-								parseObject.getString(DB.Courses.NAME));
-						course.put(DB.Courses.DEPARTMENT_ID,
-								parseObject.getString(DB.Courses.DEPARTMENT_ID));
-						Date date = parseObject.getUpdatedAt();
-						course.put(DB.Courses.UPDATED_AT, DateToString(date, 1));
-						context.getContentResolver().insert(
-								DB.Courses.CONTENT_URI, course);
-					}
-
-					Log.d(DB.Courses.TABLE_NAME, "Retrieved " + list.size()
-							+ " items");
-				} else {
-					Log.d(DB.Courses.TABLE_NAME, "Error: " + e.getMessage());
-				}
-			}
-		});
-	}
-
-	// --------------------------------------------------------------------------------
-	public static void courseDetailsQuery(Context c, String courseID) {
+	public static void courseDetailsQuery(Context c, String courseID,
+			boolean reloadAll) {
 		if (TextUtils.isEmpty(courseID) || courseID == null)
 			return;
 
@@ -331,15 +301,22 @@ public class DBRetriever {
 
 		// Query on Courses table, not CourseDetails
 		ParseQuery query = new ParseQuery(DB.Courses.TABLE_NAME);
-		String lastUpdate = getLastUpdate(context,
-				DB.CourseDetails.CONTENT_URI, DB.CourseDetails.UPDATED_AT,
-				DB.CourseDetails.ID, courseID);
 
 		query.whereEqualTo(DB.CourseDetails.ID, courseID);
-		if (!TextUtils.isEmpty(lastUpdate)) {
-			Date date = StringToDate(lastUpdate, 1);
-			if (date != null)
-				query.whereGreaterThan(DB.CourseDetails.UPDATED_AT, date);
+
+		if (reloadAll) {
+			// Clear local database course row
+			Uri uri = Uri.withAppendedPath(DB.Courses.CONTENT_URI, courseID);
+			context.getContentResolver().delete(uri, null, null);
+		} else {
+			String lastUpdate = getLastUpdate(context,
+					DB.CourseDetails.CONTENT_URI, DB.CourseDetails.UPDATED_AT,
+					DB.CourseDetails.ID, courseID);
+			if (!TextUtils.isEmpty(lastUpdate)) {
+				Date date = StringToDate(lastUpdate, 1);
+				if (date != null)
+					query.whereGreaterThan(DB.CourseDetails.UPDATED_AT, date);
+			}
 		}
 
 		try {
@@ -377,19 +354,27 @@ public class DBRetriever {
 	}
 
 	// --------------------------------------------------------------------------------
-	public static void announcementsQuery(Context c, String courseID) {
+	public static void announcementsQuery(Context c, String courseID,
+			boolean reloadAll) {
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Announce.TABLE_NAME);
-		String lastUpdate = getLastUpdate(context, DB.Announce.CONTENT_URI,
-				DB.Announce.UPDATED_AT, DB.Announce.COURSE_ID, courseID);
 
 		if (!TextUtils.isEmpty(courseID) && !courseID.equals("ALL"))
 			query.whereEqualTo(DB.Announce.COURSE_ID, courseID);
-		if (!TextUtils.isEmpty(lastUpdate)) {
-			Date date = StringToDate(lastUpdate, 1);
-			if (date != null)
-				query.whereGreaterThan(DB.Announce.UPDATED_AT, date);
+
+		if (reloadAll) {
+			// Clear local database table
+			context.getContentResolver().delete(DB.Announce.CONTENT_URI, null,
+					null);
+		} else {
+			String lastUpdate = getLastUpdate(context, DB.Announce.CONTENT_URI,
+					DB.Announce.UPDATED_AT, DB.Announce.COURSE_ID, courseID);
+			if (!TextUtils.isEmpty(lastUpdate)) {
+				Date date = StringToDate(lastUpdate, 1);
+				if (date != null)
+					query.whereGreaterThan(DB.Announce.UPDATED_AT, date);
+			}
 		}
 
 		query.findInBackground(new FindCallback() {

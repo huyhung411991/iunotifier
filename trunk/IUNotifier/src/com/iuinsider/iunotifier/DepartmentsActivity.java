@@ -55,7 +55,7 @@ public class DepartmentsActivity extends ListActivity implements
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 		if (activeNetwork != null && activeNetwork.isConnected()) {
-			DBRetriever.departmentsQuery(this);
+			DBRetriever.departmentsQuery(this, false);
 			Log.d("Network", "Network available");
 		} else {
 			Log.d("Network", "Network unavailable");
@@ -142,7 +142,7 @@ public class DepartmentsActivity extends ListActivity implements
 			}
 			break;
 		case R.id.action_refresh:
-			DBRetriever.departmentsQuery(this);
+			DBRetriever.departmentsQuery(this, false);
 			break;
 		default:
 			break;
