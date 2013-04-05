@@ -86,8 +86,7 @@ public class EventDetailsActivity extends Activity {
 	// This override the default animation of the Android Device "Back" Button
 	@Override
 	public void onBackPressed() {
-		EventDetailsActivity.this.finish();
-		overridePendingTransition(0, R.anim.slide_out_right);
+		super.onBackPressed();
 	}
 
 	// =========================================================================================

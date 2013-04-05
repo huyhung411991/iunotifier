@@ -3,9 +3,11 @@
 
     <string name="title_activity_events">Events</string>
     <string name="events_eventSort_title">Sort By: </string>
+    
     <string-array name="events_sort">
         <item>Upcoming</item>
         <item>Today</item>
         <item>All</item>
     </string-array>
+    
 </resources>

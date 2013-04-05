@@ -11,10 +11,11 @@
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="@string/action_refresh"/>
-	 <item
+    <item
         android:id="@+id/action_login"
         android:icon="@drawable/not_sign_in"
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="@string/action_login"/>
+
 </menu>

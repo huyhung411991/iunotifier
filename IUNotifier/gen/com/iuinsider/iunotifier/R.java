@@ -27,13 +27,14 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
-        public static final int black=0x7f060002;
-        public static final int darkblue=0x7f060005;
-        public static final int lightblue=0x7f060003;
-        public static final int lightgray=0x7f060000;
-        public static final int mediumblue=0x7f060006;
-        public static final int mediumgray=0x7f060001;
-        public static final int white=0x7f060004;
+        public static final int black=0x7f050007;
+        public static final int darkblue=0x7f050005;
+        public static final int lightblue=0x7f050003;
+        public static final int lightgray=0x7f050001;
+        public static final int mediumblue=0x7f050004;
+        public static final int mediumgray=0x7f050002;
+        public static final int superlightgray=0x7f050000;
+        public static final int white=0x7f050006;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -42,8 +43,8 @@ public final class R {
          screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
     
          */
-        public static final int activity_horizontal_margin=0x7f050000;
-        public static final int activity_vertical_margin=0x7f050001;
+        public static final int activity_horizontal_margin=0x7f060000;
+        public static final int activity_vertical_margin=0x7f060001;
     }
     public static final class drawable {
         public static final int add=0x7f020000;
@@ -65,23 +66,24 @@ public final class R {
         public static final int TheSplashLayout=0x7f0b0031;
         public static final int action_login=0x7f0b0038;
         public static final int action_refresh=0x7f0b0037;
+        public static final int action_reset=0x7f0b0039;
         public static final int action_settings=0x7f0b0036;
         public static final int announce_button=0x7f0b002f;
         public static final int announcement_content=0x7f0b002e;
         public static final int announcements_progressBar=0x7f0b0000;
-        public static final int course_details_announcements_button=0x7f0b0003;
-        public static final int course_details_button_tableLayout=0x7f0b0002;
+        public static final int course_details_announcements_button=0x7f0b0004;
+        public static final int course_details_button_tableLayout=0x7f0b0003;
         public static final int course_details_courseCredit_textView=0x7f0b000a;
         public static final int course_details_courseDescription_tableLayout=0x7f0b0007;
         public static final int course_details_courseID_textView=0x7f0b0008;
         public static final int course_details_courseLab_textView=0x7f0b000c;
         public static final int course_details_courseLecturer_textView=0x7f0b0009;
-        public static final int course_details_courseName_textView=0x7f0b0006;
+        public static final int course_details_courseName_textView=0x7f0b0002;
         public static final int course_details_coursePrerequisite_textView=0x7f0b000d;
         public static final int course_details_courseTheory_textView=0x7f0b000b;
         public static final int course_details_progressBar=0x7f0b0001;
-        public static final int course_details_pushAnnouncement_button=0x7f0b0005;
-        public static final int course_details_seperator=0x7f0b0004;
+        public static final int course_details_pushAnnouncement_button=0x7f0b0006;
+        public static final int course_details_seperator=0x7f0b0005;
         public static final int course_progressBar=0x7f0b000e;
         public static final int department_myCourse_textView=0x7f0b0010;
         public static final int department_progressBar=0x7f0b000f;
@@ -149,57 +151,58 @@ public final class R {
         public static final int web_view=0x7f0a0007;
     }
     public static final class string {
-        public static final int action_login=0x7f070006;
-        public static final int action_refresh=0x7f070005;
+        public static final int action_login=0x7f070007;
+        public static final int action_refresh=0x7f070006;
+        public static final int action_reset=0x7f070005;
         /**  String cho actionBar 
          */
         public static final int action_settings=0x7f070004;
         public static final int app_name=0x7f070000;
-        public static final int button_announce=0x7f070031;
-        public static final int button_announcements=0x7f07000a;
-        public static final int button_push_announcement=0x7f07000b;
-        public static final int event_details_addToCalendar=0x7f07001c;
-        public static final int event_details_cancel=0x7f07001b;
-        public static final int event_details_date=0x7f070017;
-        public static final int event_details_description=0x7f07001a;
-        public static final int event_details_place=0x7f070019;
-        public static final int event_details_time=0x7f070018;
-        public static final int events_eventSort_title=0x7f07001e;
-        public static final int login_cancel=0x7f070023;
-        public static final int login_fieldRequired=0x7f070029;
-        public static final int login_forgotPassword=0x7f070024;
-        public static final int login_incorrectPassword=0x7f070028;
-        public static final int login_invalidPassword=0x7f070027;
-        public static final int login_invalidUsername=0x7f070026;
-        public static final int login_password=0x7f070021;
-        public static final int login_progressSigningIn=0x7f070025;
-        public static final int login_signIn=0x7f070022;
-        public static final int login_username=0x7f070020;
-        public static final int logout_message=0x7f07002b;
-        public static final int logout_no=0x7f07002d;
-        public static final int logout_yes=0x7f07002c;
-        public static final int mycourse=0x7f070015;
-        public static final int news_newsSource_Title=0x7f07002f;
-        public static final int textView_courseCredit=0x7f07000f;
-        public static final int textView_courseDetails=0x7f07000c;
-        public static final int textView_courseID=0x7f07000e;
-        public static final int textView_courseLab=0x7f070012;
-        public static final int textView_courseLecturer=0x7f070010;
-        public static final int textView_coursePrerequisite=0x7f070013;
-        public static final int textView_courseSchedule=0x7f07000d;
-        public static final int textView_courseTheory=0x7f070011;
-        public static final int textview_my_courses=0x7f070008;
+        public static final int button_announce=0x7f070032;
+        public static final int button_announcements=0x7f07000b;
+        public static final int button_push_announcement=0x7f07000c;
+        public static final int event_details_addToCalendar=0x7f07001d;
+        public static final int event_details_cancel=0x7f07001c;
+        public static final int event_details_date=0x7f070018;
+        public static final int event_details_description=0x7f07001b;
+        public static final int event_details_place=0x7f07001a;
+        public static final int event_details_time=0x7f070019;
+        public static final int events_eventSort_title=0x7f07001f;
+        public static final int login_cancel=0x7f070024;
+        public static final int login_fieldRequired=0x7f07002a;
+        public static final int login_forgotPassword=0x7f070025;
+        public static final int login_incorrectPassword=0x7f070029;
+        public static final int login_invalidPassword=0x7f070028;
+        public static final int login_invalidUsername=0x7f070027;
+        public static final int login_password=0x7f070022;
+        public static final int login_progressSigningIn=0x7f070026;
+        public static final int login_signIn=0x7f070023;
+        public static final int login_username=0x7f070021;
+        public static final int logout_message=0x7f07002c;
+        public static final int logout_no=0x7f07002e;
+        public static final int logout_yes=0x7f07002d;
+        public static final int mycourse=0x7f070016;
+        public static final int news_newsSource_Title=0x7f070030;
+        public static final int textView_courseCredit=0x7f070010;
+        public static final int textView_courseDetails=0x7f07000d;
+        public static final int textView_courseID=0x7f07000f;
+        public static final int textView_courseLab=0x7f070013;
+        public static final int textView_courseLecturer=0x7f070011;
+        public static final int textView_coursePrerequisite=0x7f070014;
+        public static final int textView_courseSchedule=0x7f07000e;
+        public static final int textView_courseTheory=0x7f070012;
+        public static final int textview_my_courses=0x7f070009;
         public static final int title_activity_announcements=0x7f070003;
-        public static final int title_activity_course_details=0x7f070009;
-        public static final int title_activity_courses=0x7f070007;
-        public static final int title_activity_department=0x7f070014;
-        public static final int title_activity_event_details=0x7f070016;
-        public static final int title_activity_events=0x7f07001d;
-        public static final int title_activity_login=0x7f07001f;
-        public static final int title_activity_logout=0x7f07002a;
+        public static final int title_activity_course_details=0x7f07000a;
+        public static final int title_activity_courses=0x7f070008;
+        public static final int title_activity_department=0x7f070015;
+        public static final int title_activity_event_details=0x7f070017;
+        public static final int title_activity_events=0x7f07001e;
+        public static final int title_activity_login=0x7f070020;
+        public static final int title_activity_logout=0x7f07002b;
         public static final int title_activity_main_menu=0x7f070001;
-        public static final int title_activity_news=0x7f07002e;
-        public static final int title_activity_push_announcement=0x7f070030;
+        public static final int title_activity_news=0x7f07002f;
+        public static final int title_activity_push_announcement=0x7f070031;
         public static final int title_activity_web_view=0x7f070002;
     }
     public static final class style {
