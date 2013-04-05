@@ -29,15 +29,14 @@ import com.parse.ParseUser;
 
 public class DBRetriever {
 	private static Context context = null;
+	private static String[] formats = new String[] {
+			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", 
+			"yyyy-MM-dd HH:mm:ss.SSS",
+			"yyyy-MM-dd" };
 
 	public static String DateToString(Date date, int format) {
-		if (date == null)
+		if (date == null || format > formats.length || format < 0)
 			return "";
-
-		String[] formats = new String[] { 
-				"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-				"yyyy-MM-dd HH:mm:ss.SSS", 
-				"yyyy-MM-dd" };
 
 		SimpleDateFormat sdf = new SimpleDateFormat(formats[format], Locale.US);
 		String string = sdf.format(date);
@@ -46,13 +45,8 @@ public class DBRetriever {
 	}
 
 	public static Date StringToDate(String string, int format) {
-		if (TextUtils.isEmpty(string))
+		if (TextUtils.isEmpty(string) || format > formats.length || format < 0)
 			return null;
-
-		String[] formats = new String[] { 
-				"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-				"yyyy-MM-dd HH:mm:ss.SSS", 
-				"yyyy-MM-dd" };
 
 		SimpleDateFormat sdf = new SimpleDateFormat(formats[format], Locale.US);
 		Date date = null;
@@ -336,7 +330,8 @@ public class DBRetriever {
 
 		context = c;
 
-		ParseQuery query = new ParseQuery(DB.CourseDetails.TABLE_NAME);
+		// Query on Courses table, not CourseDetails
+		ParseQuery query = new ParseQuery(DB.Courses.TABLE_NAME);
 		String lastUpdate = getLastUpdate(context,
 				DB.CourseDetails.CONTENT_URI, DB.CourseDetails.UPDATED_AT,
 				DB.CourseDetails.ID, courseID);
