@@ -1,9 +1,12 @@
 package com.iuinsider.iunotifier;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,8 +21,8 @@ import com.parse.ParseUser;
 public class CourseDetailsActivity extends Activity {
 
 	private ParseUser currentUser = null;
-
 	private String courseID = null;
+	ProgressDialog progressDialog = null;
 
 	private static final String EXTRA_COURSE = ".com.iuinsider.iunotifier.COURSE";
 
@@ -34,6 +37,67 @@ public class CourseDetailsActivity extends Activity {
 	private static final String SELECTION = "";
 
 	// =========================================================================================
+	private class RemoteDataTask extends AsyncTask<String, Void, Void> {
+		protected Cursor courseCursor = null;
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			CourseDetailsActivity.this.progressDialog = ProgressDialog.show(
+					CourseDetailsActivity.this, "Course Details",
+					"Loading course details", true);
+		}
+
+		/**
+		 * The system calls this to perform work in a worker thread and delivers
+		 * it the parameters given to AsyncTask.execute()
+		 */
+		@Override
+		protected Void doInBackground(String... params) {
+			Context context = CourseDetailsActivity.this;
+			String courseID = params[0];
+			DBRetriever.courseDetailsQuery(context, courseID);
+
+			Uri courseDetailsUri = Uri.withAppendedPath(
+					DB.CourseDetails.CONTENT_URI, courseID);
+			courseCursor = getContentResolver().query(courseDetailsUri,
+					PROJECTION, SELECTION, null, null);
+			
+			return null;
+		}
+
+		/**
+		 * The system calls this to perform work in the UI thread and delivers
+		 * the result from doInBackground()
+		 */
+		@Override
+		protected void onPostExecute(Void result) {
+			if (courseCursor.getCount() == 0) {
+				// Course not found
+			} else {
+				courseCursor.moveToFirst();
+				loadCourseInfo(courseCursor, DB.CourseDetails.NAME,
+						R.id.course_details_courseName_textView);
+				loadCourseInfo(courseCursor, DB.CourseDetails.ID,
+						R.id.course_details_courseID_textView);
+				loadCourseInfo(courseCursor, DB.CourseDetails.LECTURER,
+						R.id.course_details_courseLecturer_textView);
+				loadCourseInfo(courseCursor, DB.CourseDetails.THEORY,
+						R.id.course_details_courseTheory_textView);
+				loadCourseInfo(courseCursor, DB.CourseDetails.LAB,
+						R.id.course_details_courseLab_textView);
+
+				int columnIndex = courseCursor
+						.getColumnIndex(DB.CourseDetails.CREDIT);
+				long credit = courseCursor.getLong(columnIndex);
+				TextView t = (TextView) findViewById(R.id.course_details_courseCredit_textView);
+				t.setText(String.valueOf(credit));
+				CourseDetailsActivity.this.progressDialog.dismiss();
+			}
+		}
+	}
+
+	// =========================================================================================
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,36 +107,11 @@ public class CourseDetailsActivity extends Activity {
 		currentUser = ParseUser.getCurrentUser();
 		checkUser();
 
-		// ListView listView = (ListView)
-		// this.findViewById(R.id.course_details_list);
-		// ProgressBar progressBar = (ProgressBar)
-		// this.findViewById(R.id.course_details_progressBar);
-		// listView.setEmptyView(progressBar);
-
 		courseID = getIntent().getStringExtra(EXTRA_COURSE);
 		if (courseID == null)
 			finish();
-		DBRetriever.courseDetailsQuery(this, courseID);
 
-		Uri courseDetailsUri = Uri.withAppendedPath(
-				DB.CourseDetails.CONTENT_URI, courseID);
-		Cursor courseCursor = getContentResolver().query(courseDetailsUri,
-				PROJECTION, SELECTION, null, null);
-
-		if (courseCursor.getCount() == 0) {
-			// Course not found
-		} else {
-			loadCourseInfo(courseCursor, DB.CourseDetails.NAME, R.id.course_details_courseName_textView);
-			loadCourseInfo(courseCursor, DB.CourseDetails.ID, R.id.course_details_courseID_textView);
-			loadCourseInfo(courseCursor, DB.CourseDetails.LECTURER, R.id.course_details_courseLecturer_textView);
-			loadCourseInfo(courseCursor, DB.CourseDetails.THEORY, R.id.course_details_courseTheory_textView);
-			loadCourseInfo(courseCursor, DB.CourseDetails.LAB, R.id.course_details_courseLab_textView);
-			
-			int columnIndex = courseCursor.getColumnIndex(DB.CourseDetails.CREDIT);
-			long credit = courseCursor.getLong(columnIndex);
-			TextView t = (TextView) findViewById(R.id.course_details_courseCredit_textView);
-			t.setText(String.valueOf(credit));
-		}
+		new RemoteDataTask().execute(courseID);
 
 		// Show the Up button in the action bar.
 		setupActionBar();
@@ -181,7 +220,8 @@ public class CourseDetailsActivity extends Activity {
 			findViewById(R.id.course_details_seperator).setVisibility(
 					View.INVISIBLE);
 		} else {
-			String userRole = currentUser.getString(DB.UserPermission.USER_COLUMN);
+			String userRole = currentUser
+					.getString(DB.UserPermission.USER_COLUMN);
 			if (userRole.equals(DB.UserPermission.USER_ADMIN)) {
 				findViewById(R.id.course_details_pushAnnouncement_button)
 						.setVisibility(View.VISIBLE);
