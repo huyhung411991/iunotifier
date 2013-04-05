@@ -21,7 +21,7 @@ public class MainMenuActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
-		
+		currentUser = ParseUser.getCurrentUser();
 		// Load icon
 		loadGridViewIcons();
 	}
@@ -33,7 +33,6 @@ public class MainMenuActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main_menu, menu);
 
 		// Check current user is existed
-		currentUser = ParseUser.getCurrentUser();
 		if (currentUser != null) {
 			MenuItem switchButton = menu.findItem(R.id.action_login);
 			switchButton.setIcon(R.drawable.sign_in);

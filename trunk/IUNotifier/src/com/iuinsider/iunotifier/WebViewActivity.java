@@ -57,9 +57,12 @@ public class WebViewActivity extends Activity {
 	// This override the default animation of the Android Device "Back" Button
 	@Override
 	public void onBackPressed() {
-		finish();
+		if (myWebView.canGoBack()) {
+			myWebView.goBack();
+			return;
+		}
+		super.onBackPressed();
 		overridePendingTransition(0, R.anim.slide_out_right);
-		return;
 	}
 
 	// =========================================================================================
@@ -67,13 +70,12 @@ public class WebViewActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			if (myWebView.canGoBack()) {
-				myWebView.goBack();
-			} else {
-				onBackPressed();
-			}
+			Intent parentActivityIntent = new Intent(this, MainMenuActivity.class);
+			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(parentActivityIntent);
+			overridePendingTransition(0, R.anim.slide_out_right);
+			finish();
 			return true;
-			// break;
 		case R.id.action_refresh:
 			myWebView.loadUrl(link);
 			break;

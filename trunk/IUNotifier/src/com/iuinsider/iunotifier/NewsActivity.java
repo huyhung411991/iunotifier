@@ -32,6 +32,7 @@ public class NewsActivity extends ListActivity implements
 	private SimpleCursorAdapter mAdapter = null;
 	private Context context;
 	private static String sortCondition = "HCMIU";
+
 	private static final String EXTRA_LINK = ".com.iuinsider.iunotifier.LINK";
 
 	// These are the Contacts rows that we will retrieve
@@ -54,8 +55,8 @@ public class NewsActivity extends ListActivity implements
 				.findViewById(R.id.news_progressBar);
 		getListView().setEmptyView(progressBar);
 
+		// Get current user
 		currentUser = ParseUser.getCurrentUser();
-		// DBRetriever.allNewsQuery(this, sortCondition);
 
 		// For the cursor adapter, specify which columns go into which views
 		String[] fromColumns = { DB.News.TITLE, DB.News.SOURCE,
@@ -76,7 +77,7 @@ public class NewsActivity extends ListActivity implements
 				android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
-		
+
 		context = this;
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parent, View view,
@@ -86,7 +87,6 @@ public class NewsActivity extends ListActivity implements
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
-				// do nothing
 			}
 		});
 
@@ -103,8 +103,8 @@ public class NewsActivity extends ListActivity implements
 	@Override
 	public void onBackPressed() {
 		if (!isTaskRoot()) {
-			Intent in = new Intent();
-			setResult(1, in);
+			Intent intent = new Intent();
+			setResult(1, intent);
 			NewsActivity.this.finish();
 			overridePendingTransition(0, R.anim.slide_out_right);
 		} else {
@@ -146,7 +146,11 @@ public class NewsActivity extends ListActivity implements
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			onBackPressed();
+			Intent parentActivityIntent = new Intent(this, MainMenuActivity.class);
+			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(parentActivityIntent);
+			overridePendingTransition(0, R.anim.slide_out_right);
+			finish();
 			return true;
 
 		case R.id.action_login:

@@ -6,11 +6,11 @@
         android:showAsAction="never"
         android:title="@string/action_settings"/>
     <item
-        android:id="@+id/action_refresh"
-        android:icon="@drawable/refresh"
+        android:id="@+id/action_reset"
         android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_refresh"/>
+        android:showAsAction="always"
+        android:titleCondensed="@string/action_reset"
+        android:title="@string/action_reset"/>
     <item
         android:id="@+id/action_login"
         android:icon="@drawable/not_sign_in"

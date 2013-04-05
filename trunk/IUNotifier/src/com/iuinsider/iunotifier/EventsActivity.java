@@ -55,14 +55,10 @@ public class EventsActivity extends ListActivity implements
 		getListView().setEmptyView(progressBar);
 
 		currentUser = ParseUser.getCurrentUser();
-		//DBRetriever.allEventsQuery(this, sortCondition);
 
 		// For the cursor adapter, specify which columns go into which views
 		String[] fromColumns = { DB.Events.TITLE, DB.Events.CREATED_AT };
-		int[] toViews = { android.R.id.text1, android.R.id.text2 }; // The
-																	// TextView
-																	// in
-		// simple_list_item_1
+		int[] toViews = { android.R.id.text1, android.R.id.text2 }; 
 
 		// Create an empty adapter we will use to display the loaded data.
 		// We pass null for the cursor, then update it in onLoadFinished()
@@ -78,7 +74,7 @@ public class EventsActivity extends ListActivity implements
 						android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
-		
+
 		context = this;
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parent, View view,
@@ -105,8 +101,8 @@ public class EventsActivity extends ListActivity implements
 	@Override
 	public void onBackPressed() {
 		if (!isTaskRoot()) {
-			Intent in = new Intent();
-			setResult(1, in);
+			Intent intent = new Intent();
+			setResult(1, intent);
 			EventsActivity.this.finish();
 			overridePendingTransition(0, R.anim.slide_out_right);
 		} else {
@@ -148,7 +144,11 @@ public class EventsActivity extends ListActivity implements
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			onBackPressed();
+			Intent parentActivityIntent = new Intent(this, MainMenuActivity.class);
+			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(parentActivityIntent);
+			overridePendingTransition(0, R.anim.slide_out_right);
+			finish();
 			return true;
 		case R.id.action_login:
 			// Logout current user before login
@@ -256,8 +256,5 @@ public class EventsActivity extends ListActivity implements
 		Intent intent = new Intent(this, EventDetailsActivity.class);
 		intent.putExtras(bundle);
 		startActivity(intent);
-
-		// New, more advanced and easy to use transition animation
-		overridePendingTransition(R.anim.slide_in_right, 0);
 	}
 }

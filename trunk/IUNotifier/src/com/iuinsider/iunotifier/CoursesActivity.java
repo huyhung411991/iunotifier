@@ -107,12 +107,24 @@ public class CoursesActivity extends ListActivity implements
 			Intent in = new Intent();
 			setResult(1, in);
 			CoursesActivity.this.finish();
-			overridePendingTransition(0, R.anim.slide_out_right);
+
+			if (departmentID == null || !departmentID.equals("USER")) {
+				overridePendingTransition(0, R.anim.slide_out_right);
+			} else {
+				overridePendingTransition(0, R.anim.push_up_out);
+			}
+
 		} else {
-			Intent newIntent = new Intent(this, MainMenuActivity.class);
+			Intent newIntent = new Intent(this, DepartmentsActivity.class);
 			CoursesActivity.this.finish();
 			startActivity(newIntent);
 			overridePendingTransition(0, R.anim.slide_out_right);
+
+			if (departmentID == null || !departmentID.equals("USER")) {
+				overridePendingTransition(0, R.anim.slide_out_right);
+			} else {
+				overridePendingTransition(0, R.anim.push_up_out);
+			}
 		}
 
 	}
@@ -147,7 +159,13 @@ public class CoursesActivity extends ListActivity implements
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			onBackPressed();
+			Intent parentActivityIntent = new Intent(this,
+					MainMenuActivity.class);
+			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+					| Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(parentActivityIntent);
+			overridePendingTransition(0, R.anim.slide_out_right);
+			finish();
 			return true;
 		case R.id.action_login:
 			// Logout current user before login

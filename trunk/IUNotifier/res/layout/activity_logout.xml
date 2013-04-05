@@ -6,11 +6,11 @@
 
     <TableLayout
         android:id="@+id/logout_status"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:stretchColumns="0,1" >
+        android:stretchColumns="*" >
 
         <TableRow>
 
@@ -21,21 +21,21 @@
                 android:layout_marginTop="10dp"
                 android:layout_span="2"
                 android:text="@string/logout_message"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceLarge" />
         </TableRow>
 
-        <TableRow android:layout_marginTop="8dp">
+        <TableRow android:layout_marginTop="8dp" >
 
             <Button
                 android:id="@+id/logout_no_button"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/logout_no" >
             </Button>
 
             <Button
                 android:id="@+id/logout_yes_button"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/logout_yes" >
             </Button>

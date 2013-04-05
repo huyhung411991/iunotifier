@@ -1,7 +1,7 @@
 <resources>
 	<string name="title_activity_logout">Logout</string>
 	
-    <string name="logout_message">Do you want to logout?&#8230;</string>
+    <string name="logout_message">Do you really want to logout?&#8230;</string>
 	<string name="logout_yes">Yes</string>
 	<string name="logout_no">No</string>
 </resources>

@@ -142,8 +142,7 @@ public class LoginActivity extends Activity {
 								// DB.UserPermission.USER_COLUMN).equals(
 								// DB.UserPermission.USER_STUDENT))
 								courseSubscribe(user);
-								Intent in = new Intent(); // Intent in =
-															// getIntent();
+								Intent in = new Intent(); 
 								setResult(1, in);
 								LoginActivity.this.finish();
 							} else {
