@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="superlightgray">#F0F0F0</color>
+    <color name="lightgray">#EAEAEA</color>
+    <color name="mediumgray">#8F8F8F</color>
+    <color name="lightblue">#43BAE6</color>
+    <color name="mediumblue">#056AA5</color>
+    <color name="darkblue">#324462</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#222222</color>
+
+</resources>
