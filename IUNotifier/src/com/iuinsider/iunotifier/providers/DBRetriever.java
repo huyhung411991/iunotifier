@@ -30,8 +30,7 @@ import com.parse.ParseUser;
 public class DBRetriever {
 	private static Context context = null;
 	private static String[] formats = new String[] {
-			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", 
-			"yyyy-MM-dd HH:mm:ss.SSS",
+			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd HH:mm:ss.SSS",
 			"yyyy-MM-dd" };
 
 	public static String DateToString(Date date, int format) {
@@ -343,46 +342,38 @@ public class DBRetriever {
 				query.whereGreaterThan(DB.CourseDetails.UPDATED_AT, date);
 		}
 
-		query.findInBackground(new FindCallback() {
-			@Override
-			public void done(List<ParseObject> list, ParseException e) {
-				if (e == null) {
-					ListIterator<ParseObject> li = list.listIterator();
-					while (li.hasNext()) {
-						ParseObject parseObject = li.next();
-						ContentValues courseDetails = new ContentValues();
-						courseDetails.put(DB.CourseDetails.ID,
-								parseObject.getString(DB.CourseDetails.ID));
-						courseDetails.put(DB.CourseDetails.NAME,
-								parseObject.getString(DB.CourseDetails.NAME));
-						courseDetails.put(DB.CourseDetails.LECTURER,
-								parseObject
-										.getString(DB.CourseDetails.LECTURER));
-						courseDetails.put(DB.CourseDetails.THEORY,
-								parseObject.getString(DB.CourseDetails.THEORY));
-						courseDetails.put(DB.CourseDetails.LAB,
-								parseObject.getString(DB.CourseDetails.LAB));
-						courseDetails.put(DB.CourseDetails.CREDIT,
-								parseObject.getLong(DB.CourseDetails.CREDIT));
-						courseDetails.put(
-								DB.CourseDetails.PREREQUISITE,
-								parseObject
-										.getString(DB.CourseDetails.PREREQUISITE));
-						Date date = parseObject.getUpdatedAt();
-						courseDetails.put(DB.CourseDetails.UPDATED_AT,
-								DateToString(date, 1));
-						context.getContentResolver().insert(
-								DB.CourseDetails.CONTENT_URI, courseDetails);
-					}
-
-					Log.d(DB.CourseDetails.TABLE_NAME,
-							"Retrieved " + list.size() + " items");
-				} else {
-					Log.d(DB.CourseDetails.TABLE_NAME,
-							"Error: " + e.getMessage());
-				}
+		try {
+			List<ParseObject> list = query.find();
+			ListIterator<ParseObject> li = list.listIterator();
+			while (li.hasNext()) {
+				ParseObject parseObject = li.next();
+				ContentValues courseDetails = new ContentValues();
+				courseDetails.put(DB.CourseDetails.ID,
+						parseObject.getString(DB.CourseDetails.ID));
+				courseDetails.put(DB.CourseDetails.NAME,
+						parseObject.getString(DB.CourseDetails.NAME));
+				courseDetails.put(DB.CourseDetails.LECTURER,
+						parseObject.getString(DB.CourseDetails.LECTURER));
+				courseDetails.put(DB.CourseDetails.THEORY,
+						parseObject.getString(DB.CourseDetails.THEORY));
+				courseDetails.put(DB.CourseDetails.LAB,
+						parseObject.getString(DB.CourseDetails.LAB));
+				courseDetails.put(DB.CourseDetails.CREDIT,
+						parseObject.getLong(DB.CourseDetails.CREDIT));
+				courseDetails.put(DB.CourseDetails.PREREQUISITE,
+						parseObject.getString(DB.CourseDetails.PREREQUISITE));
+				Date date = parseObject.getUpdatedAt();
+				courseDetails.put(DB.CourseDetails.UPDATED_AT,
+						DateToString(date, 1));
+				context.getContentResolver().insert(
+						DB.CourseDetails.CONTENT_URI, courseDetails);
 			}
-		});
+
+			Log.d(DB.CourseDetails.TABLE_NAME, "Retrieved " + list.size()
+					+ " items");
+		} catch (ParseException e) {
+			Log.d(DB.CourseDetails.TABLE_NAME, "Error: " + e.getMessage());
+		}
 	}
 
 	// --------------------------------------------------------------------------------

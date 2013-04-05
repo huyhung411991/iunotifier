@@ -18,6 +18,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.iuinsider.iunotifier.providers.DBRetriever;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -201,6 +202,7 @@ public class LoginActivity extends Activity {
 	}
 
 	public void courseSubscribe(ParseUser user) {
+		DBRetriever.userCoursesQuery(this, user);
 		JSONArray courses = user.getJSONArray("courses");
 		try {
 			for (int index = 0; index < courses.length(); index++) {
