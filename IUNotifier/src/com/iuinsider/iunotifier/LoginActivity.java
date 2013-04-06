@@ -78,7 +78,7 @@ public class LoginActivity extends Activity {
 			while (userCoursesCursor.moveToNext()) {
 				String courseID = userCoursesCursor.getString(0);
 				PushService
-						.subscribe(context, courseID, MainMenuActivity.class);
+						.subscribe(context, courseID, AnnouncementsActivity.class);
 			}
 			userCoursesCursor.close();
 		}
@@ -251,7 +251,7 @@ public class LoginActivity extends Activity {
 		try {
 			for (int index = 0; index < courses.length(); index++) {
 				String courseID = courses.getString(index);
-				PushService.subscribe(this, courseID, MainMenuActivity.class);
+				PushService.subscribe(this, courseID, AnnouncementsActivity.class);
 			}
 			Log.d("ParsePush", "Subscribe to " + courses.length() + " channels");
 		} catch (JSONException e) {
@@ -282,7 +282,7 @@ public class LoginActivity extends Activity {
 
 		while (userCoursesCursor.moveToNext()) {
 			String courseID = userCoursesCursor.getString(0);
-			PushService.subscribe(this, courseID, CourseDetailsActivity.class);
+			PushService.subscribe(this, courseID, AnnouncementsActivity.class);
 		}
 		userCoursesCursor.close();
 
