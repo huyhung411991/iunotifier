@@ -22,6 +22,7 @@ public class MainMenuActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
 		currentUser = ParseUser.getCurrentUser();
+		
 		// Load icon
 		loadGridViewIcons();
 	}

@@ -1,5 +1,7 @@
 package com.iuinsider.iunotifier;
 
+import java.util.concurrent.ExecutionException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -7,7 +9,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,9 +20,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
@@ -37,6 +44,45 @@ public class LoginActivity extends Activity {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
+	private Button mSignInButton;
+	private Button mCancelButton;
+
+	// =========================================================================================
+	private class CourseSubscribe extends AsyncTask<ParseUser, Void, Void> {
+
+		protected Cursor userCoursesCursor = null;
+		protected Context context = null;
+		protected final String[] PROJECTION = new String[] { DB.UserCourses.ID };
+
+		/**
+		 * The system calls this to perform work in a worker thread and delivers
+		 * it the parameters given to AsyncTask.execute()
+		 */
+		@Override
+		protected Void doInBackground(ParseUser... params) {
+			context = LoginActivity.this;
+			ParseUser user = params[0];
+			DBRetriever.userCoursesQuery(context, user);
+
+			userCoursesCursor = getContentResolver().query(
+					DB.UserCourses.CONTENT_URI, PROJECTION, null, null, null);
+			return null;
+		}
+
+		/**
+		 * The system calls this to perform work in the UI thread and delivers
+		 * the result from doInBackground()
+		 */
+		@Override
+		protected void onPostExecute(Void result) {
+			while (userCoursesCursor.moveToNext()) {
+				String courseID = userCoursesCursor.getString(0);
+				PushService
+						.subscribe(context, courseID, MainMenuActivity.class);
+			}
+			userCoursesCursor.close();
+		}
+	}
 
 	// =========================================================================================
 	@Override
@@ -46,9 +92,14 @@ public class LoginActivity extends Activity {
 
 		// Set up the login form.
 		mUsernameView = (EditText) findViewById(R.id.login_username_editText);
-		mUsernameView.setText(mUsername);
-
 		mPasswordView = (EditText) findViewById(R.id.login_password_editText);
+		mLoginFormView = findViewById(R.id.login_form_tableLayout);
+		mLoginStatusView = findViewById(R.id.login_status_tableLayout);
+		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_textView);
+		mSignInButton = (Button) findViewById(R.id.login_signIn_button);
+		mCancelButton = (Button) findViewById(R.id.login_cancel_button);
+
+		mUsernameView.setText(mUsername);
 		mPasswordView
 				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 					@Override
@@ -61,26 +112,18 @@ public class LoginActivity extends Activity {
 						return false;
 					}
 				});
-
-		mLoginFormView = findViewById(R.id.login_form_tableLayout);
-		mLoginStatusView = findViewById(R.id.login_status_tableLayout);
-		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_textView);
-
-		findViewById(R.id.login_signIn_button).setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						attemptLogin();
-					}
-				});
-
-		findViewById(R.id.login_cancel_button).setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						LoginActivity.this.finish();
-					}
-				});
+		mSignInButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				attemptLogin();
+			}
+		});
+		mCancelButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				LoginActivity.this.finish();
+			}
+		});
 	}
 
 	// =========================================================================================
@@ -141,8 +184,10 @@ public class LoginActivity extends Activity {
 								// if (user.getString(
 								// DB.UserPermission.USER_COLUMN).equals(
 								// DB.UserPermission.USER_STUDENT))
-								courseSubscribe(user);
-								Intent in = new Intent(); 
+								courseSubscribe2(user);
+
+								Intent in = new Intent();
+								//Intent in = getIntent();
 								setResult(1, in);
 								LoginActivity.this.finish();
 							} else {
@@ -212,5 +257,34 @@ public class LoginActivity extends Activity {
 		} catch (JSONException e) {
 			Log.d("ParsePush", "Error: " + e.getMessage());
 		}
+	}
+
+	private void courseSubscribe2(ParseUser user) {
+		CourseSubscribe courseSubscribe = new CourseSubscribe();
+		courseSubscribe.execute(user);
+//		try {
+//			courseSubscribe.get();
+//		} catch (InterruptedException e1) {
+//			Log.d("CourseSubsribe", "Error: " + e1.getMessage());
+//			e1.printStackTrace();
+//		} catch (ExecutionException e1) {
+//			Log.d("CourseSubsribe", "Error: " + e1.getMessage());
+//		}
+	}
+
+	private void courseSubscribe3(ParseUser user) {
+		final String[] PROJECTION = new String[] { DB.UserCourses.ID };
+
+		DBRetriever.userCoursesQuery(this, user);
+
+		Cursor userCoursesCursor = getContentResolver().query(
+				DB.UserCourses.CONTENT_URI, PROJECTION, null, null, null);
+
+		while (userCoursesCursor.moveToNext()) {
+			String courseID = userCoursesCursor.getString(0);
+			PushService.subscribe(this, courseID, CourseDetailsActivity.class);
+		}
+		userCoursesCursor.close();
+
 	}
 }

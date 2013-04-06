@@ -63,9 +63,7 @@ public class CoursesActivity extends ListActivity implements
 		currentUser = ParseUser.getCurrentUser();
 		departmentID = getIntent().getStringExtra(EXTRA_DEPARTMENT);
 
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-		if (activeNetwork != null && activeNetwork.isConnected()) {
+		if (isConnected()) {
 			if (departmentID == null || !departmentID.equals("USER"))
 				DBRetriever.coursesQuery(this, departmentID, false);
 			Log.d("Network", "Network available");
@@ -271,4 +269,12 @@ public class CoursesActivity extends ListActivity implements
 		// New, more advanced and easy to use transition animation
 		overridePendingTransition(R.anim.slide_in_right, 0);
 	}
+	
+	// =========================================================================================
+		public boolean isConnected() {
+			ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+			
+			return (activeNetwork != null && activeNetwork.isConnected());
+		}
 }

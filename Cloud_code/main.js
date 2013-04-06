@@ -71,8 +71,7 @@ Parse.Cloud.define("pushAnnouncement", function(request, response) {
         channels: [courseID],
         data: {
             alert: message,
-            //action: "com.iuinsider.iunotifier.COURSE_ANNOUNCEMENT",
-            //courseID: courseID, 
+            courseID: courseID, 
             title: courseID + " Announcement!"
         }
     }, {
