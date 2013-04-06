@@ -12,10 +12,12 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
@@ -33,7 +35,7 @@ public class AnnouncementsActivity extends ListActivity implements
 
 	// These are the Contacts rows that we will retrieve
 	private static final String[] PROJECTION = new String[] { DB.Announce._ID,
-			DB.Announce.MESSAGE };
+			DB.Announce.MESSAGE, DB.Announce.CREATED_AT };
 
 	// This is the select criteria
 	private static final String SELECTION = DB.Announce.MESSAGE
@@ -66,14 +68,14 @@ public class AnnouncementsActivity extends ListActivity implements
 		}
 
 		// For the cursor adapter, specify which columns go into which views
-		String[] fromColumns = { DB.Announce.MESSAGE };
-		int[] toViews = { android.R.id.text1 };
+		String[] fromColumns = { DB.Announce.MESSAGE, DB.Announce.CREATED_AT};
+		int[] toViews = { android.R.id.text1, R.id.text3 };
 
 		// Create an empty adapter we will use to display the loaded data.
 		// We pass null for the cursor, then update it in onLoadFinished()
 		mAdapter = new SimpleCursorAdapter(this,
-				android.R.layout.simple_list_item_1, null, fromColumns,
-				toViews, 0);
+				R.layout.custom_simple_list_item_3, null, fromColumns, toViews,
+				0);
 		setListAdapter(mAdapter);
 
 		// Prepare the loader. Either re-connect with an existing one,
@@ -90,7 +92,7 @@ public class AnnouncementsActivity extends ListActivity implements
 	public void onBackPressed() {
 		if (!isTaskRoot()) {
 			Intent in = new Intent();
-			setResult(1, in);
+			setResult(0, in);
 			AnnouncementsActivity.this.finish();
 			overridePendingTransition(0, R.anim.slide_out_right);
 		} else {
@@ -167,9 +169,20 @@ public class AnnouncementsActivity extends ListActivity implements
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (resultCode == 1) {
+		Toast toast = null;
+		if (resultCode == 0) {
+			AnnouncementsActivity.this.invalidateOptionsMenu();
+			return;
+		}
+		else if (resultCode == 1) {
+			toast = Toast.makeText(this, "Login Successfully", Toast.LENGTH_LONG);
+			AnnouncementsActivity.this.invalidateOptionsMenu();
+		} else if (resultCode == 2) {
+			toast = Toast.makeText(this, "Logout Successfully", Toast.LENGTH_LONG);
 			AnnouncementsActivity.this.invalidateOptionsMenu();
 		}
+		toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+		toast.show();
 	}
 
 	@Override
@@ -220,12 +233,13 @@ public class AnnouncementsActivity extends ListActivity implements
 		// longer using it.
 		mAdapter.swapCursor(null);
 	}
-	
+
 	// =========================================================================================
 	public boolean isConnected() {
-		ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager cm = (ConnectivityManager) this
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-		
+
 		return (activeNetwork != null && activeNetwork.isConnected());
 	}
 }

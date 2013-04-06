@@ -10,6 +10,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.iuinsider.iunotifier.providers.DB;
@@ -63,7 +65,7 @@ public class EventsActivity extends ListActivity implements
 		// Create an empty adapter we will use to display the loaded data.
 		// We pass null for the cursor, then update it in onLoadFinished()
 		mAdapter = new SimpleCursorAdapter(this,
-				R.layout.custom_simple_list_item_2, null, fromColumns, toViews,
+				R.layout.custom_simple_list_item_3, null, fromColumns, toViews,
 				0);
 		setListAdapter(mAdapter);
 
@@ -102,7 +104,7 @@ public class EventsActivity extends ListActivity implements
 	public void onBackPressed() {
 		if (!isTaskRoot()) {
 			Intent intent = new Intent();
-			setResult(1, intent);
+			setResult(0, intent);
 			EventsActivity.this.finish();
 			overridePendingTransition(0, R.anim.slide_out_right);
 		} else {
@@ -178,9 +180,20 @@ public class EventsActivity extends ListActivity implements
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (resultCode == 1) {
+		Toast toast = null;
+		
+		if (resultCode == 0) {
+			EventsActivity.this.invalidateOptionsMenu();
+			return;
+		} else if (resultCode == 1) {
+			toast = Toast.makeText(this, "Login Successfully", Toast.LENGTH_LONG);
+			EventsActivity.this.invalidateOptionsMenu();
+		} else if (resultCode == 2) {
+			toast = Toast.makeText(this, "Logout Successfully", Toast.LENGTH_LONG);
 			EventsActivity.this.invalidateOptionsMenu();
 		}
+		toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+		toast.show();
 	}
 
 	@Override

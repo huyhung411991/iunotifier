@@ -1,0 +1,7 @@
+<resources>
+	<string name="title_activity_resetData">Reset Data</string>
+	
+    <string name="resetData_message">Do you really want delete all data?&#8230;</string>
+	<string name="resetData_yes">Yes</string>
+	<string name="resetData_no">No</string>
+</resources>

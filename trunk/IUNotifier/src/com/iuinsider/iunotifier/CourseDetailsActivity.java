@@ -12,10 +12,12 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
@@ -129,7 +131,7 @@ public class CourseDetailsActivity extends Activity {
 	public void onBackPressed() {
 		if (!isTaskRoot()) {
 			Intent in = new Intent();
-			setResult(1, in);
+			setResult(0, in);
 			CourseDetailsActivity.this.finish();
 			overridePendingTransition(0, R.anim.slide_out_right);
 		} else {
@@ -206,9 +208,19 @@ public class CourseDetailsActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (resultCode == 1) {
+		Toast toast = null;
+		if (resultCode == 0) {
+			CourseDetailsActivity.this.invalidateOptionsMenu();
+			return;
+		} else if (resultCode == 1) {
+			toast = Toast.makeText(this, "Login Successfully", Toast.LENGTH_LONG);
+			CourseDetailsActivity.this.invalidateOptionsMenu();
+		} else if (resultCode == 2) {
+			toast = Toast.makeText(this, "Logout Successfully", Toast.LENGTH_LONG);
 			CourseDetailsActivity.this.invalidateOptionsMenu();
 		}
+		toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+		toast.show();
 	}
 
 	@Override

@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.iuinsider.iunotifier"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="2"
+    android:versionName="2.0" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -164,6 +164,17 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iuinsider.iunotifier.CourseDetailsActivity" />
+        </activity>
+
+        <!-- ====================================================================== -->
+        <activity
+            android:name="com.iuinsider.iunotifier.ResetDataActivity"
+            android:label="@string/title_activity_resetData"
+            android:parentActivityName="com.iuinsider.iunotifier.MainMenuActivity"
+            android:theme="@android:style/Theme.Holo.Dialog" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iuinsider.iunotifier.MainMenuActivity" />
         </activity>
 
         <!-- ====================================================================== -->

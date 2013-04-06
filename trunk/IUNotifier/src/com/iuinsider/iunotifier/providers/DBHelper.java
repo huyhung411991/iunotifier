@@ -71,7 +71,7 @@ public class DBHelper extends SQLiteOpenHelper {
 			+ DB.Announce.TABLE_NAME + " (" + DB.Announce._ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Announce.ID + " TEXT, "
 			+ DB.Announce.COURSE_ID + " TEXT, " + DB.Announce.MESSAGE + " TEXT, "
-			+ DB.Announce.UPDATED_AT + " TEXT)";
+			+ DB.Announce.UPDATED_AT + " TEXT, " + DB.Announce.CREATED_AT + " TEXT)";
 	// ----------------------------------------------------------------------------------
 	private static final String DELETE_TABLE_COURSE_ANNOUNCEMENTS = "DROP TABLE IF EXISTS "
 			+ DB.Announce.TABLE_NAME;

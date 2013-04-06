@@ -63,11 +63,11 @@ public final class R {
     }
     public static final class id {
         public static final int RelativeLayout1=0x7f0b002d;
-        public static final int TheSplashLayout=0x7f0b0031;
-        public static final int action_login=0x7f0b0038;
-        public static final int action_refresh=0x7f0b0037;
-        public static final int action_reset=0x7f0b0039;
-        public static final int action_settings=0x7f0b0036;
+        public static final int TheSplashLayout=0x7f0b0035;
+        public static final int action_login=0x7f0b003c;
+        public static final int action_refresh=0x7f0b003b;
+        public static final int action_reset=0x7f0b003d;
+        public static final int action_settings=0x7f0b003a;
         public static final int announce_button=0x7f0b002f;
         public static final int announcement_content=0x7f0b002e;
         public static final int announcements_progressBar=0x7f0b0000;
@@ -115,11 +115,15 @@ public final class R {
         public static final int news_newsSources_spinner=0x7f0b002c;
         public static final int news_newsSources_tableLayout=0x7f0b002b;
         public static final int news_progressBar=0x7f0b002a;
-        public static final int splashSceen_landscape_imageView=0x7f0b0032;
-        public static final int splashscreen_potrait_imageView=0x7f0b0033;
+        public static final int resetData_message=0x7f0b0032;
+        public static final int resetData_no_button=0x7f0b0033;
+        public static final int resetData_status=0x7f0b0031;
+        public static final int resetData_yes_button=0x7f0b0034;
+        public static final int splashSceen_landscape_imageView=0x7f0b0036;
+        public static final int splashscreen_potrait_imageView=0x7f0b0037;
         public static final int state_message=0x7f0b0030;
-        public static final int text3=0x7f0b0035;
-        public static final int webView=0x7f0b0034;
+        public static final int text3=0x7f0b0039;
+        public static final int webView=0x7f0b0038;
     }
     public static final class layout {
         public static final int activity_announcements=0x7f030000;
@@ -134,11 +138,12 @@ public final class R {
         public static final int activity_main_menu_gridlayout=0x7f030009;
         public static final int activity_news=0x7f03000a;
         public static final int activity_push_announcement=0x7f03000b;
-        public static final int activity_splashscreen_landscape=0x7f03000c;
-        public static final int activity_splashscreen_potrait=0x7f03000d;
-        public static final int activity_web_view=0x7f03000e;
-        public static final int custom_simple_list_item_2=0x7f03000f;
-        public static final int simple_list_item_2=0x7f030010;
+        public static final int activity_resetdata=0x7f03000c;
+        public static final int activity_splashscreen_landscape=0x7f03000d;
+        public static final int activity_splashscreen_potrait=0x7f03000e;
+        public static final int activity_web_view=0x7f03000f;
+        public static final int custom_simple_list_item_2=0x7f030010;
+        public static final int custom_simple_list_item_3=0x7f030011;
     }
     public static final class menu {
         public static final int announcements=0x7f0a0000;
@@ -183,6 +188,9 @@ public final class R {
         public static final int logout_yes=0x7f07002d;
         public static final int mycourse=0x7f070016;
         public static final int news_newsSource_Title=0x7f070030;
+        public static final int resetData_message=0x7f070034;
+        public static final int resetData_no=0x7f070036;
+        public static final int resetData_yes=0x7f070035;
         public static final int textView_courseCredit=0x7f070010;
         public static final int textView_courseDetails=0x7f07000d;
         public static final int textView_courseID=0x7f07000f;
@@ -203,6 +211,7 @@ public final class R {
         public static final int title_activity_main_menu=0x7f070001;
         public static final int title_activity_news=0x7f07002f;
         public static final int title_activity_push_announcement=0x7f070031;
+        public static final int title_activity_resetData=0x7f070033;
         public static final int title_activity_web_view=0x7f070002;
     }
     public static final class style {
