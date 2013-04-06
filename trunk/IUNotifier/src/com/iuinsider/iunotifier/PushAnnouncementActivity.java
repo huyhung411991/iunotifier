@@ -1,6 +1,7 @@
 package com.iuinsider.iunotifier;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,8 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-
 import com.iuinsider.iunotifier.providers.DBRetriever;
 import com.parse.ParseUser;
 
@@ -17,10 +16,9 @@ public class PushAnnouncementActivity extends Activity {
 
 	private ParseUser currentUser = null;
 	private EditText announcementContent;
-	private TextView stateMessage;
 	private Button announceButton;
 	private String courseID;
-	
+	private Context context;
 	private static final String EXTRA_COURSE = ".com.iuinsider.iunotifier.COURSE";
 
 	// =========================================================================================
@@ -29,18 +27,19 @@ public class PushAnnouncementActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_push_announcement);
 		currentUser = ParseUser.getCurrentUser();
-		
-		courseID = getIntent().getStringExtra(EXTRA_COURSE);
-		if (courseID == null)
-			finish();
 
+		courseID = getIntent().getStringExtra(EXTRA_COURSE);
+		if (courseID == null) {
+			finish();
+		}
+
+		context = this;
 		announcementContent = (EditText) findViewById(R.id.announcement_content);
-		stateMessage = (TextView) findViewById(R.id.state_message);
 		announceButton = (Button) findViewById(R.id.announce_button);
 		announceButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				String message = announcementContent.getText().toString();
-				DBRetriever.pushAnnouncement(courseID, message, stateMessage);
+				DBRetriever.pushAnnouncement(courseID, message, context);
 			}
 		});
 	}
@@ -71,14 +70,16 @@ public class PushAnnouncementActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			Intent parentActivityIntent = new Intent(this, MainMenuActivity.class);
-			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			Intent parentActivityIntent = new Intent(this,
+					MainMenuActivity.class);
+			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+					| Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(parentActivityIntent);
 			overridePendingTransition(0, R.anim.slide_out_right);
 			finish();
 			return true;
 		case R.id.action_refresh:
-			
+
 			break;
 		default:
 			break;
