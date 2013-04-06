@@ -70,7 +70,7 @@ public class LogoutActivity extends Activity {
 						//new CourseUnsubscribe().execute(user);
 						ParseUser.logOut();
 						Intent in = new Intent();
-						setResult(1, in);
+						setResult(2, in);
 						LogoutActivity.this.finish();
 					}
 				});

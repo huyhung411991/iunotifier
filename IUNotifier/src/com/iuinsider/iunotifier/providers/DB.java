@@ -122,6 +122,7 @@ public class DB {
 		public static final String ID = "objectId";
 		public static final String COURSE_ID = "courseID";
 		public static final String MESSAGE = "announceMsg";
+		public static final String CREATED_AT = "createdAt";
 		public static final String UPDATED_AT = "updatedAt";
 		public static final String SUCCESSFUL_MSG = "Push Successful";
 		public static final String FAILED_MSG = "Push Failed";

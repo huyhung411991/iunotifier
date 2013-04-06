@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LogoutActivity" >
+
+    <TableLayout
+        android:id="@+id/resetData_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:stretchColumns="*" >
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/resetData_message"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_span="2"
+                android:text="@string/resetData_message"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </TableRow>
+
+        <TableRow android:layout_marginTop="8dp" >
+
+            <Button
+                android:id="@+id/resetData_no_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/resetData_no" >
+            </Button>
+
+            <Button
+                android:id="@+id/resetData_yes_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/resetData_yes" >
+            </Button>
+        </TableRow>
+    </TableLayout>
+
+</RelativeLayout>

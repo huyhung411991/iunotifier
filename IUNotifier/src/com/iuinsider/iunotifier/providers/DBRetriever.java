@@ -392,9 +392,14 @@ public class DBRetriever {
 								parseObject.getString(DB.Announce.COURSE_ID));
 						announce.put(DB.Announce.MESSAGE,
 								parseObject.getString(DB.Announce.MESSAGE));
+						
 						Date date = parseObject.getUpdatedAt();
 						announce.put(DB.Announce.UPDATED_AT,
 								DateToString(date, 1));
+						
+						date = parseObject.getCreatedAt();
+						announce.put(DB.Announce.CREATED_AT,
+								DateToString(date, 2));
 						context.getContentResolver().insert(
 								DB.Announce.CONTENT_URI, announce);
 					}

@@ -3,10 +3,12 @@ package com.iuinsider.iunotifier;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
@@ -22,7 +24,7 @@ public class MainMenuActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
 		currentUser = ParseUser.getCurrentUser();
-		
+
 		// Load icon
 		loadGridViewIcons();
 	}
@@ -54,16 +56,16 @@ public class MainMenuActivity extends Activity {
 			if (currentUser != null) {
 				intent = new Intent(this, LogoutActivity.class);
 				startActivityForResult(intent, 0);
-			} 
-			// Go to user login page
-			else {
+			}
+			else { // Go to user login page
 				intent = new Intent(this, LoginActivity.class);
 				startActivityForResult(intent, 0);
 			}
 			break;
 
 		case R.id.action_reset:
-			//For reset all data code here
+			intent = new Intent(this, ResetDataActivity.class);
+			startActivityForResult(intent, 0);
 			break;
 
 		default:
@@ -79,11 +81,23 @@ public class MainMenuActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (resultCode == 1) {
+		Toast toast = null;
+		if (resultCode == 0) {
 			MainMenuActivity.this.invalidateOptionsMenu();
+			return;
+		}else if (resultCode == 1) {
+			toast = Toast.makeText(this, "Login Successfully", Toast.LENGTH_LONG);
+			MainMenuActivity.this.invalidateOptionsMenu();
+		} else if (resultCode == 2) {
+			toast = Toast.makeText(this, "Logout Successfully", Toast.LENGTH_LONG);
+			MainMenuActivity.this.invalidateOptionsMenu();
+		}else if (resultCode == 3) {
+			toast = Toast.makeText(this, "All Data Is Deleted", Toast.LENGTH_LONG);	
 		}
+		toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+		toast.show();
 	}
-	
+
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		currentUser = ParseUser.getCurrentUser();

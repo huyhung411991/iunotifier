@@ -12,12 +12,14 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
@@ -81,11 +83,11 @@ public class CoursesActivity extends ListActivity implements
 		// We pass null for the cursor, then update it in onLoadFinished()
 		if (departmentID == null || !departmentID.equals("USER"))
 			mAdapter = new SimpleCursorAdapter(this,
-					R.layout.simple_list_item_2, null, fromCoursesColumns,
+					R.layout.custom_simple_list_item_2, null, fromCoursesColumns,
 					toViews, 0);
 		else
 			mAdapter = new SimpleCursorAdapter(this,
-					R.layout.simple_list_item_2, null, fromUserCoursesColumns,
+					R.layout.custom_simple_list_item_2, null, fromUserCoursesColumns,
 					toViews, 0);
 		setListAdapter(mAdapter);
 
@@ -103,7 +105,7 @@ public class CoursesActivity extends ListActivity implements
 	public void onBackPressed() {
 		if (!isTaskRoot()) {
 			Intent in = new Intent();
-			setResult(1, in);
+			setResult(0, in);
 			CoursesActivity.this.finish();
 
 			if (departmentID == null || !departmentID.equals("USER")) {
@@ -193,9 +195,20 @@ public class CoursesActivity extends ListActivity implements
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (resultCode == 1) {
+		Toast toast = null;
+		
+		if (resultCode == 0) {
+			CoursesActivity.this.invalidateOptionsMenu();
+			return;
+		} else if (resultCode == 1) {
+			toast = Toast.makeText(this, "Login Successfully", Toast.LENGTH_LONG);
+			CoursesActivity.this.invalidateOptionsMenu();
+		} else if (resultCode == 2) {
+			toast = Toast.makeText(this, "Logout Successfully", Toast.LENGTH_LONG);
 			CoursesActivity.this.invalidateOptionsMenu();
 		}
+		toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+		toast.show();
 	}
 
 	@Override
