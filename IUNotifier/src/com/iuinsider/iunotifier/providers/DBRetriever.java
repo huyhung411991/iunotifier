@@ -17,7 +17,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.TextView;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.FunctionCallback;
@@ -445,10 +446,8 @@ public class DBRetriever {
 	}
 
 	// --------------------------------------------------------------------------------
-	public static void pushAnnouncement(String courseID, String message,
-			TextView state) {
-		final TextView stateMessage = state;
-
+	public static void pushAnnouncement(String courseID, String message, final Context c) {
+		
 		HashMap<String, Object> params = new HashMap<String, Object>();
 
 		params.put("courseid", courseID);
@@ -457,8 +456,13 @@ public class DBRetriever {
 				new FunctionCallback<String>() {
 					public void done(String returnMsg, ParseException e) {
 						if (e == null) {
-							stateMessage.setText(returnMsg);
+							Toast toast = Toast.makeText(c, returnMsg, Toast.LENGTH_SHORT);
+							toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+							toast.show();
 						} else {
+							Toast toast = Toast.makeText(c, "Something goes wrong. Please try again!", Toast.LENGTH_SHORT);
+							toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+							toast.show();
 							Log.d(DB.Announce.TABLE_NAME,
 									"Error: " + e.getMessage());
 						}

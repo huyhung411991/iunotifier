@@ -62,7 +62,8 @@ public class MainMenuActivity extends Activity {
 			}
 			break;
 
-		case R.id.action_refresh:
+		case R.id.action_reset:
+			//For reset all data code here
 			break;
 
 		default:
