@@ -52,9 +52,7 @@ public class DepartmentsActivity extends ListActivity implements
 				.findViewById(R.id.department_progressBar);
 		getListView().setEmptyView(progressBar);
 
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-		if (activeNetwork != null && activeNetwork.isConnected()) {
+		if (isConnected()) {
 			DBRetriever.departmentsQuery(this, false);
 			Log.d("Network", "Network available");
 		} else {
@@ -226,6 +224,14 @@ public class DepartmentsActivity extends ListActivity implements
 		// New, more advanced and easy to use transition animation
 		overridePendingTransition(R.anim.slide_in_right, 0);
 	}
+	
+	// =========================================================================================
+		public boolean isConnected() {
+			ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+			
+			return (activeNetwork != null && activeNetwork.isConnected());
+		}
 
 	// =========================================================================================
 	public void openMyCourse(View view) {

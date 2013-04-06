@@ -5,10 +5,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,7 +65,7 @@ public class CourseDetailsActivity extends Activity {
 					DB.CourseDetails.CONTENT_URI, courseID);
 			courseCursor = getContentResolver().query(courseDetailsUri,
 					PROJECTION, SELECTION, null, null);
-			
+
 			return null;
 		}
 
@@ -88,7 +91,8 @@ public class CourseDetailsActivity extends Activity {
 						R.id.course_details_courseLab_textView);
 				loadCourseInfo(courseCursor, DB.CourseDetails.CREDIT,
 						R.id.course_details_courseCredit_textView);
-				
+
+				courseCursor.close();
 				CourseDetailsActivity.this.progressDialog.dismiss();
 			}
 		}
@@ -107,8 +111,13 @@ public class CourseDetailsActivity extends Activity {
 		courseID = getIntent().getStringExtra(EXTRA_COURSE);
 		if (courseID == null)
 			finish();
-
-		new RemoteDataTask().execute(courseID);
+		
+		if (isConnected()) {
+			new RemoteDataTask().execute(courseID);
+			Log.d("Network", "Network available");
+		} else {
+			Log.d("Network", "Network unavailable");
+		}
 
 		// Show the Up button in the action bar.
 		setupActionBar();
@@ -161,8 +170,10 @@ public class CourseDetailsActivity extends Activity {
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			Intent parentActivityIntent = new Intent(this, MainMenuActivity.class);
-			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			Intent parentActivityIntent = new Intent(this,
+					MainMenuActivity.class);
+			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+					| Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(parentActivityIntent);
 			overridePendingTransition(0, R.anim.slide_out_right);
 			finish();
@@ -241,15 +252,25 @@ public class CourseDetailsActivity extends Activity {
 	public void loadCourseInfo(Cursor courseCursor, String item, int viewID) {
 		TextView textView = (TextView) findViewById(viewID);
 		int columnIndex = courseCursor.getColumnIndex(item);
-		
+
 		if (item.equals(DB.CourseDetails.CREDIT)) {
 			long credit = courseCursor.getLong(columnIndex);
 			textView.setText(String.valueOf(credit));
 		} else {
 			String value = courseCursor.getString(columnIndex);
+			if (value == null || value.isEmpty())
+				value = "None";
 			textView.setText(value);
 		}
 	}
+	
+	// =========================================================================================
+		public boolean isConnected() {
+			ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+			
+			return (activeNetwork != null && activeNetwork.isConnected());
+		}
 
 	// =========================================================================================
 	/** Called when the user clicks the Announcements button */

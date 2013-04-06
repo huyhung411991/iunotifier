@@ -14,8 +14,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 
@@ -31,6 +29,7 @@ public class AnnouncementsActivity extends ListActivity implements
 	private String courseID;
 
 	private static final String EXTRA_COURSE = ".com.iuinsider.iunotifier.COURSE";
+	private static final String EXTRA_COURSE_PARSE = "com.parse.Channel";
 
 	// These are the Contacts rows that we will retrieve
 	private static final String[] PROJECTION = new String[] { DB.Announce._ID,
@@ -55,11 +54,11 @@ public class AnnouncementsActivity extends ListActivity implements
 
 		courseID = getIntent().getStringExtra(EXTRA_COURSE);
 		if (courseID == null)
+			courseID = getIntent().getExtras().getString(EXTRA_COURSE_PARSE);
+		if (courseID == null)
 			finish();
 
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-		if (activeNetwork != null && activeNetwork.isConnected()) {
+		if (isConnected()) {
 			DBRetriever.announcementsQuery(this, courseID, false);
 			Log.d("Network", "Network available");
 		} else {
@@ -132,8 +131,10 @@ public class AnnouncementsActivity extends ListActivity implements
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			Intent parentActivityIntent = new Intent(this, MainMenuActivity.class);
-			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			Intent parentActivityIntent = new Intent(this,
+					MainMenuActivity.class);
+			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+					| Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(parentActivityIntent);
 			overridePendingTransition(0, R.anim.slide_out_right);
 			finish();
@@ -219,23 +220,12 @@ public class AnnouncementsActivity extends ListActivity implements
 		// longer using it.
 		mAdapter.swapCursor(null);
 	}
-
+	
 	// =========================================================================================
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
-		/*
-		 * Cursor mCursor = mAdapter.getCursor();
-		 * mCursor.moveToPosition(position); String columnName = DB.News.LINK;
-		 * int columnIndex = mCursor.getColumnIndex(columnName); String link =
-		 * mCursor.getString(columnIndex);
-		 * 
-		 * Intent intent = new Intent(this, WebViewActivity.class);
-		 * intent.putExtra(EXTRA_LINK, link); startActivityForResult(intent, 0);
-		 * // startActivity(intent);
-		 * 
-		 * // New, more advanced and easy to use transition animation
-		 * overridePendingTransition(R.anim.slide_in_right, 0);
-		 */
+	public boolean isConnected() {
+		ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+		
+		return (activeNetwork != null && activeNetwork.isConnected());
 	}
 }

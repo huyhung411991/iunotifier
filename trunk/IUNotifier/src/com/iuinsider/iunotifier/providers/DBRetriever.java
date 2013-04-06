@@ -418,36 +418,30 @@ public class DBRetriever {
 		context.getContentResolver().delete(DB.UserCourses.CONTENT_URI, null,
 				null);
 
-		ParseCloud.callFunctionInBackground("getUserCourses", null,
-				new FunctionCallback<JSONArray>() {
-					@Override
-					public void done(JSONArray list, ParseException e) {
-						if (e == null) {
-							for (int index = 0; index < list.length(); index++) {
-								JSONObject object = null;
-								try {
-									object = list.getJSONObject(index);
-									ContentValues course = new ContentValues();
-									course.put(DB.UserCourses.ID,
-											object.getString(DB.UserCourses.ID));
-									course.put(DB.UserCourses.NAME, object
-											.getString(DB.UserCourses.NAME));
-									context.getContentResolver().insert(
-											DB.UserCourses.CONTENT_URI, course);
-								} catch (JSONException e1) {
-									Log.d(DB.UserCourses.TABLE_NAME, "Error: "
-											+ e1.getMessage());
-								}
+		try {
+			JSONArray list = ParseCloud.callFunction("getUserCourses", null);
+			for (int index = 0; index < list.length(); index++) {
+				JSONObject object = null;
+				try {
+					object = list.getJSONObject(index);
+					ContentValues course = new ContentValues();
+					course.put(DB.UserCourses.ID,
+							object.getString(DB.UserCourses.ID));
+					course.put(DB.UserCourses.NAME,
+							object.getString(DB.UserCourses.NAME));
+					context.getContentResolver().insert(
+							DB.UserCourses.CONTENT_URI, course);
+				} catch (JSONException e1) {
+					Log.d(DB.UserCourses.TABLE_NAME,
+							"Error: " + e1.getMessage());
+				}
 
-							}
-							Log.d(DB.UserCourses.TABLE_NAME, "Retrieved "
-									+ list.length() + " items");
-						} else {
-							Log.d(DB.UserCourses.TABLE_NAME,
-									"Error: " + e.getMessage());
-						}
-					}
-				});
+			}
+			Log.d(DB.UserCourses.TABLE_NAME, "Retrieved " + list.length()
+					+ " items");
+		} catch (ParseException e) {
+			Log.d(DB.UserCourses.TABLE_NAME, "Error: " + e.getMessage());
+		}
 	}
 
 	// --------------------------------------------------------------------------------
