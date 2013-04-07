@@ -142,8 +142,7 @@ public final class R {
         public static final int activity_splashscreen_landscape=0x7f03000d;
         public static final int activity_splashscreen_potrait=0x7f03000e;
         public static final int activity_web_view=0x7f03000f;
-        public static final int custom_simple_list_item_2=0x7f030010;
-        public static final int custom_simple_list_item_3=0x7f030011;
+        public static final int custom_simple_list_item_3=0x7f030010;
     }
     public static final class menu {
         public static final int announcements=0x7f0a0000;

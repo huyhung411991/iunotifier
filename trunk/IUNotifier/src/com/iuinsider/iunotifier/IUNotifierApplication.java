@@ -2,6 +2,7 @@ package com.iuinsider.iunotifier;
 
 import android.app.Application;
 
+import com.iuinsider.iunotifier.providers.DB;
 import com.parse.Parse;
 import com.parse.PushService;
 
@@ -9,6 +10,7 @@ public class IUNotifierApplication extends Application {
 
 	private static final String APPLICATION_ID = "aOLPYGKDCQbJLA4QuW7vMGYXZUBtsTyXgVtVKpdL";
 	private static final String CLIENT_KEY = "ZnwcYv8Om99dwbgdoLwMboLrbQjYBHwF0TDDXslf";
+	protected final String[] PROJECTION = new String[] { DB.UserCourses.ID };
 
 	@Override
 	public void onCreate() {

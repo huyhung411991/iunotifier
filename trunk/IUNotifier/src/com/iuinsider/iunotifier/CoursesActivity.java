@@ -83,12 +83,12 @@ public class CoursesActivity extends ListActivity implements
 		// We pass null for the cursor, then update it in onLoadFinished()
 		if (departmentID == null || !departmentID.equals("USER"))
 			mAdapter = new SimpleCursorAdapter(this,
-					R.layout.custom_simple_list_item_2, null, fromCoursesColumns,
-					toViews, 0);
+					android.R.layout.simple_list_item_2, null,
+					fromCoursesColumns, toViews, 0);
 		else
 			mAdapter = new SimpleCursorAdapter(this,
-					R.layout.custom_simple_list_item_2, null, fromUserCoursesColumns,
-					toViews, 0);
+					android.R.layout.simple_list_item_2, null,
+					fromUserCoursesColumns, toViews, 0);
 		setListAdapter(mAdapter);
 
 		// Prepare the loader. Either re-connect with an existing one,
@@ -196,18 +196,21 @@ public class CoursesActivity extends ListActivity implements
 		super.onActivityResult(requestCode, resultCode, data);
 
 		Toast toast = null;
-		
+
 		if (resultCode == 0) {
 			CoursesActivity.this.invalidateOptionsMenu();
 			return;
 		} else if (resultCode == 1) {
-			toast = Toast.makeText(this, "Login Successfully", Toast.LENGTH_LONG);
+			toast = Toast.makeText(this, "Login Successfully",
+					Toast.LENGTH_LONG);
 			CoursesActivity.this.invalidateOptionsMenu();
 		} else if (resultCode == 2) {
-			toast = Toast.makeText(this, "Logout Successfully", Toast.LENGTH_LONG);
+			toast = Toast.makeText(this, "Logout Successfully",
+					Toast.LENGTH_LONG);
 			CoursesActivity.this.invalidateOptionsMenu();
 		}
-		toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+		toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL,
+				0, 0);
 		toast.show();
 	}
 
@@ -282,12 +285,13 @@ public class CoursesActivity extends ListActivity implements
 		// New, more advanced and easy to use transition animation
 		overridePendingTransition(R.anim.slide_in_right, 0);
 	}
-	
+
 	// =========================================================================================
-		public boolean isConnected() {
-			ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-			
-			return (activeNetwork != null && activeNetwork.isConnected());
-		}
+	public boolean isConnected() {
+		ConnectivityManager cm = (ConnectivityManager) this
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+		return (activeNetwork != null && activeNetwork.isConnected());
+	}
 }
