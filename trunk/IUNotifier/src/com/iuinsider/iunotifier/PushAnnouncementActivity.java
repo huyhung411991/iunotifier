@@ -9,12 +9,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.iuinsider.iunotifier.providers.DBRetriever;
-import com.parse.ParseUser;
 
 public class PushAnnouncementActivity extends Activity {
 
-	private ParseUser currentUser = null;
+//	private ParseUser currentUser = null;
 	private EditText announcementContent;
 	private Button announceButton;
 	private String courseID;
@@ -26,12 +26,13 @@ public class PushAnnouncementActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_push_announcement);
-		currentUser = ParseUser.getCurrentUser();
+//		currentUser = ParseUser.getCurrentUser();
 
 		courseID = getIntent().getStringExtra(EXTRA_COURSE);
 		if (courseID == null) {
 			finish();
 		}
+		
 
 		context = this;
 		announcementContent = (EditText) findViewById(R.id.announcement_content);
@@ -56,12 +57,7 @@ public class PushAnnouncementActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.events, menu);
-
-		if (currentUser != null) {
-			MenuItem switchButton = menu.findItem(R.id.action_login);
-			switchButton.setIcon(R.drawable.sign_in);
-		}
+		getMenuInflater().inflate(R.menu.push_announcement, menu);
 		return true;
 	}
 
@@ -78,9 +74,6 @@ public class PushAnnouncementActivity extends Activity {
 			overridePendingTransition(0, R.anim.slide_out_right);
 			finish();
 			return true;
-		case R.id.action_refresh:
-
-			break;
 		default:
 			break;
 		}

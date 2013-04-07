@@ -39,6 +39,11 @@ public class LoginActivity extends Activity {
 	private TextView mLoginStatusMessageView;
 	private Button mSignInButton;
 	private Button mCancelButton;
+	
+	/**
+	 * Keep track of the login task to ensure we can cancel it if requested.
+	 */
+	private UserLoginTask mAuthTask = null;
 
 	protected final String[] PROJECTION = new String[] { DB.UserCourses.ID };
 
@@ -62,18 +67,11 @@ public class LoginActivity extends Activity {
 
 			if (user != null) {
 				// Login successful
-				// if (user.getString(
-				// DB.UserPermission.USER_COLUMN).equals(
-				// DB.UserPermission.USER_STUDENT))
-				DBRetriever.userCoursesQuery(LoginActivity.this, user);
+//				String userPermission = user.getString(DB.UserPermission.USER_COLUMN);
+//				if (userPermission.equals(DB.UserPermission.USER_STUDENT))
+					DBRetriever.userCoursesQuery(LoginActivity.this, user);
 
 				courseSubscribe();
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 
 				return true;
 			} else {
@@ -87,7 +85,9 @@ public class LoginActivity extends Activity {
 		 */
 		@Override
 		protected void onPostExecute(Boolean success) {
+			mAuthTask = null;
 			showProgress(false);
+			
 			if (success) {
 				Intent in = new Intent();
 				setResult(1, in);
@@ -103,6 +103,7 @@ public class LoginActivity extends Activity {
 
 		@Override
 		protected void onCancelled() {
+			mAuthTask = null;
 			showProgress(false);
 		}
 	}
@@ -156,6 +157,10 @@ public class LoginActivity extends Activity {
 	 * errors are presented and no actual login attempt is made.
 	 */
 	public void attemptLogin() {
+		if (mAuthTask != null) {
+			return;
+		}
+		
 		// Reset errors.
 		mUsernameView.setError(null);
 		mPasswordView.setError(null);
@@ -195,8 +200,8 @@ public class LoginActivity extends Activity {
 			mLoginStatusMessageView.setText(R.string.login_progressSigningIn);
 			showProgress(true);
 
-			UserLoginTask userLoginTask = new UserLoginTask();
-			userLoginTask.execute(mUsername, mPassword);
+			mAuthTask = new UserLoginTask();
+			mAuthTask.execute(mUsername, mPassword);
 		}
 	}
 
@@ -249,6 +254,7 @@ public class LoginActivity extends Activity {
 		while (userCoursesCursor.moveToNext()) {
 			String courseID = userCoursesCursor.getString(0);
 			PushService.subscribe(this, courseID, AnnouncementsActivity.class);
+			
 			Log.d("CourseSubsribe", courseID);
 		}
 		userCoursesCursor.close();
