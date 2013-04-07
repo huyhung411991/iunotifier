@@ -1,15 +1,9 @@
 package com.iuinsider.iunotifier;
 
-import java.util.concurrent.ExecutionException;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -26,7 +20,6 @@ import android.widget.TextView;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
-import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.PushService;
@@ -47,26 +40,45 @@ public class LoginActivity extends Activity {
 	private Button mSignInButton;
 	private Button mCancelButton;
 
+	protected final String[] PROJECTION = new String[] { DB.UserCourses.ID };
+
 	// =========================================================================================
-	private class CourseSubscribe extends AsyncTask<ParseUser, Void, Void> {
-
-		protected Cursor userCoursesCursor = null;
-		protected Context context = null;
-		protected final String[] PROJECTION = new String[] { DB.UserCourses.ID };
-
+	private class UserLoginTask extends AsyncTask<String, Void, Boolean> {
 		/**
 		 * The system calls this to perform work in a worker thread and delivers
 		 * it the parameters given to AsyncTask.execute()
 		 */
 		@Override
-		protected Void doInBackground(ParseUser... params) {
-			context = LoginActivity.this;
-			ParseUser user = params[0];
-			DBRetriever.userCoursesQuery(context, user);
+		protected Boolean doInBackground(String... params) {
+			String username = params[0];
+			String password = params[1];
+			ParseUser user = null;
 
-			userCoursesCursor = getContentResolver().query(
-					DB.UserCourses.CONTENT_URI, PROJECTION, null, null, null);
-			return null;
+			try {
+				user = ParseUser.logIn(username, password);
+			} catch (ParseException e) {
+				return false;
+			}
+
+			if (user != null) {
+				// Login successful
+				// if (user.getString(
+				// DB.UserPermission.USER_COLUMN).equals(
+				// DB.UserPermission.USER_STUDENT))
+				DBRetriever.userCoursesQuery(LoginActivity.this, user);
+
+				courseSubscribe();
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 		/**
@@ -74,13 +86,24 @@ public class LoginActivity extends Activity {
 		 * the result from doInBackground()
 		 */
 		@Override
-		protected void onPostExecute(Void result) {
-			while (userCoursesCursor.moveToNext()) {
-				String courseID = userCoursesCursor.getString(0);
-				PushService
-						.subscribe(context, courseID, AnnouncementsActivity.class);
+		protected void onPostExecute(Boolean success) {
+			showProgress(false);
+			if (success) {
+				Intent in = new Intent();
+				setResult(1, in);
+				finish();
+			} else {
+				// Login failed.
+				mPasswordView
+						.setError(getString(R.string.login_incorrectPassword));
+				mPasswordView.requestFocus();
+				error = true;
 			}
-			userCoursesCursor.close();
+		}
+
+		@Override
+		protected void onCancelled() {
+			showProgress(false);
 		}
 	}
 
@@ -172,34 +195,8 @@ public class LoginActivity extends Activity {
 			mLoginStatusMessageView.setText(R.string.login_progressSigningIn);
 			showProgress(true);
 
-			// /////////////
-			// Parse code //
-			// /////////////
-			ParseUser.logInInBackground(mUsername, mPassword,
-					new LogInCallback() {
-						@Override
-						public void done(ParseUser user, ParseException e) {
-							if (e == null && user != null) {
-								// Login successful
-								// if (user.getString(
-								// DB.UserPermission.USER_COLUMN).equals(
-								// DB.UserPermission.USER_STUDENT))
-								courseSubscribe2(user);
-
-								Intent in = new Intent();
-								//Intent in = getIntent();
-								setResult(1, in);
-								LoginActivity.this.finish();
-							} else {
-								// Login failed.
-								showProgress(false);
-								mPasswordView
-										.setError(getString(R.string.login_incorrectPassword));
-								mPasswordView.requestFocus();
-								error = true;
-							}
-						}
-					});
+			UserLoginTask userLoginTask = new UserLoginTask();
+			userLoginTask.execute(mUsername, mPassword);
 		}
 	}
 
@@ -245,46 +242,15 @@ public class LoginActivity extends Activity {
 		}
 	}
 
-	public void courseSubscribe(ParseUser user) {
-		DBRetriever.userCoursesQuery(this, user);
-		JSONArray courses = user.getJSONArray("courses");
-		try {
-			for (int index = 0; index < courses.length(); index++) {
-				String courseID = courses.getString(index);
-				PushService.subscribe(this, courseID, AnnouncementsActivity.class);
-			}
-			Log.d("ParsePush", "Subscribe to " + courses.length() + " channels");
-		} catch (JSONException e) {
-			Log.d("ParsePush", "Error: " + e.getMessage());
-		}
-	}
-
-	private void courseSubscribe2(ParseUser user) {
-		CourseSubscribe courseSubscribe = new CourseSubscribe();
-		courseSubscribe.execute(user);
-//		try {
-//			courseSubscribe.get();
-//		} catch (InterruptedException e1) {
-//			Log.d("CourseSubsribe", "Error: " + e1.getMessage());
-//			e1.printStackTrace();
-//		} catch (ExecutionException e1) {
-//			Log.d("CourseSubsribe", "Error: " + e1.getMessage());
-//		}
-	}
-
-	private void courseSubscribe3(ParseUser user) {
-		final String[] PROJECTION = new String[] { DB.UserCourses.ID };
-
-		DBRetriever.userCoursesQuery(this, user);
-
+	public void courseSubscribe() {
 		Cursor userCoursesCursor = getContentResolver().query(
 				DB.UserCourses.CONTENT_URI, PROJECTION, null, null, null);
 
 		while (userCoursesCursor.moveToNext()) {
 			String courseID = userCoursesCursor.getString(0);
 			PushService.subscribe(this, courseID, AnnouncementsActivity.class);
+			Log.d("CourseSubsribe", courseID);
 		}
 		userCoursesCursor.close();
-
 	}
 }
