@@ -44,7 +44,7 @@ public class WebViewActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.news, menu);
+		getMenuInflater().inflate(R.menu.web_view, menu);
 
 		if (currentUser != null) {
 			MenuItem switchButton = menu.findItem(R.id.action_login);

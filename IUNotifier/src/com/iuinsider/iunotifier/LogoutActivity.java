@@ -27,7 +27,6 @@ public class LogoutActivity extends Activity {
 					public void onClick(View view) {
 						ParseUser user = ParseUser.getCurrentUser();
 						courseUnsubscribe(user);
-						// new CourseUnsubscribe().execute(user);
 						ParseUser.logOut();
 						Intent in = new Intent();
 						setResult(2, in);

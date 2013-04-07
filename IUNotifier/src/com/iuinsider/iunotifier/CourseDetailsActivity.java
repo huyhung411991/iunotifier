@@ -156,7 +156,7 @@ public class CourseDetailsActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.events, menu);
+		getMenuInflater().inflate(R.menu.course_details, menu);
 
 		if (currentUser != null) {
 			MenuItem switchButton = menu.findItem(R.id.action_login);
@@ -193,7 +193,7 @@ public class CourseDetailsActivity extends Activity {
 			}
 			break;
 		case R.id.action_refresh:
-			DBRetriever.courseDetailsQuery(this, courseID, false);
+			new RemoteDataTask().execute(courseID);
 			break;
 		default:
 			break;

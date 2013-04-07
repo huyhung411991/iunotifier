@@ -143,7 +143,7 @@ public class CoursesActivity extends ListActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.events, menu);
+		getMenuInflater().inflate(R.menu.courses, menu);
 
 		if (currentUser != null) {
 			MenuItem switchButton = menu.findItem(R.id.action_login);
@@ -180,7 +180,10 @@ public class CoursesActivity extends ListActivity implements
 			}
 			break;
 		case R.id.action_refresh:
-			DBRetriever.departmentsQuery(this, false);
+			DBRetriever.coursesQuery(this, departmentID, false);
+			break;
+		case R.id.action_reload_all:
+			DBRetriever.coursesQuery(this, departmentID, true);
 			break;
 		default:
 			break;

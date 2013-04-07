@@ -111,7 +111,7 @@ public class DepartmentsActivity extends ListActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.events, menu);
+		getMenuInflater().inflate(R.menu.departments, menu);
 
 		if (currentUser != null) {
 			MenuItem switchButton = menu.findItem(R.id.action_login);
@@ -127,8 +127,10 @@ public class DepartmentsActivity extends ListActivity implements
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			Intent parentActivityIntent = new Intent(this, MainMenuActivity.class);
-			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			Intent parentActivityIntent = new Intent(this,
+					MainMenuActivity.class);
+			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+					| Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(parentActivityIntent);
 			overridePendingTransition(0, R.anim.slide_out_right);
 			finish();
@@ -148,6 +150,9 @@ public class DepartmentsActivity extends ListActivity implements
 		case R.id.action_refresh:
 			DBRetriever.departmentsQuery(this, false);
 			break;
+		case R.id.action_reload_all:
+			DBRetriever.departmentsQuery(this, true);
+			break;
 		default:
 			break;
 		}
@@ -162,18 +167,21 @@ public class DepartmentsActivity extends ListActivity implements
 		super.onActivityResult(requestCode, resultCode, data);
 
 		Toast toast = null;
-		
+
 		if (resultCode == 0) {
 			DepartmentsActivity.this.invalidateOptionsMenu();
 			return;
 		} else if (resultCode == 1) {
-			toast = Toast.makeText(this, "Login Successfully", Toast.LENGTH_LONG);
+			toast = Toast.makeText(this, "Login Successfully",
+					Toast.LENGTH_LONG);
 			DepartmentsActivity.this.invalidateOptionsMenu();
 		} else if (resultCode == 2) {
-			toast = Toast.makeText(this, "Logout Successfully", Toast.LENGTH_LONG);
+			toast = Toast.makeText(this, "Logout Successfully",
+					Toast.LENGTH_LONG);
 			DepartmentsActivity.this.invalidateOptionsMenu();
 		}
-		toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+		toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL,
+				0, 0);
 		toast.show();
 	}
 
@@ -237,14 +245,15 @@ public class DepartmentsActivity extends ListActivity implements
 		// New, more advanced and easy to use transition animation
 		overridePendingTransition(R.anim.slide_in_right, 0);
 	}
-	
+
 	// =========================================================================================
-		public boolean isConnected() {
-			ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-			
-			return (activeNetwork != null && activeNetwork.isConnected());
-		}
+	public boolean isConnected() {
+		ConnectivityManager cm = (ConnectivityManager) this
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+		return (activeNetwork != null && activeNetwork.isConnected());
+	}
 
 	// =========================================================================================
 	public void openMyCourse(View view) {
