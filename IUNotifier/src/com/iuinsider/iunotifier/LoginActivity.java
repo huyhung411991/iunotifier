@@ -1,5 +1,8 @@
 package com.iuinsider.iunotifier;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -40,7 +43,7 @@ public class LoginActivity extends Activity {
 	private TextView mLoginStatusMessageView;
 	private Button mSignInButton;
 	private Button mCancelButton;
-	
+
 	/**
 	 * Keep track of the login task to ensure we can cancel it if requested.
 	 */
@@ -68,11 +71,16 @@ public class LoginActivity extends Activity {
 
 			if (user != null) {
 				// Login successful
-//				String userPermission = user.getString(DB.UserPermission.USER_COLUMN);
-//				if (userPermission.equals(DB.UserPermission.USER_STUDENT))
-					DBRetriever.userCoursesQuery(LoginActivity.this, user);
+				Set<String> roleSet = new TreeSet<String>();
+				roleSet.add(DB.UserPermission.USER_TEACHER);
+				roleSet.add(DB.UserPermission.USER_STUDENT);
+				roleSet.add(DB.UserPermission.USER_ADMIN);
 
-				courseSubscribe();
+				String userRole = user.getString(DB.UserPermission.USER_COLUMN);
+				if (roleSet.contains(userRole))
+					DBRetriever.userCoursesQuery(LoginActivity.this, user);
+				if (userRole.equals(DB.UserPermission.USER_STUDENT))
+					courseSubscribe();
 
 				return true;
 			} else {
@@ -88,7 +96,7 @@ public class LoginActivity extends Activity {
 		protected void onPostExecute(Boolean success) {
 			mAuthTask = null;
 			showProgress(false);
-			
+
 			if (success) {
 				Intent in = new Intent();
 				setResult(1, in);
@@ -114,7 +122,8 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+				IUNotifierApplication.CLIENT_KEY);
 
 		// Set up the login form.
 		mUsernameView = (EditText) findViewById(R.id.login_username_editText);
@@ -162,7 +171,7 @@ public class LoginActivity extends Activity {
 		if (mAuthTask != null) {
 			return;
 		}
-		
+
 		// Reset errors.
 		mUsernameView.setError(null);
 		mPasswordView.setError(null);
@@ -252,13 +261,13 @@ public class LoginActivity extends Activity {
 	public void courseSubscribe() {
 		Cursor userCoursesCursor = getContentResolver().query(
 				DB.UserCourses.CONTENT_URI, PROJECTION, null, null, null);
-		
+
 		while (userCoursesCursor.moveToNext()) {
 			String courseID = userCoursesCursor.getString(0);
-			PushService.subscribe(this, courseID, AnnouncementsActivity.class);	
+			PushService.subscribe(this, courseID, AnnouncementsActivity.class);
 			Log.d("CourseSubsribe", courseID);
 		}
-		
+
 		userCoursesCursor.close();
 	}
 }
