@@ -1,5 +1,8 @@
 package com.iuinsider.iunotifier;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -246,26 +249,45 @@ public class CourseDetailsActivity extends Activity {
 
 	// =========================================================================================
 	public void checkUser() {
+		int pushVisibility = View.INVISIBLE;
+		int separatorVisibility = View.INVISIBLE;
+
 		if (currentUser == null) {
-			findViewById(R.id.course_details_pushAnnouncement_button)
-					.setVisibility(View.INVISIBLE);
-			findViewById(R.id.course_details_seperator).setVisibility(
-					View.INVISIBLE);
+			pushVisibility = View.INVISIBLE;
+			separatorVisibility = View.INVISIBLE;
 		} else {
+			Set<String> roleSet = new TreeSet<String>();
+			roleSet.add(DB.UserPermission.USER_ADMIN);
+			roleSet.add(DB.UserPermission.USER_MODERATOR);
+			roleSet.add(DB.UserPermission.USER_STAFF);
+
 			String userRole = currentUser
 					.getString(DB.UserPermission.USER_COLUMN);
-			if (userRole.equals(DB.UserPermission.USER_ADMIN)) {
-				findViewById(R.id.course_details_pushAnnouncement_button)
-						.setVisibility(View.VISIBLE);
-				findViewById(R.id.course_details_seperator).setVisibility(
-						View.VISIBLE);
+			if (roleSet.contains(userRole)) {
+				pushVisibility = View.VISIBLE;
+				separatorVisibility = View.VISIBLE;
+			} else if (userRole.equals(DB.UserPermission.USER_TEACHER)) {
+				Uri uri = Uri.withAppendedPath(DB.UserCourses.CONTENT_URI,
+						getIntent().getStringExtra(EXTRA_COURSE));
+				Cursor courseCursor = getContentResolver().query(uri, null,
+						null, null, null);
+				if (courseCursor.getCount() > 0) {
+					pushVisibility = View.VISIBLE;
+					separatorVisibility = View.VISIBLE;
+				} else {
+					pushVisibility = View.INVISIBLE;
+					separatorVisibility = View.INVISIBLE;
+				}
 			} else {
-				findViewById(R.id.course_details_pushAnnouncement_button)
-						.setVisibility(View.INVISIBLE);
-				findViewById(R.id.course_details_seperator).setVisibility(
-						View.INVISIBLE);
+				pushVisibility = View.INVISIBLE;
+				separatorVisibility = View.INVISIBLE;
 			}
 		}
+		
+		findViewById(R.id.course_details_pushAnnouncement_button)
+				.setVisibility(pushVisibility);
+		findViewById(R.id.course_details_seperator).setVisibility(
+				separatorVisibility);
 	}
 
 	// =========================================================================================
