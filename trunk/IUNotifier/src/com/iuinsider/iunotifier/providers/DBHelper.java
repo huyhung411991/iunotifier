@@ -10,19 +10,20 @@ public class DBHelper extends SQLiteOpenHelper {
 
 	private static final String CREATE_TABLE_NEWS = "CREATE TABLE "
 			+ DB.News.TABLE_NAME + " (" + DB.News._ID
-			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.News.TITLE
-			+ " TEXT, " + DB.News.LINK + " TEXT, " + DB.News.SOURCE + " TEXT, "
-			+ DB.News.UPDATED_AT + " TEXT)";
+			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.News.ID
+			+ " TEXT UNIQUE, " + DB.News.TITLE + " TEXT, " + DB.News.LINK
+			+ " TEXT, " + DB.News.SOURCE + " TEXT, " + DB.News.UPDATED_AT
+			+ " TEXT)";
 	// ----------------------------------------------------------------------------------
 	private static final String DELETE_TABLE_NEWS = "DROP TABLE IF EXISTS "
 			+ DB.News.TABLE_NAME;
 	// ----------------------------------------------------------------------------------
 	private static final String CREATE_TABLE_EVENTS = "CREATE TABLE "
 			+ DB.Events.TABLE_NAME + " (" + DB.Events._ID
-			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Events.TITLE
-			+ " TEXT, " + DB.Events.DESCRIPTION + " TEXT, " + DB.Events.DATE
-			+ " TEXT, " + DB.Events.PLACE + " TEXT, " + DB.Events.UPDATED_AT
-			+ " TEXT)";
+			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Events.ID
+			+ " TEXT UNIQUE, " + DB.Events.TITLE + " TEXT, "
+			+ DB.Events.DESCRIPTION + " TEXT, " + DB.Events.DATE + " TEXT, "
+			+ DB.Events.PLACE + " TEXT, " + DB.Events.UPDATED_AT + " TEXT)";
 	// ----------------------------------------------------------------------------------
 	private static final String DELETE_TABLE_EVENTS = "DROP TABLE IF EXISTS "
 			+ DB.Events.TABLE_NAME;
@@ -68,10 +69,18 @@ public class DBHelper extends SQLiteOpenHelper {
 			+ DB.UserCourses.TABLE_NAME;
 	// ----------------------------------------------------------------------------------
 	private static final String CREATE_TABLE_COURSE_ANNOUNCEMENTS = "CREATE TABLE "
-			+ DB.Announce.TABLE_NAME + " (" + DB.Announce._ID
-			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + DB.Announce.ID + " TEXT, "
-			+ DB.Announce.COURSE_ID + " TEXT, " + DB.Announce.MESSAGE + " TEXT, "
-			+ DB.Announce.UPDATED_AT + " TEXT, " + DB.Announce.CREATED_AT + " TEXT)";
+			+ DB.Announce.TABLE_NAME
+			+ " ("
+			+ DB.Announce._ID
+			+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+			+ DB.Announce.ID
+			+ " TEXT, "
+			+ DB.Announce.COURSE_ID
+			+ " TEXT, "
+			+ DB.Announce.MESSAGE
+			+ " TEXT, "
+			+ DB.Announce.UPDATED_AT
+			+ " TEXT, " + DB.Announce.CREATED_AT + " TEXT)";
 	// ----------------------------------------------------------------------------------
 	private static final String DELETE_TABLE_COURSE_ANNOUNCEMENTS = "DROP TABLE IF EXISTS "
 			+ DB.Announce.TABLE_NAME;

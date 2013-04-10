@@ -87,7 +87,7 @@ public class NewsActivity extends ListActivity implements
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
 				sortCondition = (String) parent.getItemAtPosition(pos);
-				DBRetriever.allNewsQuery(context, sortCondition);
+				DBRetriever.newsQuery(context, sortCondition);
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
@@ -170,7 +170,7 @@ public class NewsActivity extends ListActivity implements
 			}
 			break;
 		case R.id.action_refresh:
-			DBRetriever.allNewsQuery(this, sortCondition);
+			DBRetriever.newsQuery(this, sortCondition);
 			break;
 		default:
 			break;

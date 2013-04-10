@@ -89,7 +89,7 @@ public class DBRetriever {
 
 	// --------------------------------------------------------------------------------
 	// Run on background task
-	public static void allNewsQuery(Context c, String sortCondition) {
+	public static void newsQuery(Context c, String sortCondition) {
 		context = c;
 
 		// Clear local database table
@@ -108,14 +108,14 @@ public class DBRetriever {
 					while (li.hasNext()) {
 						ParseObject parseObject = li.next();
 						ContentValues news = new ContentValues();
+						news.put(DB.News.ID, parseObject.getString(DB.News.ID));
 						news.put(DB.News.TITLE,
 								parseObject.getString(DB.News.TITLE));
 						news.put(DB.News.LINK,
 								parseObject.getString(DB.News.LINK));
 						news.put(DB.News.SOURCE,
 								parseObject.getString(DB.News.SOURCE));
-
-						Date date = parseObject.getCreatedAt();
+						Date date = parseObject.getUpdatedAt();
 						news.put(DB.News.UPDATED_AT, DateToString(date, 2));
 						context.getContentResolver().insert(
 								DB.News.CONTENT_URI, news);
@@ -132,7 +132,7 @@ public class DBRetriever {
 
 	// --------------------------------------------------------------------------------
 	// Run on background thread
-	public static void allEventsQuery(Context c, String sortCondition) {
+	public static void eventsQuery(Context c, String sortCondition) {
 		context = c;
 
 		// Clear local database table
@@ -161,17 +161,17 @@ public class DBRetriever {
 					while (li.hasNext()) {
 						ParseObject parseObject = li.next();
 						ContentValues event = new ContentValues();
+						event.put(DB.Events.ID,
+								parseObject.getString(DB.Events.ID));
 						event.put(DB.Events.TITLE,
 								parseObject.getString(DB.Events.TITLE));
 						event.put(DB.Events.DESCRIPTION,
 								parseObject.getString(DB.Events.DESCRIPTION));
 						event.put(DB.Events.PLACE,
 								parseObject.getString(DB.Events.PLACE));
-
 						Date date = parseObject.getDate(DB.Events.DATE);
 						event.put(DB.Events.DATE, DateToString(date, 1));
-
-						date = parseObject.getCreatedAt();
+						date = parseObject.getUpdatedAt();
 						event.put(DB.Events.UPDATED_AT, "Created on: "
 								+ DateToString(date, 2));
 						context.getContentResolver().insert(

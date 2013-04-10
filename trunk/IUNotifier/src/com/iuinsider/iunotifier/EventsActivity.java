@@ -84,7 +84,7 @@ public class EventsActivity extends ListActivity implements
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
 				sortCondition = (String) parent.getItemAtPosition(pos);
-				DBRetriever.allEventsQuery(context, sortCondition);
+				DBRetriever.eventsQuery(context, sortCondition);
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
@@ -167,7 +167,7 @@ public class EventsActivity extends ListActivity implements
 			}
 			break;
 		case R.id.action_refresh:
-			DBRetriever.allEventsQuery(this, sortCondition);
+			DBRetriever.eventsQuery(this, sortCondition);
 			break;
 		default:
 			break;

@@ -8,7 +8,7 @@ public class DB {
 	
 	public static abstract class News implements BaseColumns {
 		public static final String TABLE_NAME = "News";
-		public static final String PARSE_ID = "newsID";
+		public static final String ID = "objectID";
 		public static final String TITLE = "newsTitle";
 		public static final String LINK = "newsLink";
 		public static final String SOURCE = "newsSource";
@@ -26,7 +26,7 @@ public class DB {
 	// =========================================================================================
 	public static abstract class Events implements BaseColumns {
 		public static final String TABLE_NAME = "Events";
-		public static final String PARSE_ID = "eventID";
+		public static final String ID = "objectID";
 		public static final String DESCRIPTION = "eventDescription";
 		public static final String TITLE = "eventTitle";
 		public static final String DATE = "eventDate";
