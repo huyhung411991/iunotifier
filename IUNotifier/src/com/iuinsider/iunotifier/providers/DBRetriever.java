@@ -243,7 +243,7 @@ public class DBRetriever {
 			boolean reloadAll) {
 		if (TextUtils.isEmpty(departmentID))
 			return;
-		
+
 		context = c;
 
 		HashMap<String, Object> params = new HashMap<String, Object>();
@@ -342,10 +342,40 @@ public class DBRetriever {
 						parseObject.getString(DB.CourseDetails.NAME));
 				courseDetails.put(DB.CourseDetails.LECTURER,
 						parseObject.getString(DB.CourseDetails.LECTURER));
-				courseDetails.put(DB.CourseDetails.THEORY,
-						parseObject.getString(DB.CourseDetails.THEORY));
-				courseDetails.put(DB.CourseDetails.LAB,
-						parseObject.getString(DB.CourseDetails.LAB));
+				JSONArray theoryList = parseObject
+						.getJSONArray(DB.CourseDetails.THEORY);
+				JSONArray labList = parseObject
+						.getJSONArray(DB.CourseDetails.LAB);
+				String theory = "";
+				String lab = "";
+				if (theoryList != null) {
+					for (int index = 0; index < theoryList.length(); index++) {
+						try {
+							String t = theoryList.getString(index);
+							theory += t;
+							if (index < theoryList.length() - 1)
+								theory += "\n";
+						} catch (JSONException e1) {
+							Log.d(DB.CourseDetails.TABLE_NAME,
+									"Error: " + e1.getMessage());
+						}
+					}
+				}				
+				if (labList != null) {
+					for (int index = 0; index < labList.length(); index++) {
+						try {
+							String l = labList.getString(index);
+							lab += l;
+							if (index < labList.length() - 1)
+								lab += "\n";
+						} catch (JSONException e1) {
+							Log.d(DB.CourseDetails.TABLE_NAME,
+									"Error: " + e1.getMessage());
+						}
+					}
+				}
+				courseDetails.put(DB.CourseDetails.THEORY, theory);
+				courseDetails.put(DB.CourseDetails.LAB, lab);
 				courseDetails.put(DB.CourseDetails.CREDIT,
 						parseObject.getLong(DB.CourseDetails.CREDIT));
 				courseDetails.put(DB.CourseDetails.PREREQUISITE,
@@ -370,7 +400,7 @@ public class DBRetriever {
 			boolean reloadAll) {
 		if (TextUtils.isEmpty(courseID))
 			return;
-		
+
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Announce.TABLE_NAME);
@@ -432,7 +462,7 @@ public class DBRetriever {
 	public static void userCoursesQuery(Context c, ParseUser parseUser) {
 		if (parseUser == null)
 			return;
-		
+
 		context = c;
 
 		// Clear local database table
