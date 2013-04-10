@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -15,15 +16,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-@SuppressLint("SimpleDateFormat")
+import com.parse.Parse;
+
 public class EventDetailsActivity extends Activity {
 
 	// =========================================================================================
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_details);
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+				IUNotifierApplication.CLIENT_KEY);
 
 		Intent intent = getIntent();
 		Bundle bundle = intent.getExtras();
@@ -42,9 +45,11 @@ public class EventDetailsActivity extends Activity {
 
 		// Format time, date
 		Date datetime = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		SimpleDateFormat sdf2 = new SimpleDateFormat("EEEE, dd-MM-yyyy");
-		SimpleDateFormat sdf3 = new SimpleDateFormat("HH:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm",
+				Locale.US);
+		SimpleDateFormat sdf2 = new SimpleDateFormat("EEEE, dd-MM-yyyy",
+				Locale.US);
+		SimpleDateFormat sdf3 = new SimpleDateFormat("HH:mm", Locale.US);
 
 		try {
 			datetime = sdf.parse(eventDateTime);

@@ -34,6 +34,7 @@ public class DBRetriever {
 			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd HH:mm:ss.SSS",
 			"yyyy-MM-dd" };
 
+	// --------------------------------------------------------------------------------
 	public static String DateToString(Date date, int format) {
 		if (date == null || format > formats.length || format < 0)
 			return "";
@@ -44,6 +45,7 @@ public class DBRetriever {
 		return string;
 	}
 
+	// --------------------------------------------------------------------------------
 	public static Date StringToDate(String string, int format) {
 		if (TextUtils.isEmpty(string) || format > formats.length || format < 0)
 			return null;
@@ -86,6 +88,7 @@ public class DBRetriever {
 	}
 
 	// --------------------------------------------------------------------------------
+	// Run on background task
 	public static void allNewsQuery(Context c, String sortCondition) {
 		context = c;
 
@@ -113,7 +116,7 @@ public class DBRetriever {
 								parseObject.getString(DB.News.SOURCE));
 
 						Date date = parseObject.getCreatedAt();
-						news.put(DB.News.CREATED_AT, DateToString(date, 2));
+						news.put(DB.News.UPDATED_AT, DateToString(date, 2));
 						context.getContentResolver().insert(
 								DB.News.CONTENT_URI, news);
 					}
@@ -128,6 +131,7 @@ public class DBRetriever {
 	}
 
 	// --------------------------------------------------------------------------------
+	// Run on background thread
 	public static void allEventsQuery(Context c, String sortCondition) {
 		context = c;
 
@@ -168,7 +172,7 @@ public class DBRetriever {
 						event.put(DB.Events.DATE, DateToString(date, 1));
 
 						date = parseObject.getCreatedAt();
-						event.put(DB.Events.CREATED_AT, "Created on: "
+						event.put(DB.Events.UPDATED_AT, "Created on: "
 								+ DateToString(date, 2));
 						context.getContentResolver().insert(
 								DB.Events.CONTENT_URI, event);
@@ -184,6 +188,7 @@ public class DBRetriever {
 	}
 
 	// --------------------------------------------------------------------------------
+	// Run on background thread
 	public static void departmentsQuery(Context c, boolean reloadAll) {
 		context = c;
 
@@ -233,6 +238,7 @@ public class DBRetriever {
 	}
 
 	// --------------------------------------------------------------------------------
+	// Run on background thread
 	public static void coursesQuery(Context c, String departmentID,
 			boolean reloadAll) {
 		context = c;
@@ -293,6 +299,7 @@ public class DBRetriever {
 	}
 
 	// --------------------------------------------------------------------------------
+	// Run on calling thread
 	public static void courseDetailsQuery(Context c, String courseID,
 			boolean reloadAll) {
 		if (TextUtils.isEmpty(courseID) || courseID == null)
@@ -355,6 +362,7 @@ public class DBRetriever {
 	}
 
 	// --------------------------------------------------------------------------------
+	// Run on background thread
 	public static void announcementsQuery(Context c, String courseID,
 			boolean reloadAll) {
 		context = c;
@@ -392,11 +400,11 @@ public class DBRetriever {
 								parseObject.getString(DB.Announce.COURSE_ID));
 						announce.put(DB.Announce.MESSAGE,
 								parseObject.getString(DB.Announce.MESSAGE));
-						
+
 						Date date = parseObject.getUpdatedAt();
 						announce.put(DB.Announce.UPDATED_AT,
 								DateToString(date, 1));
-						
+
 						date = parseObject.getCreatedAt();
 						announce.put(DB.Announce.CREATED_AT,
 								DateToString(date, 2));
@@ -414,6 +422,7 @@ public class DBRetriever {
 	}
 
 	// --------------------------------------------------------------------------------
+	// Run on calling thread
 	public static void userCoursesQuery(Context c, ParseUser parseUser) {
 		context = c;
 
@@ -451,8 +460,10 @@ public class DBRetriever {
 	}
 
 	// --------------------------------------------------------------------------------
-	public static void pushAnnouncement(String courseID, String message, final Context c) {
-		
+	// Run on background thread
+	public static void pushAnnouncement(String courseID, String message,
+			final Context c) {
+
 		HashMap<String, Object> params = new HashMap<String, Object>();
 
 		params.put("courseid", courseID);
@@ -461,12 +472,17 @@ public class DBRetriever {
 				new FunctionCallback<String>() {
 					public void done(String returnMsg, ParseException e) {
 						if (e == null) {
-							Toast toast = Toast.makeText(c, returnMsg, Toast.LENGTH_SHORT);
-							toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+							Toast toast = Toast.makeText(c, returnMsg,
+									Toast.LENGTH_SHORT);
+							toast.setGravity(Gravity.CENTER_VERTICAL
+									| Gravity.CENTER_HORIZONTAL, 0, 0);
 							toast.show();
 						} else {
-							Toast toast = Toast.makeText(c, "Something goes wrong. Please try again!", Toast.LENGTH_SHORT);
-							toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+							Toast toast = Toast.makeText(c,
+									"Something goes wrong. Please try again!",
+									Toast.LENGTH_SHORT);
+							toast.setGravity(Gravity.CENTER_VERTICAL
+									| Gravity.CENTER_HORIZONTAL, 0, 0);
 							toast.show();
 							Log.d(DB.Announce.TABLE_NAME,
 									"Error: " + e.getMessage());
@@ -474,4 +490,5 @@ public class DBRetriever {
 					}
 				});
 	}
+
 }

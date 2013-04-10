@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-///////////////////////////////////////////////////////////////////////////////////////////////
 public class DB {
 	
 	public static abstract class News implements BaseColumns {
@@ -13,7 +12,7 @@ public class DB {
 		public static final String TITLE = "newsTitle";
 		public static final String LINK = "newsLink";
 		public static final String SOURCE = "newsSource";
-		public static final String CREATED_AT = "createdAt";
+		public static final String UPDATED_AT = "updatedAt";
 
 		public static final String AUTHORITY = "com.iuinsider.iunotifier.provider";
 		public static final Uri CONTENT_URI = Uri.parse("content://"
@@ -24,7 +23,7 @@ public class DB {
 				+ "/" + AUTHORITY + "." + TABLE_NAME;
 	}
 
-	// /////////////////////////////////////////////////////////////////////////////////////////////
+	// =========================================================================================
 	public static abstract class Events implements BaseColumns {
 		public static final String TABLE_NAME = "Events";
 		public static final String PARSE_ID = "eventID";
@@ -32,7 +31,7 @@ public class DB {
 		public static final String TITLE = "eventTitle";
 		public static final String DATE = "eventDate";
 		public static final String PLACE = "eventPlace";
-		public static final String CREATED_AT = "createdAt";
+		public static final String UPDATED_AT = "updatedAt";
 
 		public static final String AUTHORITY = "com.iuinsider.iunotifier.provider";
 		public static final Uri CONTENT_URI = Uri.parse("content://"
@@ -44,7 +43,7 @@ public class DB {
 
 	}
 
-	// /////////////////////////////////////////////////////////////////////////////////////////////
+	// =========================================================================================
 	public static abstract class Departments implements BaseColumns {
 		public static final String TABLE_NAME = "Departments";
 		public static final String ID = "departmentID";
@@ -61,7 +60,7 @@ public class DB {
 
 	}
 
-	// /////////////////////////////////////////////////////////////////////////////////////////////
+	// =========================================================================================
 	public static abstract class Courses implements BaseColumns {
 		public static final String TABLE_NAME = "Courses";
 		public static final String ID = "courseID";
@@ -79,7 +78,7 @@ public class DB {
 
 	}
 
-	// /////////////////////////////////////////////////////////////////////////////////////////////
+	// =========================================================================================
 	public static abstract class UserCourses implements BaseColumns {
 		public static final String TABLE_NAME = "UserCourses";
 		public static final String ID = "courseID";
@@ -95,7 +94,7 @@ public class DB {
 
 	}
 
-	// /////////////////////////////////////////////////////////////////////////////////////////////
+	// =========================================================================================
 	public static abstract class CourseDetails implements BaseColumns {
 		public static final String TABLE_NAME = "CourseDetails";
 		public static final String ID = "courseID";
@@ -116,7 +115,7 @@ public class DB {
 				+ "/" + AUTHORITY + "." + TABLE_NAME;
 	}
 
-	// /////////////////////////////////////////////////////////////////////////////////////////////
+	// =========================================================================================
 	public static abstract class Announce implements BaseColumns {
 		public static final String TABLE_NAME = "Announcements";
 		public static final String ID = "objectId";
@@ -136,6 +135,7 @@ public class DB {
 				+ "/" + AUTHORITY + "." + TABLE_NAME;
 	}
 	
+	// =========================================================================================
 	public static class UserPermission {
 		public static final String USER_COLUMN = "Permission";
 		public static final String USER_ADMIN = "admin";
@@ -144,7 +144,8 @@ public class DB {
 		public static final String USER_TEACHER = "teacher";
 		public static final String USER_STUDENT = "student";
 	}
-
+	
+	// =========================================================================================
 	private DB() {
 	}
 }

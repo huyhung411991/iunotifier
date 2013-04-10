@@ -8,10 +8,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
+import android.widget.Toast;
 
+import com.parse.Parse;
 import com.parse.ParseUser;
 
 public class MainMenuActivity extends Activity {
@@ -23,6 +24,7 @@ public class MainMenuActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
 		currentUser = ParseUser.getCurrentUser();
 
 		// Load icon
@@ -56,8 +58,7 @@ public class MainMenuActivity extends Activity {
 			if (currentUser != null) {
 				intent = new Intent(this, LogoutActivity.class);
 				startActivityForResult(intent, 0);
-			}
-			else { // Go to user login page
+			} else { // Go to user login page
 				intent = new Intent(this, LoginActivity.class);
 				startActivityForResult(intent, 0);
 			}
@@ -85,16 +86,20 @@ public class MainMenuActivity extends Activity {
 		if (resultCode == 0) {
 			MainMenuActivity.this.invalidateOptionsMenu();
 			return;
-		}else if (resultCode == 1) {
-			toast = Toast.makeText(this, "Login Successfully", Toast.LENGTH_LONG);
+		} else if (resultCode == 1) {
+			toast = Toast.makeText(this, "Login Successfully",
+					Toast.LENGTH_LONG);
 			MainMenuActivity.this.invalidateOptionsMenu();
 		} else if (resultCode == 2) {
-			toast = Toast.makeText(this, "Logout Successfully", Toast.LENGTH_LONG);
+			toast = Toast.makeText(this, "Logout Successfully",
+					Toast.LENGTH_LONG);
 			MainMenuActivity.this.invalidateOptionsMenu();
-		}else if (resultCode == 3) {
-			toast = Toast.makeText(this, "All Data Is Deleted", Toast.LENGTH_LONG);	
+		} else if (resultCode == 3) {
+			toast = Toast.makeText(this, "All Data Is Deleted",
+					Toast.LENGTH_LONG);
 		}
-		toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+		toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL,
+				0, 0);
 		toast.show();
 	}
 

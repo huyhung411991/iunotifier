@@ -7,8 +7,8 @@ import com.parse.PushService;
 
 public class IUNotifierApplication extends Application {
 
-	private static final String APPLICATION_ID = "aOLPYGKDCQbJLA4QuW7vMGYXZUBtsTyXgVtVKpdL";
-	private static final String CLIENT_KEY = "ZnwcYv8Om99dwbgdoLwMboLrbQjYBHwF0TDDXslf";
+	public static final String APPLICATION_ID = "aOLPYGKDCQbJLA4QuW7vMGYXZUBtsTyXgVtVKpdL";
+	public static final String CLIENT_KEY = "ZnwcYv8Om99dwbgdoLwMboLrbQjYBHwF0TDDXslf";
 
 	@Override
 	public void onCreate() {

@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.PushService;
@@ -113,6 +114,7 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
 
 		// Set up the login form.
 		mUsernameView = (EditText) findViewById(R.id.login_username_editText);
@@ -250,13 +252,13 @@ public class LoginActivity extends Activity {
 	public void courseSubscribe() {
 		Cursor userCoursesCursor = getContentResolver().query(
 				DB.UserCourses.CONTENT_URI, PROJECTION, null, null, null);
-
+		
 		while (userCoursesCursor.moveToNext()) {
 			String courseID = userCoursesCursor.getString(0);
-			PushService.subscribe(this, courseID, AnnouncementsActivity.class);
-			
+			PushService.subscribe(this, courseID, AnnouncementsActivity.class);	
 			Log.d("CourseSubsribe", courseID);
 		}
+		
 		userCoursesCursor.close();
 	}
 }

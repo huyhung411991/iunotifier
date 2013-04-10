@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.iuinsider.iunotifier.providers.DBRetriever;
+import com.parse.Parse;
 
 public class PushAnnouncementActivity extends Activity {
 
@@ -26,13 +27,12 @@ public class PushAnnouncementActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_push_announcement);
-//		currentUser = ParseUser.getCurrentUser();
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
 
 		courseID = getIntent().getStringExtra(EXTRA_COURSE);
 		if (courseID == null) {
 			finish();
 		}
-		
 
 		context = this;
 		announcementContent = (EditText) findViewById(R.id.announcement_content);

@@ -1,11 +1,11 @@
 package com.iuinsider.iunotifier;
 
-import com.iuinsider.iunotifier.providers.DB;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import com.iuinsider.iunotifier.providers.DB;
 
 public class ResetDataActivity extends Activity {
 

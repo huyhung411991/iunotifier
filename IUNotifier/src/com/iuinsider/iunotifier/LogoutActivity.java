@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.iuinsider.iunotifier.providers.DB;
+import com.parse.Parse;
 import com.parse.ParseUser;
 import com.parse.PushService;
 
@@ -20,13 +21,13 @@ public class LogoutActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_logout);
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
 
 		findViewById(R.id.logout_yes_button).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						ParseUser user = ParseUser.getCurrentUser();
-						courseUnsubscribe(user);
+						courseUnsubscribe();
 						ParseUser.logOut();
 						Intent in = new Intent();
 						setResult(2, in);
@@ -43,7 +44,7 @@ public class LogoutActivity extends Activity {
 				});
 	}
 
-	public void courseUnsubscribe(ParseUser user) {
+	public void courseUnsubscribe() {
 		Cursor userCoursesCursor = getContentResolver().query(
 				DB.UserCourses.CONTENT_URI, PROJECTION, null, null, null);
 

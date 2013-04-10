@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
+import com.parse.Parse;
 import com.parse.ParseUser;
 
 public class AnnouncementsActivity extends ListActivity implements
@@ -49,6 +50,7 @@ public class AnnouncementsActivity extends ListActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_announcements);
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
 
 		ProgressBar progressBar = (ProgressBar) this
 				.findViewById(R.id.announcements_progressBar);
