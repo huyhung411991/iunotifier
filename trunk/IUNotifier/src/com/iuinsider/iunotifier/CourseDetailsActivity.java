@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
+import com.parse.Parse;
 import com.parse.ParseUser;
 
 public class CourseDetailsActivity extends Activity {
@@ -93,6 +94,8 @@ public class CourseDetailsActivity extends Activity {
 						R.id.course_details_courseLab_textView);
 				loadCourseInfo(courseCursor, DB.CourseDetails.CREDIT,
 						R.id.course_details_courseCredit_textView);
+				loadCourseInfo(courseCursor, DB.CourseDetails.PREREQUISITE,
+						R.id.course_details_coursePrerequisite_textView);
 
 				courseCursor.close();
 				CourseDetailsActivity.this.progressDialog.dismiss();
@@ -105,6 +108,8 @@ public class CourseDetailsActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_course_details);
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+				IUNotifierApplication.CLIENT_KEY);
 
 		// Check current user
 		currentUser = ParseUser.getCurrentUser();
@@ -113,7 +118,7 @@ public class CourseDetailsActivity extends Activity {
 		courseID = getIntent().getStringExtra(EXTRA_COURSE);
 		if (courseID == null)
 			finish();
-		
+
 		if (isConnected()) {
 			new RemoteDataTask().execute(courseID);
 			Log.d("Network", "Network available");
@@ -213,13 +218,16 @@ public class CourseDetailsActivity extends Activity {
 			CourseDetailsActivity.this.invalidateOptionsMenu();
 			return;
 		} else if (resultCode == 1) {
-			toast = Toast.makeText(this, "Login Successfully", Toast.LENGTH_LONG);
+			toast = Toast.makeText(this, "Login Successfully",
+					Toast.LENGTH_LONG);
 			CourseDetailsActivity.this.invalidateOptionsMenu();
 		} else if (resultCode == 2) {
-			toast = Toast.makeText(this, "Logout Successfully", Toast.LENGTH_LONG);
+			toast = Toast.makeText(this, "Logout Successfully",
+					Toast.LENGTH_LONG);
 			CourseDetailsActivity.this.invalidateOptionsMenu();
 		}
-		toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+		toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL,
+				0, 0);
 		toast.show();
 	}
 
@@ -275,14 +283,15 @@ public class CourseDetailsActivity extends Activity {
 			textView.setText(value);
 		}
 	}
-	
+
 	// =========================================================================================
-		public boolean isConnected() {
-			ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-			
-			return (activeNetwork != null && activeNetwork.isConnected());
-		}
+	public boolean isConnected() {
+		ConnectivityManager cm = (ConnectivityManager) this
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+		return (activeNetwork != null && activeNetwork.isConnected());
+	}
 
 	// =========================================================================================
 	/** Called when the user clicks the Announcements button */

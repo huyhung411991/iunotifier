@@ -24,7 +24,7 @@
         <provider
             android:name="com.iuinsider.iunotifier.providers.IUContentProvider"
             android:authorities="com.iuinsider.iunotifier.provider"
-            tools:ignore="ExportedContentProvider" >
+            android:exported="false" >
         </provider>
 
         <service android:name="com.parse.PushService" />

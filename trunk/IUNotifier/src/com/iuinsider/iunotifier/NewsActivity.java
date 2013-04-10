@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
+import com.parse.Parse;
 import com.parse.ParseUser;
 
 public class NewsActivity extends ListActivity implements
@@ -39,19 +40,20 @@ public class NewsActivity extends ListActivity implements
 
 	// These are the Contacts rows that we will retrieve
 	private static final String[] PROJECTION = new String[] { DB.News._ID,
-			DB.News.TITLE, DB.News.LINK, DB.News.SOURCE, DB.News.CREATED_AT };
+			DB.News.TITLE, DB.News.LINK, DB.News.SOURCE, DB.News.UPDATED_AT };
 
 	// This is the select criteria
 	private static final String SELECTION = "";
 
 	// This is the sorting order
-	private static final String SORTORDER = DB.News.CREATED_AT + " DESC";
+	private static final String SORTORDER = DB.News.UPDATED_AT + " DESC";
 
 	// =========================================================================================
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_news);
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
 
 		ProgressBar progressBar = (ProgressBar) this
 				.findViewById(R.id.news_progressBar);
@@ -62,7 +64,7 @@ public class NewsActivity extends ListActivity implements
 
 		// For the cursor adapter, specify which columns go into which views
 		String[] fromColumns = { DB.News.TITLE, /*DB.News.SOURCE,*/
-				DB.News.CREATED_AT };
+				DB.News.UPDATED_AT };
 		int[] toViews = { android.R.id.text1, /*android.R.id.text2,*/ R.id.text3 };
 
 		// Create an empty adapter we will use to display the loaded data.

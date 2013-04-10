@@ -15,16 +15,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
+import com.parse.Parse;
 import com.parse.ParseUser;
 
 public class EventsActivity extends ListActivity implements
@@ -38,19 +39,20 @@ public class EventsActivity extends ListActivity implements
 	// These are the Contacts rows that we will retrieve
 	private static final String[] PROJECTION = new String[] { DB.Events._ID,
 			DB.Events.TITLE, DB.Events.DESCRIPTION, DB.Events.DATE,
-			DB.Events.PLACE, DB.Events.CREATED_AT };
+			DB.Events.PLACE, DB.Events.UPDATED_AT };
 
 	// This is the select criteria
 	private static final String SELECTION = "";
 
 	// This is the sorting order
-	private static final String SORTORDER = DB.Events.CREATED_AT + " DESC";
+	private static final String SORTORDER = DB.Events.UPDATED_AT + " DESC";
 
 	// =========================================================================================
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_events);
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
 
 		ProgressBar progressBar = (ProgressBar) this
 				.findViewById(R.id.events_progressBar);
@@ -59,7 +61,7 @@ public class EventsActivity extends ListActivity implements
 		currentUser = ParseUser.getCurrentUser();
 
 		// For the cursor adapter, specify which columns go into which views
-		String[] fromColumns = { DB.Events.TITLE, DB.Events.CREATED_AT };
+		String[] fromColumns = { DB.Events.TITLE, DB.Events.UPDATED_AT };
 		int[] toViews = { android.R.id.text1, android.R.id.text2 }; 
 
 		// Create an empty adapter we will use to display the loaded data.

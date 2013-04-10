@@ -1,7 +1,5 @@
 package com.iuinsider.iunotifier;
 
-import com.parse.ParseUser;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.parse.Parse;
+import com.parse.ParseUser;
 
 public class WebViewActivity extends Activity {
 
@@ -28,6 +29,7 @@ public class WebViewActivity extends Activity {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_web_view);
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
 
 		Intent intent = getIntent();
 		link = intent.getStringExtra(EXTRA_LINK);
