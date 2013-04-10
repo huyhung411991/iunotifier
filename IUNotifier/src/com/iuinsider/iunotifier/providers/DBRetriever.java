@@ -241,6 +241,9 @@ public class DBRetriever {
 	// Run on background thread
 	public static void coursesQuery(Context c, String departmentID,
 			boolean reloadAll) {
+		if (TextUtils.isEmpty(departmentID))
+			return;
+		
 		context = c;
 
 		HashMap<String, Object> params = new HashMap<String, Object>();
@@ -302,7 +305,7 @@ public class DBRetriever {
 	// Run on calling thread
 	public static void courseDetailsQuery(Context c, String courseID,
 			boolean reloadAll) {
-		if (TextUtils.isEmpty(courseID) || courseID == null)
+		if (TextUtils.isEmpty(courseID))
 			return;
 
 		context = c;
@@ -365,6 +368,9 @@ public class DBRetriever {
 	// Run on background thread
 	public static void announcementsQuery(Context c, String courseID,
 			boolean reloadAll) {
+		if (TextUtils.isEmpty(courseID))
+			return;
+		
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Announce.TABLE_NAME);
@@ -424,10 +430,10 @@ public class DBRetriever {
 	// --------------------------------------------------------------------------------
 	// Run on calling thread
 	public static void userCoursesQuery(Context c, ParseUser parseUser) {
-		context = c;
-
 		if (parseUser == null)
 			return;
+		
+		context = c;
 
 		// Clear local database table
 		context.getContentResolver().delete(DB.UserCourses.CONTENT_URI, null,
