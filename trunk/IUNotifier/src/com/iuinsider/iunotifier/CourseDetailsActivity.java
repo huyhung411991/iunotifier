@@ -111,10 +111,10 @@ public class CourseDetailsActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_course_details);
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
-				IUNotifierApplication.CLIENT_KEY);
 
 		// Check current user
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+				IUNotifierApplication.CLIENT_KEY);
 		currentUser = ParseUser.getCurrentUser();
 		checkUser();
 
@@ -193,9 +193,7 @@ public class CourseDetailsActivity extends Activity {
 			if (currentUser != null) {
 				intent = new Intent(this, LogoutActivity.class);
 				startActivityForResult(intent, 0);
-			}
-			// Go to user login page
-			else {
+			} else { // Go to user login page
 				intent = new Intent(this, LoginActivity.class);
 				startActivityForResult(intent, 0);
 			}
@@ -283,7 +281,7 @@ public class CourseDetailsActivity extends Activity {
 				separatorVisibility = View.INVISIBLE;
 			}
 		}
-		
+
 		findViewById(R.id.course_details_pushAnnouncement_button)
 				.setVisibility(pushVisibility);
 		findViewById(R.id.course_details_seperator).setVisibility(

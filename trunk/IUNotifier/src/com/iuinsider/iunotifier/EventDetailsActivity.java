@@ -16,8 +16,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.parse.Parse;
-
 public class EventDetailsActivity extends Activity {
 
 	// =========================================================================================
@@ -25,8 +23,6 @@ public class EventDetailsActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_details);
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
-				IUNotifierApplication.CLIENT_KEY);
 
 		Intent intent = getIntent();
 		Bundle bundle = intent.getExtras();

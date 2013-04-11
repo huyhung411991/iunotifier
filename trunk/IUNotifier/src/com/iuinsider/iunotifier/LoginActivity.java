@@ -79,7 +79,8 @@ public class LoginActivity extends Activity {
 				String userRole = user.getString(DB.UserPermission.USER_COLUMN);
 				if (roleSet.contains(userRole))
 					DBRetriever.userCoursesQuery(LoginActivity.this, user);
-				if (userRole.equals(DB.UserPermission.USER_STUDENT))
+				if (userRole.equals(DB.UserPermission.USER_STUDENT)
+						|| userRole.equals(DB.UserPermission.USER_ADMIN))
 					courseSubscribe();
 
 				return true;

@@ -10,26 +10,18 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.parse.Parse;
-import com.parse.ParseUser;
-
 public class WebViewActivity extends Activity {
 
 	private static final String EXTRA_LINK = ".com.iuinsider.iunotifier.LINK";
 
-	private ParseUser currentUser = ParseUser.getCurrentUser();
 	private static WebView myWebView = null;
 	private static String link = "";
 
 	// =========================================================================================
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// Set animation when opening or closing activity
-		// getWindow().getAttributes().windowAnimations = R.style.Slide;
-
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_web_view);
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
 
 		Intent intent = getIntent();
 		link = intent.getStringExtra(EXTRA_LINK);
@@ -47,11 +39,7 @@ public class WebViewActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.web_view, menu);
-
-		if (currentUser != null) {
-			MenuItem switchButton = menu.findItem(R.id.action_login);
-			switchButton.setIcon(R.drawable.sign_in);
-		}
+		
 		return true;
 	}
 
@@ -72,8 +60,10 @@ public class WebViewActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			Intent parentActivityIntent = new Intent(this, MainMenuActivity.class);
-			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			Intent parentActivityIntent = new Intent(this,
+					MainMenuActivity.class);
+			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+					| Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(parentActivityIntent);
 			overridePendingTransition(0, R.anim.slide_out_right);
 			finish();

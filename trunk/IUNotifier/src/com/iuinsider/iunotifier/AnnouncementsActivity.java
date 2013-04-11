@@ -50,7 +50,11 @@ public class AnnouncementsActivity extends ListActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_announcements);
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
+
+		// Get current user
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+				IUNotifierApplication.CLIENT_KEY);
+		currentUser = ParseUser.getCurrentUser();
 
 		ProgressBar progressBar = (ProgressBar) this
 				.findViewById(R.id.announcements_progressBar);
@@ -70,7 +74,7 @@ public class AnnouncementsActivity extends ListActivity implements
 		}
 
 		// For the cursor adapter, specify which columns go into which views
-		String[] fromColumns = { DB.Announce.MESSAGE, DB.Announce.CREATED_AT};
+		String[] fromColumns = { DB.Announce.MESSAGE, DB.Announce.CREATED_AT };
 		int[] toViews = { android.R.id.text1, R.id.text3 };
 
 		// Create an empty adapter we will use to display the loaded data.
@@ -178,15 +182,17 @@ public class AnnouncementsActivity extends ListActivity implements
 		if (resultCode == 0) {
 			AnnouncementsActivity.this.invalidateOptionsMenu();
 			return;
-		}
-		else if (resultCode == 1) {
-			toast = Toast.makeText(this, "Login Successfully", Toast.LENGTH_LONG);
+		} else if (resultCode == 1) {
+			toast = Toast.makeText(this, "Login Successfully",
+					Toast.LENGTH_LONG);
 			AnnouncementsActivity.this.invalidateOptionsMenu();
 		} else if (resultCode == 2) {
-			toast = Toast.makeText(this, "Logout Successfully", Toast.LENGTH_LONG);
+			toast = Toast.makeText(this, "Logout Successfully",
+					Toast.LENGTH_LONG);
 			AnnouncementsActivity.this.invalidateOptionsMenu();
 		}
-		toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+		toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL,
+				0, 0);
 		toast.show();
 	}
 

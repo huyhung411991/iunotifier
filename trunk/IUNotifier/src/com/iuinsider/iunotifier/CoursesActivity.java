@@ -58,15 +58,17 @@ public class CoursesActivity extends ListActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_courses);
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
+
+		// Get current user
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+				IUNotifierApplication.CLIENT_KEY);
+		currentUser = ParseUser.getCurrentUser();
 
 		ProgressBar progressBar = (ProgressBar) this
 				.findViewById(R.id.course_progressBar);
 		getListView().setEmptyView(progressBar);
 
-		currentUser = ParseUser.getCurrentUser();
 		departmentID = getIntent().getStringExtra(EXTRA_DEPARTMENT);
-
 		if (isConnected()) {
 			if (departmentID == null || !departmentID.equals("USER"))
 				DBRetriever.coursesQuery(this, departmentID, false);
@@ -174,9 +176,7 @@ public class CoursesActivity extends ListActivity implements
 			if (currentUser != null) {
 				intent = new Intent(this, LogoutActivity.class);
 				startActivityForResult(intent, 0);
-			}
-			// Go to user login page
-			else {
+			} else { // Go to user login page
 				intent = new Intent(this, LoginActivity.class);
 				startActivityForResult(intent, 0);
 			}

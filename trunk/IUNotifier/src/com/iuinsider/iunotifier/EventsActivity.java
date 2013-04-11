@@ -52,17 +52,19 @@ public class EventsActivity extends ListActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_events);
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
+
+		// Get current user
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+				IUNotifierApplication.CLIENT_KEY);
+		currentUser = ParseUser.getCurrentUser();
 
 		ProgressBar progressBar = (ProgressBar) this
 				.findViewById(R.id.events_progressBar);
 		getListView().setEmptyView(progressBar);
 
-		currentUser = ParseUser.getCurrentUser();
-
 		// For the cursor adapter, specify which columns go into which views
 		String[] fromColumns = { DB.Events.TITLE, DB.Events.UPDATED_AT };
-		int[] toViews = { android.R.id.text1, android.R.id.text2 }; 
+		int[] toViews = { android.R.id.text1, android.R.id.text2 };
 
 		// Create an empty adapter we will use to display the loaded data.
 		// We pass null for the cursor, then update it in onLoadFinished()
@@ -148,8 +150,10 @@ public class EventsActivity extends ListActivity implements
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			Intent parentActivityIntent = new Intent(this, MainMenuActivity.class);
-			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			Intent parentActivityIntent = new Intent(this,
+					MainMenuActivity.class);
+			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+					| Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(parentActivityIntent);
 			overridePendingTransition(0, R.anim.slide_out_right);
 			finish();
@@ -159,9 +163,7 @@ public class EventsActivity extends ListActivity implements
 			if (currentUser != null) {
 				intent = new Intent(this, LogoutActivity.class);
 				startActivityForResult(intent, 0);
-			}
-			// Go to user login page
-			else {
+			} else { // Go to user login page
 				intent = new Intent(this, LoginActivity.class);
 				startActivityForResult(intent, 0);
 			}
@@ -183,18 +185,21 @@ public class EventsActivity extends ListActivity implements
 		super.onActivityResult(requestCode, resultCode, data);
 
 		Toast toast = null;
-		
+
 		if (resultCode == 0) {
 			EventsActivity.this.invalidateOptionsMenu();
 			return;
 		} else if (resultCode == 1) {
-			toast = Toast.makeText(this, "Login Successfully", Toast.LENGTH_LONG);
+			toast = Toast.makeText(this, "Login Successfully",
+					Toast.LENGTH_LONG);
 			EventsActivity.this.invalidateOptionsMenu();
 		} else if (resultCode == 2) {
-			toast = Toast.makeText(this, "Logout Successfully", Toast.LENGTH_LONG);
+			toast = Toast.makeText(this, "Logout Successfully",
+					Toast.LENGTH_LONG);
 			EventsActivity.this.invalidateOptionsMenu();
 		}
-		toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+		toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL,
+				0, 0);
 		toast.show();
 	}
 

@@ -24,7 +24,10 @@ public class MainMenuActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
+
+		// Get current user
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+				IUNotifierApplication.CLIENT_KEY);
 		currentUser = ParseUser.getCurrentUser();
 
 		// Load icon
@@ -167,4 +170,5 @@ public class MainMenuActivity extends Activity {
 		// Transition animation
 		overridePendingTransition(R.anim.slide_in_right, 0);
 	}
+
 }

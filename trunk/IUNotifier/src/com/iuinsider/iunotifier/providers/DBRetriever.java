@@ -360,7 +360,7 @@ public class DBRetriever {
 									"Error: " + e1.getMessage());
 						}
 					}
-				}				
+				}
 				if (labList != null) {
 					for (int index = 0; index < labList.length(); index++) {
 						try {
@@ -440,8 +440,6 @@ public class DBRetriever {
 						Date date = parseObject.getUpdatedAt();
 						announce.put(DB.Announce.UPDATED_AT,
 								DateToString(date, 1));
-
-						date = parseObject.getCreatedAt();
 						announce.put(DB.Announce.CREATED_AT,
 								DateToString(date, 2));
 						context.getContentResolver().insert(
@@ -498,8 +496,8 @@ public class DBRetriever {
 	// --------------------------------------------------------------------------------
 	// Run on background thread
 	public static void pushAnnouncement(String courseID, String message,
-			final Context c) {
-
+			Context c) {
+		context = c;
 		HashMap<String, Object> params = new HashMap<String, Object>();
 
 		params.put("courseid", courseID);
@@ -508,13 +506,13 @@ public class DBRetriever {
 				new FunctionCallback<String>() {
 					public void done(String returnMsg, ParseException e) {
 						if (e == null) {
-							Toast toast = Toast.makeText(c, returnMsg,
+							Toast toast = Toast.makeText(context, returnMsg,
 									Toast.LENGTH_SHORT);
 							toast.setGravity(Gravity.CENTER_VERTICAL
 									| Gravity.CENTER_HORIZONTAL, 0, 0);
 							toast.show();
 						} else {
-							Toast toast = Toast.makeText(c,
+							Toast toast = Toast.makeText(context,
 									"Something goes wrong. Please try again!",
 									Toast.LENGTH_SHORT);
 							toast.setGravity(Gravity.CENTER_VERTICAL
