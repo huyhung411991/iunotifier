@@ -49,9 +49,12 @@ public class DepartmentsActivity extends ListActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_department);
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID, IUNotifierApplication.CLIENT_KEY);
 
+		// Go to user login page
+		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+				IUNotifierApplication.CLIENT_KEY);
 		currentUser = ParseUser.getCurrentUser();
+
 		ProgressBar progressBar = (ProgressBar) this
 				.findViewById(R.id.department_progressBar);
 		getListView().setEmptyView(progressBar);
@@ -142,9 +145,7 @@ public class DepartmentsActivity extends ListActivity implements
 			if (currentUser != null) {
 				intent = new Intent(this, LogoutActivity.class);
 				startActivityForResult(intent, 0);
-			}
-			// Go to user login page
-			else {
+			} else { // Go to user login page
 				intent = new Intent(this, LoginActivity.class);
 				startActivityForResult(intent, 0);
 			}
