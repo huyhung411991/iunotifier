@@ -19,7 +19,8 @@ public class LogoutActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_logout);
-		Parse.initialize(this, IUNotifierApplication.APP_ID, IUNotifierApplication.CLIENT_KEY);
+		Parse.initialize(this, IUNotifierApplication.APP_ID,
+				IUNotifierApplication.CLIENT_KEY);
 
 		// Listen when Yes button is clicked
 		findViewById(R.id.logout_yes_button).setOnClickListener(
@@ -28,7 +29,7 @@ public class LogoutActivity extends Activity {
 					public void onClick(View view) {
 						courseUnsubscribe();
 						ParseUser.logOut();
-						
+
 						Intent in = new Intent();
 						setResult(2, in);
 						LogoutActivity.this.finish();
@@ -54,7 +55,7 @@ public class LogoutActivity extends Activity {
 		while (userCoursesCursor.moveToNext()) {
 			String courseID = userCoursesCursor.getString(0);
 			PushService.unsubscribe(this, courseID);
-			
+
 			Log.d("CourseUnsubsribe", courseID);
 		}
 		userCoursesCursor.close();

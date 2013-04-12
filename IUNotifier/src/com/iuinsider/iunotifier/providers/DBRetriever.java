@@ -30,14 +30,16 @@ import com.parse.ParseUser;
 
 public class DBRetriever {
 	private static Context context = null;
-	private static String[] formats = new String[] {
+	private static final String[] formats = new String[] {
 			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd HH:mm:ss.SSS",
 			"yyyy-MM-dd" };
+	private static final int MILLISECONDS_OF_DAY = 24 * 60 * 60 * 1000;
+	private static final int MILLISECONDS_OF_DAY_2 = (23 * 60 + 59) * 60 * 1000;
 
 	// --------------------------------------------------------------------------------
 	public static String DateToString(Date date, int format) {
 		if (date == null || format > formats.length || format < 0)
-			return "";
+			return null;
 
 		SimpleDateFormat sdf = new SimpleDateFormat(formats[format], Locale.US);
 		String string = sdf.format(date);
@@ -87,9 +89,9 @@ public class DBRetriever {
 
 	// --------------------------------------------------------------------------------
 	// Run on background task
-	public static void newsQuery(Context c, String sortCondition) {
+	public static int newsQuery(Context c, String sortCondition) {
 		if (c == null)
-			return;
+			return -1;
 		context = c;
 
 		// Clear local database table
@@ -107,16 +109,7 @@ public class DBRetriever {
 					ListIterator<ParseObject> li = list.listIterator();
 					while (li.hasNext()) {
 						ParseObject parseObject = li.next();
-						ContentValues news = new ContentValues();
-						news.put(DB.News.ID, parseObject.getString(DB.News.ID));
-						news.put(DB.News.TITLE,
-								parseObject.getString(DB.News.TITLE));
-						news.put(DB.News.LINK,
-								parseObject.getString(DB.News.LINK));
-						news.put(DB.News.SOURCE,
-								parseObject.getString(DB.News.SOURCE));
-						Date date = parseObject.getUpdatedAt();
-						news.put(DB.News.UPDATED_AT, DateToString(date, 2));
+						ContentValues news = getNewsValues(parseObject);
 						context.getContentResolver().insert(
 								DB.News.CONTENT_URI, news);
 					}
@@ -127,14 +120,26 @@ public class DBRetriever {
 					Log.e(DB.News.TABLE_NAME, "Error: " + e.getMessage());
 				}
 			}
+
+			private ContentValues getNewsValues(ParseObject parseObject) {
+				ContentValues news = new ContentValues();
+				news.put(DB.News.ID, parseObject.getString(DB.News.ID));
+				news.put(DB.News.TITLE, parseObject.getString(DB.News.TITLE));
+				news.put(DB.News.LINK, parseObject.getString(DB.News.LINK));
+				news.put(DB.News.SOURCE, parseObject.getString(DB.News.SOURCE));
+				Date date = parseObject.getUpdatedAt();
+				news.put(DB.News.UPDATED_AT, DateToString(date, 2));
+				return news;
+			}
 		});
+		return 0;
 	}
 
 	// --------------------------------------------------------------------------------
 	// Run on background thread
-	public static void eventsQuery(Context c, String sortCondition) {
+	public static int eventsQuery(Context c, String sortCondition) {
 		if (c == null)
-			return;
+			return -1;
 		context = c;
 
 		// Clear local database table
@@ -143,10 +148,10 @@ public class DBRetriever {
 		ParseQuery query = new ParseQuery(DB.Events.TABLE_NAME);
 		if (!TextUtils.isEmpty(sortCondition)) {
 			if (sortCondition.equals("Today")) {
-				// Hoang Long ???
 				long offset = System.currentTimeMillis();
-				long start = (offset / 86400000) * 86400000;
-				long end = start + 863400000;
+				long start = (offset / MILLISECONDS_OF_DAY)
+						* MILLISECONDS_OF_DAY;
+				long end = start + MILLISECONDS_OF_DAY_2;
 
 				query.whereGreaterThanOrEqualTo("eventDate", new Date(start));
 				query.whereLessThanOrEqualTo("eventDate", new Date(end));
@@ -162,20 +167,7 @@ public class DBRetriever {
 					ListIterator<ParseObject> li = list.listIterator();
 					while (li.hasNext()) {
 						ParseObject parseObject = li.next();
-						ContentValues event = new ContentValues();
-						event.put(DB.Events.ID,
-								parseObject.getString(DB.Events.ID));
-						event.put(DB.Events.TITLE,
-								parseObject.getString(DB.Events.TITLE));
-						event.put(DB.Events.DESCRIPTION,
-								parseObject.getString(DB.Events.DESCRIPTION));
-						event.put(DB.Events.PLACE,
-								parseObject.getString(DB.Events.PLACE));
-						Date date = parseObject.getDate(DB.Events.DATE);
-						event.put(DB.Events.DATE, DateToString(date, 1));
-						date = parseObject.getUpdatedAt();
-						event.put(DB.Events.UPDATED_AT, "Created on: "
-								+ DateToString(date, 2));
+						ContentValues event = getEventValues(parseObject);
 						context.getContentResolver().insert(
 								DB.Events.CONTENT_URI, event);
 					}
@@ -186,14 +178,32 @@ public class DBRetriever {
 					Log.e(DB.Events.TABLE_NAME, "Error: " + e.getMessage());
 				}
 			}
+
+			private ContentValues getEventValues(ParseObject parseObject) {
+				ContentValues event = new ContentValues();
+				event.put(DB.Events.ID, parseObject.getString(DB.Events.ID));
+				event.put(DB.Events.TITLE,
+						parseObject.getString(DB.Events.TITLE));
+				event.put(DB.Events.DESCRIPTION,
+						parseObject.getString(DB.Events.DESCRIPTION));
+				event.put(DB.Events.PLACE,
+						parseObject.getString(DB.Events.PLACE));
+				Date date = parseObject.getDate(DB.Events.DATE);
+				event.put(DB.Events.DATE, DateToString(date, 1));
+				date = parseObject.getUpdatedAt();
+				event.put(DB.Events.UPDATED_AT,
+						"Created on: " + DateToString(date, 2));
+				return event;
+			}
 		});
+		return 0;
 	}
 
 	// --------------------------------------------------------------------------------
 	// Run on background thread
-	public static void departmentsQuery(Context c, boolean reloadAll) {
+	public static int departmentsQuery(Context c, boolean reloadAll) {
 		if (c == null)
-			return;
+			return -1;
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Departments.TABLE_NAME);
@@ -220,14 +230,7 @@ public class DBRetriever {
 					ListIterator<ParseObject> li = list.listIterator();
 					while (li.hasNext()) {
 						ParseObject parseObject = li.next();
-						ContentValues department = new ContentValues();
-						department.put(DB.Departments.ID,
-								parseObject.getString(DB.Departments.ID));
-						department.put(DB.Departments.NAME,
-								parseObject.getString(DB.Departments.NAME));
-						Date date = parseObject.getUpdatedAt();
-						department.put(DB.Departments.UPDATED_AT,
-								DateToString(date, 1));
+						ContentValues department = getDepartmentValues(parseObject);
 						context.getContentResolver().insert(
 								DB.Departments.CONTENT_URI, department);
 					}
@@ -238,15 +241,28 @@ public class DBRetriever {
 					Log.e(DB.Departments.TABLE_NAME, "Error: " + e.getMessage());
 				}
 			}
+
+			private ContentValues getDepartmentValues(ParseObject parseObject) {
+				ContentValues department = new ContentValues();
+				department.put(DB.Departments.ID,
+						parseObject.getString(DB.Departments.ID));
+				department.put(DB.Departments.NAME,
+						parseObject.getString(DB.Departments.NAME));
+				Date date = parseObject.getUpdatedAt();
+				department
+						.put(DB.Departments.UPDATED_AT, DateToString(date, 1));
+				return department;
+			}
 		});
+		return 0;
 	}
 
 	// --------------------------------------------------------------------------------
 	// Run on background thread
-	public static void coursesQuery(Context c, String departmentID,
+	public static int coursesQuery(Context c, String departmentID,
 			boolean reloadAll) {
 		if (c == null || TextUtils.isEmpty(departmentID))
-			return;
+			return -1;
 		context = c;
 
 		HashMap<String, Object> params = new HashMap<String, Object>();
@@ -272,20 +288,7 @@ public class DBRetriever {
 								JSONObject object = null;
 								try {
 									object = list.getJSONObject(index);
-									ContentValues course = new ContentValues();
-									course.put(DB.Courses.ID,
-											object.getString(DB.Courses.ID));
-									course.put(DB.Courses.NAME,
-											object.getString(DB.Courses.NAME));
-									course.put(
-											DB.Courses.DEPARTMENT_ID,
-											object.getString(DB.Courses.DEPARTMENT_ID));
-									String string = object.getJSONObject(
-											DB.Courses.UPDATED_AT).getString(
-											"iso");
-									Date date = StringToDate(string, 0);
-									course.put(DB.Courses.UPDATED_AT,
-											DateToString(date, 1));
+									ContentValues course = getCourseValues(object);
 									context.getContentResolver().insert(
 											DB.Courses.CONTENT_URI, course);
 								} catch (JSONException e1) {
@@ -301,15 +304,32 @@ public class DBRetriever {
 									"Error: " + e.getMessage());
 						}
 					}
+
+					private ContentValues getCourseValues(JSONObject object)
+							throws JSONException {
+						ContentValues course = new ContentValues();
+						course.put(DB.Courses.ID,
+								object.getString(DB.Courses.ID));
+						course.put(DB.Courses.NAME,
+								object.getString(DB.Courses.NAME));
+						course.put(DB.Courses.DEPARTMENT_ID,
+								object.getString(DB.Courses.DEPARTMENT_ID));
+						String string = object.getJSONObject(
+								DB.Courses.UPDATED_AT).getString("iso");
+						Date date = StringToDate(string, 0);
+						course.put(DB.Courses.UPDATED_AT, DateToString(date, 1));
+						return course;
+					}
 				});
+		return 0;
 	}
 
 	// --------------------------------------------------------------------------------
 	// Run on calling thread
-	public static void courseDetailsQuery(Context c, String courseID,
+	public static int courseDetailsQuery(Context c, String courseID,
 			boolean reloadAll) {
 		if (c == null || TextUtils.isEmpty(courseID))
-			return;
+			return -1;
 		context = c;
 
 		// Query on Courses table, not CourseDetails
@@ -337,54 +357,7 @@ public class DBRetriever {
 			ListIterator<ParseObject> li = list.listIterator();
 			while (li.hasNext()) {
 				ParseObject parseObject = li.next();
-				ContentValues courseDetails = new ContentValues();
-				courseDetails.put(DB.CourseDetails.ID,
-						parseObject.getString(DB.CourseDetails.ID));
-				courseDetails.put(DB.CourseDetails.NAME,
-						parseObject.getString(DB.CourseDetails.NAME));
-				courseDetails.put(DB.CourseDetails.LECTURER,
-						parseObject.getString(DB.CourseDetails.LECTURER));
-				JSONArray theoryList = parseObject
-						.getJSONArray(DB.CourseDetails.THEORY);
-				JSONArray labList = parseObject
-						.getJSONArray(DB.CourseDetails.LAB);
-				String theory = "";
-				String lab = "";
-				if (theoryList != null) {
-					for (int index = 0; index < theoryList.length(); index++) {
-						try {
-							String t = theoryList.getString(index);
-							theory += t;
-							if (index < theoryList.length() - 1)
-								theory += "\n";
-						} catch (JSONException e1) {
-							Log.e(DB.CourseDetails.TABLE_NAME,
-									"Error: " + e1.getMessage());
-						}
-					}
-				}
-				if (labList != null) {
-					for (int index = 0; index < labList.length(); index++) {
-						try {
-							String l = labList.getString(index);
-							lab += l;
-							if (index < labList.length() - 1)
-								lab += "\n";
-						} catch (JSONException e1) {
-							Log.e(DB.CourseDetails.TABLE_NAME,
-									"Error: " + e1.getMessage());
-						}
-					}
-				}
-				courseDetails.put(DB.CourseDetails.THEORY, theory);
-				courseDetails.put(DB.CourseDetails.LAB, lab);
-				courseDetails.put(DB.CourseDetails.CREDIT,
-						parseObject.getLong(DB.CourseDetails.CREDIT));
-				courseDetails.put(DB.CourseDetails.PREREQUISITE,
-						parseObject.getString(DB.CourseDetails.PREREQUISITE));
-				Date date = parseObject.getUpdatedAt();
-				courseDetails.put(DB.CourseDetails.UPDATED_AT,
-						DateToString(date, 1));
+				ContentValues courseDetails = getCourseDetailsValues(parseObject);
 				context.getContentResolver().insert(
 						DB.CourseDetails.CONTENT_URI, courseDetails);
 			}
@@ -394,14 +367,65 @@ public class DBRetriever {
 		} catch (ParseException e) {
 			Log.e(DB.CourseDetails.TABLE_NAME, "Error: " + e.getMessage());
 		}
+		return 0;
+	}
+
+	private static ContentValues getCourseDetailsValues(ParseObject parseObject) {
+		ContentValues courseDetails = new ContentValues();
+		courseDetails.put(DB.CourseDetails.ID,
+				parseObject.getString(DB.CourseDetails.ID));
+		courseDetails.put(DB.CourseDetails.NAME,
+				parseObject.getString(DB.CourseDetails.NAME));
+		courseDetails.put(DB.CourseDetails.LECTURER,
+				parseObject.getString(DB.CourseDetails.LECTURER));
+		JSONArray theoryList = parseObject
+				.getJSONArray(DB.CourseDetails.THEORY);
+		JSONArray labList = parseObject.getJSONArray(DB.CourseDetails.LAB);
+		String theory = "";
+		String lab = "";
+		if (theoryList != null) {
+			for (int index = 0; index < theoryList.length(); index++) {
+				try {
+					String t = theoryList.getString(index);
+					theory += t;
+					if (index < theoryList.length() - 1)
+						theory += "\n";
+				} catch (JSONException e1) {
+					Log.e(DB.CourseDetails.TABLE_NAME,
+							"Error: " + e1.getMessage());
+				}
+			}
+		}
+		if (labList != null) {
+			for (int index = 0; index < labList.length(); index++) {
+				try {
+					String l = labList.getString(index);
+					lab += l;
+					if (index < labList.length() - 1)
+						lab += "\n";
+				} catch (JSONException e1) {
+					Log.e(DB.CourseDetails.TABLE_NAME,
+							"Error: " + e1.getMessage());
+				}
+			}
+		}
+		courseDetails.put(DB.CourseDetails.THEORY, theory);
+		courseDetails.put(DB.CourseDetails.LAB, lab);
+		courseDetails.put(DB.CourseDetails.CREDIT,
+				parseObject.getLong(DB.CourseDetails.CREDIT));
+		courseDetails.put(DB.CourseDetails.PREREQUISITE,
+				parseObject.getString(DB.CourseDetails.PREREQUISITE));
+		Date date = parseObject.getUpdatedAt();
+		courseDetails.put(DB.CourseDetails.UPDATED_AT, DateToString(date, 1));
+		return courseDetails;
 	}
 
 	// --------------------------------------------------------------------------------
 	// Run on background thread
-	public static void announcementsQuery(Context c, String courseID,
+	public static int announcementsQuery(Context c, String courseID,
 			boolean reloadAll) {
 		if (c == null || TextUtils.isEmpty(courseID))
-			return;
+			return -1;
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Announce.TABLE_NAME);
@@ -430,19 +454,7 @@ public class DBRetriever {
 					ListIterator<ParseObject> li = list.listIterator();
 					while (li.hasNext()) {
 						ParseObject parseObject = li.next();
-						ContentValues announce = new ContentValues();
-						announce.put(DB.Announce.ID,
-								parseObject.getString(DB.Announce.ID));
-						announce.put(DB.Announce.COURSE_ID,
-								parseObject.getString(DB.Announce.COURSE_ID));
-						announce.put(DB.Announce.MESSAGE,
-								parseObject.getString(DB.Announce.MESSAGE));
-
-						Date date = parseObject.getUpdatedAt();
-						announce.put(DB.Announce.UPDATED_AT,
-								DateToString(date, 1));
-						announce.put(DB.Announce.CREATED_AT,
-								DateToString(date, 2));
+						ContentValues announce = getAnnouncementValues(parseObject);
 						context.getContentResolver().insert(
 								DB.Announce.CONTENT_URI, announce);
 					}
@@ -453,14 +465,30 @@ public class DBRetriever {
 					Log.e(DB.Announce.TABLE_NAME, "Error: " + e.getMessage());
 				}
 			}
+
+			private ContentValues getAnnouncementValues(ParseObject parseObject) {
+				ContentValues announce = new ContentValues();
+				announce.put(DB.Announce.ID,
+						parseObject.getString(DB.Announce.ID));
+				announce.put(DB.Announce.COURSE_ID,
+						parseObject.getString(DB.Announce.COURSE_ID));
+				announce.put(DB.Announce.MESSAGE,
+						parseObject.getString(DB.Announce.MESSAGE));
+
+				Date date = parseObject.getUpdatedAt();
+				announce.put(DB.Announce.UPDATED_AT, DateToString(date, 1));
+				announce.put(DB.Announce.CREATED_AT, DateToString(date, 2));
+				return announce;
+			}
 		});
+		return 0;
 	}
 
 	// --------------------------------------------------------------------------------
 	// Run on calling thread
-	public static void userCoursesQuery(Context c, ParseUser parseUser) {
+	public static int userCoursesQuery(Context c, ParseUser parseUser) {
 		if (c == null || parseUser == null)
-			return;
+			return -1;
 		context = c;
 
 		// Clear local database table
@@ -473,11 +501,7 @@ public class DBRetriever {
 				JSONObject object = null;
 				try {
 					object = list.getJSONObject(index);
-					ContentValues course = new ContentValues();
-					course.put(DB.UserCourses.ID,
-							object.getString(DB.UserCourses.ID));
-					course.put(DB.UserCourses.NAME,
-							object.getString(DB.UserCourses.NAME));
+					ContentValues course = getUserCourseValues(object);
 					context.getContentResolver().insert(
 							DB.UserCourses.CONTENT_URI, course);
 				} catch (JSONException e1) {
@@ -491,15 +515,24 @@ public class DBRetriever {
 		} catch (ParseException e) {
 			Log.e(DB.UserCourses.TABLE_NAME, "Error: " + e.getMessage());
 		}
+		return 0;
+	}
+
+	private static ContentValues getUserCourseValues(JSONObject object)
+			throws JSONException {
+		ContentValues course = new ContentValues();
+		course.put(DB.UserCourses.ID, object.getString(DB.UserCourses.ID));
+		course.put(DB.UserCourses.NAME, object.getString(DB.UserCourses.NAME));
+		return course;
 	}
 
 	// --------------------------------------------------------------------------------
 	// Run on background thread
-	public static void pushAnnouncement(Context c, String courseID,
+	public static int pushAnnouncement(Context c, String courseID,
 			String message) {
 		if (TextUtils.isEmpty(courseID) || TextUtils.isEmpty(message)
 				|| c == null)
-			return;
+			return -1;
 		context = c;
 
 		HashMap<String, Object> params = new HashMap<String, Object>();
@@ -527,6 +560,6 @@ public class DBRetriever {
 						}
 					}
 				});
+		return 0;
 	}
-
 }

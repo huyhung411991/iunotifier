@@ -16,6 +16,8 @@ import com.iuinsider.iunotifier.R;
 /**
  * @author HuyHung
  * 
+ * In order for the test to work, enable the code from line 208 to 212 in LoginActivity.java
+ * 
  */
 public class LoginActivityTest extends
 		ActivityInstrumentationTestCase2<LoginActivity> {
@@ -44,66 +46,60 @@ public class LoginActivityTest extends
 	}
 
 	@SmallTest
-	public void testLogin() {
+	public void testCase1() {// --> Success
 		getActivity().runOnUiThread(new Runnable() {
 			public void run() {
-				mUserNameView.setText("");
-				mPasswordView.setText("");
+				mUserNameView.setText("itiu09008");
+				mPasswordView.setText("12345");
 				mSignInButton.performClick();
 			}
 		});
 		// wait for the request to go through
 		getInstrumentation().waitForIdleSync();
 		error = this.retrieveHiddenMember("error", error, getActivity());
-		assertEquals("Login Failed", true, error);
+		assertFalse("Login successful", error);
+	}
 
+	public void testCase2() {// --> Fail
 		getActivity().runOnUiThread(new Runnable() {
 			public void run() {
-				mUserNameView.setText("student1");
-				mPasswordView.setText("");
+				mUserNameView.setText("abcd");
+				mPasswordView.setText("12345");
 				mSignInButton.performClick();
 			}
 		});
 		// wait for the request to go through
 		getInstrumentation().waitForIdleSync();
 		error = this.retrieveHiddenMember("error", error, getActivity());
-		assertEquals("Login Failed", true, error);
-		
-		getActivity().runOnUiThread(new Runnable() {
-			public void run() {
-				mUserNameView.setText("student 1");
-				mPasswordView.setText("123");
-				mSignInButton.performClick();
-			}
-		});
-		// wait for the request to go through
-		getInstrumentation().waitForIdleSync();
-		error = this.retrieveHiddenMember("error", error, getActivity());
-		assertEquals("Login Failed", true, error);
+		assertTrue("Login Failed", error);
+	}
 
+	public void testCase3() {// --> Fail
 		getActivity().runOnUiThread(new Runnable() {
 			public void run() {
-				mUserNameView.setText("student1");
-				mPasswordView.setText("123");
+				mUserNameView.setText("itiu09008");
+				mPasswordView.setText("aaaa");
 				mSignInButton.performClick();
 			}
 		});
 		// wait for the request to go through
 		getInstrumentation().waitForIdleSync();
 		error = this.retrieveHiddenMember("error", error, getActivity());
-		assertEquals("Login successful", false, error);
-		
+		assertTrue("Login Failed", error);
+	}
+
+	public void testCase4() {// --> Fail
 		getActivity().runOnUiThread(new Runnable() {
 			public void run() {
-				mUserNameView.setText("teacher1");
-				mPasswordView.setText("123");
+				mUserNameView.setText("abcd");
+				mPasswordView.setText("aaaa");
 				mSignInButton.performClick();
 			}
 		});
 		// wait for the request to go through
 		getInstrumentation().waitForIdleSync();
 		error = this.retrieveHiddenMember("error", error, getActivity());
-		assertEquals("Login Failed", false, error);
+		assertTrue("Login Failed", error);
 	}
 
 	@SuppressWarnings("unchecked")
