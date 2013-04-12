@@ -67,16 +67,14 @@ public class DBRetriever {
 		if (c == null || uri == null || TextUtils.isEmpty(projectedColumn))
 			return null;
 
-		Cursor cursor = null;
-		if (TextUtils.isEmpty(selectedValue) || selectedValue.equals("ALL"))
-			cursor = c.getContentResolver().query(uri,
-					new String[] { "MAX(" + projectedColumn + ")" }, null,
-					null, null);
-		else
-			cursor = c.getContentResolver().query(uri,
-					new String[] { "MAX(" + projectedColumn + ")" },
-					"(" + selectedColumn + " = '" + selectedValue + "')", null,
-					null);
+		String[] projection = new String[] { "MAX(" + projectedColumn + ")" };
+
+		String selection = "";
+		if (!TextUtils.isEmpty(selectedValue) && !selectedValue.equals("ALL"))
+			selection = "(" + selectedColumn + " = '" + selectedValue + "')";
+
+		Cursor cursor = c.getContentResolver().query(uri, projection,
+				selection, null, null);
 
 		String lastUpdate = null;
 		if (cursor.getCount() > 0) {
@@ -90,16 +88,18 @@ public class DBRetriever {
 	// --------------------------------------------------------------------------------
 	// Run on background task
 	public static void newsQuery(Context c, String sortCondition) {
+		if (c == null)
+			return;
 		context = c;
 
 		// Clear local database table
 		context.getContentResolver().delete(DB.News.CONTENT_URI, null, null);
 
 		ParseQuery query = new ParseQuery(DB.News.TABLE_NAME);
-
-		if (!sortCondition.isEmpty()) {
+		if (TextUtils.isEmpty(sortCondition)) {
 			query.whereEqualTo(DB.News.SOURCE, sortCondition);
 		}
+
 		query.findInBackground(new FindCallback() {
 			@Override
 			public void done(List<ParseObject> list, ParseException e) {
@@ -124,7 +124,7 @@ public class DBRetriever {
 					Log.d(DB.News.TABLE_NAME, "Retrieved " + list.size()
 							+ " items");
 				} else {
-					Log.d(DB.News.TABLE_NAME, "Error: " + e.getMessage());
+					Log.e(DB.News.TABLE_NAME, "Error: " + e.getMessage());
 				}
 			}
 		});
@@ -133,15 +133,17 @@ public class DBRetriever {
 	// --------------------------------------------------------------------------------
 	// Run on background thread
 	public static void eventsQuery(Context c, String sortCondition) {
+		if (c == null)
+			return;
 		context = c;
 
 		// Clear local database table
 		context.getContentResolver().delete(DB.Events.CONTENT_URI, null, null);
 
 		ParseQuery query = new ParseQuery(DB.Events.TABLE_NAME);
-
 		if (!TextUtils.isEmpty(sortCondition)) {
 			if (sortCondition.equals("Today")) {
+				// Hoang Long ???
 				long offset = System.currentTimeMillis();
 				long start = (offset / 86400000l) * 86400000l;
 				long end = start + 86340000;
@@ -181,7 +183,7 @@ public class DBRetriever {
 					Log.d(DB.Events.TABLE_NAME, "Retrieved " + list.size()
 							+ " items");
 				} else {
-					Log.d(DB.Events.TABLE_NAME, "Error: " + e.getMessage());
+					Log.e(DB.Events.TABLE_NAME, "Error: " + e.getMessage());
 				}
 			}
 		});
@@ -190,6 +192,8 @@ public class DBRetriever {
 	// --------------------------------------------------------------------------------
 	// Run on background thread
 	public static void departmentsQuery(Context c, boolean reloadAll) {
+		if (c == null)
+			return;
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Departments.TABLE_NAME);
@@ -231,7 +235,7 @@ public class DBRetriever {
 					Log.d(DB.Departments.TABLE_NAME, "Retrieved " + list.size()
 							+ " items");
 				} else {
-					Log.d(DB.Departments.TABLE_NAME, "Error: " + e.getMessage());
+					Log.e(DB.Departments.TABLE_NAME, "Error: " + e.getMessage());
 				}
 			}
 		});
@@ -241,9 +245,8 @@ public class DBRetriever {
 	// Run on background thread
 	public static void coursesQuery(Context c, String departmentID,
 			boolean reloadAll) {
-		if (TextUtils.isEmpty(departmentID))
+		if (c == null || TextUtils.isEmpty(departmentID))
 			return;
-
 		context = c;
 
 		HashMap<String, Object> params = new HashMap<String, Object>();
@@ -294,7 +297,7 @@ public class DBRetriever {
 							Log.d(DB.Courses.TABLE_NAME,
 									"Retrieved " + list.length() + " items");
 						} else {
-							Log.d(DB.Courses.TABLE_NAME,
+							Log.e(DB.Courses.TABLE_NAME,
 									"Error: " + e.getMessage());
 						}
 					}
@@ -305,9 +308,8 @@ public class DBRetriever {
 	// Run on calling thread
 	public static void courseDetailsQuery(Context c, String courseID,
 			boolean reloadAll) {
-		if (TextUtils.isEmpty(courseID))
+		if (c == null || TextUtils.isEmpty(courseID))
 			return;
-
 		context = c;
 
 		// Query on Courses table, not CourseDetails
@@ -356,7 +358,7 @@ public class DBRetriever {
 							if (index < theoryList.length() - 1)
 								theory += "\n";
 						} catch (JSONException e1) {
-							Log.d(DB.CourseDetails.TABLE_NAME,
+							Log.e(DB.CourseDetails.TABLE_NAME,
 									"Error: " + e1.getMessage());
 						}
 					}
@@ -369,7 +371,7 @@ public class DBRetriever {
 							if (index < labList.length() - 1)
 								lab += "\n";
 						} catch (JSONException e1) {
-							Log.d(DB.CourseDetails.TABLE_NAME,
+							Log.e(DB.CourseDetails.TABLE_NAME,
 									"Error: " + e1.getMessage());
 						}
 					}
@@ -390,7 +392,7 @@ public class DBRetriever {
 			Log.d(DB.CourseDetails.TABLE_NAME, "Retrieved " + list.size()
 					+ " items");
 		} catch (ParseException e) {
-			Log.d(DB.CourseDetails.TABLE_NAME, "Error: " + e.getMessage());
+			Log.e(DB.CourseDetails.TABLE_NAME, "Error: " + e.getMessage());
 		}
 	}
 
@@ -398,9 +400,8 @@ public class DBRetriever {
 	// Run on background thread
 	public static void announcementsQuery(Context c, String courseID,
 			boolean reloadAll) {
-		if (TextUtils.isEmpty(courseID))
+		if (c == null || TextUtils.isEmpty(courseID))
 			return;
-
 		context = c;
 
 		ParseQuery query = new ParseQuery(DB.Announce.TABLE_NAME);
@@ -449,7 +450,7 @@ public class DBRetriever {
 					Log.d(DB.Announce.TABLE_NAME, "Retrieved " + list.size()
 							+ " items");
 				} else {
-					Log.d(DB.Announce.TABLE_NAME, "Error: " + e.getMessage());
+					Log.e(DB.Announce.TABLE_NAME, "Error: " + e.getMessage());
 				}
 			}
 		});
@@ -458,9 +459,8 @@ public class DBRetriever {
 	// --------------------------------------------------------------------------------
 	// Run on calling thread
 	public static void userCoursesQuery(Context c, ParseUser parseUser) {
-		if (parseUser == null)
+		if (c == null || parseUser == null)
 			return;
-
 		context = c;
 
 		// Clear local database table
@@ -481,7 +481,7 @@ public class DBRetriever {
 					context.getContentResolver().insert(
 							DB.UserCourses.CONTENT_URI, course);
 				} catch (JSONException e1) {
-					Log.d(DB.UserCourses.TABLE_NAME,
+					Log.e(DB.UserCourses.TABLE_NAME,
 							"Error: " + e1.getMessage());
 				}
 
@@ -489,19 +489,23 @@ public class DBRetriever {
 			Log.d(DB.UserCourses.TABLE_NAME, "Retrieved " + list.length()
 					+ " items");
 		} catch (ParseException e) {
-			Log.d(DB.UserCourses.TABLE_NAME, "Error: " + e.getMessage());
+			Log.e(DB.UserCourses.TABLE_NAME, "Error: " + e.getMessage());
 		}
 	}
 
 	// --------------------------------------------------------------------------------
 	// Run on background thread
-	public static void pushAnnouncement(String courseID, String message,
-			Context c) {
+	public static void pushAnnouncement(Context c, String courseID,
+			String message) {
+		if (TextUtils.isEmpty(courseID) || TextUtils.isEmpty(message)
+				|| c == null)
+			return;
 		context = c;
-		HashMap<String, Object> params = new HashMap<String, Object>();
 
+		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put("courseid", courseID);
 		params.put("message", message);
+
 		ParseCloud.callFunctionInBackground("pushAnnouncement", params,
 				new FunctionCallback<String>() {
 					public void done(String returnMsg, ParseException e) {
@@ -518,7 +522,7 @@ public class DBRetriever {
 							toast.setGravity(Gravity.CENTER_VERTICAL
 									| Gravity.CENTER_HORIZONTAL, 0, 0);
 							toast.show();
-							Log.d(DB.Announce.TABLE_NAME,
+							Log.e(DB.Announce.TABLE_NAME,
 									"Error: " + e.getMessage());
 						}
 					}

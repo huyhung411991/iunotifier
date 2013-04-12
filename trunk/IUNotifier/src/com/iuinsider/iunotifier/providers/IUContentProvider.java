@@ -61,12 +61,14 @@ public class IUContentProvider extends ContentProvider {
 	private static DBHelper dbHelper;
 	private static SQLiteDatabase db;
 
+	// =========================================================================================
 	@Override
 	public boolean onCreate() {
 		dbHelper = new DBHelper(getContext());
 		return true;
 	}
 
+	// =========================================================================================
 	@Override
 	public String getType(Uri uri) {
 		switch (sUriMatcher.match(uri)) {
@@ -103,6 +105,7 @@ public class IUContentProvider extends ContentProvider {
 		}
 	}
 
+	// =========================================================================================
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
@@ -179,6 +182,7 @@ public class IUContentProvider extends ContentProvider {
 		return cursor;
 	}
 
+	// =========================================================================================
 	@Override
 	public Uri insert(Uri uri, ContentValues initialValues) {
 		ContentValues values;
@@ -241,6 +245,7 @@ public class IUContentProvider extends ContentProvider {
 		throw new SQLException("Failed to insert row into " + uri);
 	}
 
+	// =========================================================================================
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -349,6 +354,7 @@ public class IUContentProvider extends ContentProvider {
 		return rowsDeleted;
 	}
 
+	// =========================================================================================
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {

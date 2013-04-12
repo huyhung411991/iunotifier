@@ -1,8 +1,5 @@
 package com.iuinsider.iunotifier;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -14,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -24,6 +22,7 @@ import android.widget.Toast;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
+import com.iuinsider.iunotifier.providers.UserPermission;
 import com.parse.Parse;
 import com.parse.ParseUser;
 
@@ -35,13 +34,12 @@ public class CourseDetailsActivity extends Activity {
 
 	private static final String EXTRA_COURSE = ".com.iuinsider.iunotifier.COURSE";
 
-	// These are the course columns that we will retrieve
+	// These are the columns that we will retrieve
 	private static final String[] PROJECTION = new String[] {
 			DB.CourseDetails.ID, DB.CourseDetails.NAME,
 			DB.CourseDetails.LECTURER, DB.CourseDetails.THEORY,
 			DB.CourseDetails.LAB, DB.CourseDetails.CREDIT,
 			DB.CourseDetails.PREREQUISITE };
-
 	// This is the select criteria
 	private static final String SELECTION = "";
 
@@ -113,13 +111,13 @@ public class CourseDetailsActivity extends Activity {
 		setContentView(R.layout.activity_course_details);
 
 		// Check current user
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+		Parse.initialize(this, IUNotifierApplication.APP_ID,
 				IUNotifierApplication.CLIENT_KEY);
 		currentUser = ParseUser.getCurrentUser();
 		checkUser();
 
 		courseID = getIntent().getStringExtra(EXTRA_COURSE);
-		if (courseID == null)
+		if (TextUtils.isEmpty(courseID))
 			finish();
 
 		if (isConnected()) {
@@ -151,9 +149,6 @@ public class CourseDetailsActivity extends Activity {
 	}
 
 	// =========================================================================================
-	/**
-	 * Set up the {@link android.app.ActionBar}.
-	 */
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -179,7 +174,7 @@ public class CourseDetailsActivity extends Activity {
 		Intent intent;
 
 		switch (item.getItemId()) {
-		case android.R.id.home:
+		case android.R.id.home: // Select home button
 			Intent parentActivityIntent = new Intent(this,
 					MainMenuActivity.class);
 			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -188,7 +183,8 @@ public class CourseDetailsActivity extends Activity {
 			overridePendingTransition(0, R.anim.slide_out_right);
 			finish();
 			return true;
-		case R.id.action_login:
+
+		case R.id.action_login: // Select login button
 			// Logout current user before login
 			if (currentUser != null) {
 				intent = new Intent(this, LogoutActivity.class);
@@ -198,9 +194,11 @@ public class CourseDetailsActivity extends Activity {
 				startActivityForResult(intent, 0);
 			}
 			break;
-		case R.id.action_refresh:
+
+		case R.id.action_refresh: // Select refresh button
 			new RemoteDataTask().execute(courseID);
 			break;
+
 		default:
 			break;
 		}
@@ -215,27 +213,36 @@ public class CourseDetailsActivity extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 
 		Toast toast = null;
-		if (resultCode == 0) {
+		switch (resultCode) {
+		case 0:
 			CourseDetailsActivity.this.invalidateOptionsMenu();
 			return;
-		} else if (resultCode == 1) {
+		case 1:
 			toast = Toast.makeText(this, "Login Successfully",
 					Toast.LENGTH_LONG);
 			CourseDetailsActivity.this.invalidateOptionsMenu();
-		} else if (resultCode == 2) {
+			break;
+		case 2:
 			toast = Toast.makeText(this, "Logout Successfully",
 					Toast.LENGTH_LONG);
 			CourseDetailsActivity.this.invalidateOptionsMenu();
+			break;
+		default:
+			break;
 		}
-		toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL,
-				0, 0);
-		toast.show();
+
+		if (toast != null) {
+			toast.setGravity(Gravity.CENTER_VERTICAL
+					| Gravity.CENTER_HORIZONTAL, 0, 0);
+			toast.show();
+		}
 	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		currentUser = ParseUser.getCurrentUser();
 		MenuItem switchButton = menu.findItem(R.id.action_login);
+		
 		if (currentUser != null) {
 			switchButton.setIcon(R.drawable.sign_in);
 		} else {
@@ -254,28 +261,16 @@ public class CourseDetailsActivity extends Activity {
 			pushVisibility = View.INVISIBLE;
 			separatorVisibility = View.INVISIBLE;
 		} else {
-			Set<String> roleSet = new TreeSet<String>();
-			roleSet.add(DB.UserPermission.USER_ADMIN);
-			roleSet.add(DB.UserPermission.USER_MODERATOR);
-			roleSet.add(DB.UserPermission.USER_STAFF);
-
-			String userRole = currentUser
-					.getString(DB.UserPermission.USER_COLUMN);
-			if (roleSet.contains(userRole)) {
+			String userRole = currentUser.getString(UserPermission.USER_COLUMN);
+			String courseID = getIntent().getStringExtra(EXTRA_COURSE);
+			
+			if (UserPermission.hasPushPermission1(userRole)) {
 				pushVisibility = View.VISIBLE;
 				separatorVisibility = View.VISIBLE;
-			} else if (userRole.equals(DB.UserPermission.USER_TEACHER)) {
-				Uri uri = Uri.withAppendedPath(DB.UserCourses.CONTENT_URI,
-						getIntent().getStringExtra(EXTRA_COURSE));
-				Cursor courseCursor = getContentResolver().query(uri, null,
-						null, null, null);
-				if (courseCursor.getCount() > 0) {
-					pushVisibility = View.VISIBLE;
-					separatorVisibility = View.VISIBLE;
-				} else {
-					pushVisibility = View.INVISIBLE;
-					separatorVisibility = View.INVISIBLE;
-				}
+			} else if (UserPermission.hasPushPermission2(this, userRole,
+					courseID)) {
+				pushVisibility = View.VISIBLE;
+				separatorVisibility = View.VISIBLE;
 			} else {
 				pushVisibility = View.INVISIBLE;
 				separatorVisibility = View.INVISIBLE;

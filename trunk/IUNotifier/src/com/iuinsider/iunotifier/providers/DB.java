@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 public class DB {
-	
+
 	public static abstract class News implements BaseColumns {
 		public static final String TABLE_NAME = "News";
 		public static final String ID = "objectID";
@@ -134,17 +134,7 @@ public class DB {
 		public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
 				+ "/" + AUTHORITY + "." + TABLE_NAME;
 	}
-	
-	// =========================================================================================
-	public static class UserPermission {
-		public static final String USER_COLUMN = "Permission";
-		public static final String USER_ADMIN = "admin";
-		public static final String USER_MODERATOR = "moderator";
-		public static final String USER_STAFF = "staff";
-		public static final String USER_TEACHER = "teacher";
-		public static final String USER_STUDENT = "student";
-	}
-	
+
 	// =========================================================================================
 	private DB() {
 	}

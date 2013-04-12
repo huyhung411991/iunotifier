@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +23,7 @@ public class EventDetailsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_details);
 
+		// Extract data from Intent
 		Intent intent = getIntent();
 		Bundle bundle = intent.getExtras();
 		final String eventTitle = bundle.getString("EventTitle");
@@ -57,7 +57,7 @@ public class EventDetailsActivity extends Activity {
 		String date = sdf2.format(datetime);
 		String time = sdf3.format(datetime);
 
-		// Set textview
+		// Set value for textViews
 		titleView.setText(eventTitle);
 		descriptionView.setText(eventDescription);
 		dateView.setText(date);
@@ -91,7 +91,6 @@ public class EventDetailsActivity extends Activity {
 	}
 
 	// =========================================================================================
-	@SuppressLint("SimpleDateFormat")
 	private void addToCalendar(String title, String description,
 			Calendar calendar, String place) {
 

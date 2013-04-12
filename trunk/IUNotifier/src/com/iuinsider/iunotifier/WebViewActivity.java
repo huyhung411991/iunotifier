@@ -15,7 +15,6 @@ public class WebViewActivity extends Activity {
 	private static final String EXTRA_LINK = ".com.iuinsider.iunotifier.LINK";
 
 	private static WebView myWebView = null;
-	private static String link = "";
 
 	// =========================================================================================
 	@Override
@@ -24,7 +23,7 @@ public class WebViewActivity extends Activity {
 		setContentView(R.layout.activity_web_view);
 
 		Intent intent = getIntent();
-		link = intent.getStringExtra(EXTRA_LINK);
+		String link = intent.getStringExtra(EXTRA_LINK);
 
 		myWebView = (WebView) findViewById(R.id.webView);
 		myWebView.setWebViewClient(new WebViewClient());
@@ -39,7 +38,7 @@ public class WebViewActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.web_view, menu);
-		
+
 		return true;
 	}
 
@@ -59,7 +58,7 @@ public class WebViewActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
+		case android.R.id.home: // Select home button
 			Intent parentActivityIntent = new Intent(this,
 					MainMenuActivity.class);
 			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -68,23 +67,19 @@ public class WebViewActivity extends Activity {
 			overridePendingTransition(0, R.anim.slide_out_right);
 			finish();
 			return true;
-		case R.id.action_refresh:
-			myWebView.loadUrl(link);
+
+		case R.id.action_refresh: // Select refresh button
+			myWebView.reload();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	// =========================================================================================
-	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
-	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 	}
-
-	// =========================================================================================
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 
 public class SplashScreenActivity extends Activity {
@@ -18,13 +19,12 @@ public class SplashScreenActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Splash screen orientation (landscape or potrait)
+		// Splash screen orientation (landscape or portrait)
 		int orientation = getResources().getConfiguration().orientation;
-		if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+		if (orientation == Configuration.ORIENTATION_LANDSCAPE)
 			setContentView(R.layout.activity_splashscreen_landscape);
-		} else {
+		else
 			setContentView(R.layout.activity_splashscreen_potrait);
-		}
 
 		final SplashScreenActivity sPlashScreen = this;
 
@@ -38,6 +38,7 @@ public class SplashScreenActivity extends Activity {
 						wait(1000);
 					}
 				} catch (InterruptedException ex) {
+					Log.e("SplashScreen", "Error: " + ex.getMessage());
 				}
 
 				finish();
