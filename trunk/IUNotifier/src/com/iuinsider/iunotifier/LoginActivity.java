@@ -70,7 +70,7 @@ public class LoginActivity extends Activity {
 				String userRole = user.getString(UserPermission.USER_COLUMN);
 				if (UserPermission.hasUserCourses(userRole))
 					DBRetriever.userCoursesQuery(LoginActivity.this, user);
-				if (UserPermission.hasCourseSubscribe(userRole))				
+				if (UserPermission.hasCourseSubscribe(userRole))
 					courseSubscribe();
 
 				return true;
@@ -94,10 +94,10 @@ public class LoginActivity extends Activity {
 				finish();
 			} else {
 				// Login failed.
+				error = true;
 				mPasswordView
 						.setError(getString(R.string.login_incorrectPassword));
 				mPasswordView.requestFocus();
-				error = true;
 			}
 		}
 
@@ -204,6 +204,12 @@ public class LoginActivity extends Activity {
 
 			mAuthTask = new UserLoginTask();
 			mAuthTask.execute(mUsername, mPassword);
+			
+//			try {
+//				mAuthTask.get();
+//			} catch (Exception e) {
+//				Log.d("Login", "Error: " + e.getMessage());
+//			}
 		}
 	}
 
@@ -258,7 +264,7 @@ public class LoginActivity extends Activity {
 		while (userCoursesCursor.moveToNext()) {
 			String courseID = userCoursesCursor.getString(0);
 			PushService.subscribe(this, courseID, AnnouncementsActivity.class);
-			
+
 			Log.d("CourseSubsribe", courseID);
 		}
 		userCoursesCursor.close();

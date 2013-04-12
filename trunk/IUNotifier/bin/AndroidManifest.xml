@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.iuinsider.iunotifier"
     android:versionCode="2"
-    android:versionName="2.0" >
+    android:versionName="1.1" >
 
     <uses-sdk
         android:minSdkVersion="14"
