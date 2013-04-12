@@ -145,8 +145,8 @@ public class DBRetriever {
 			if (sortCondition.equals("Today")) {
 				// Hoang Long ???
 				long offset = System.currentTimeMillis();
-				long start = (offset / 86400000l) * 86400000l;
-				long end = start + 86340000;
+				long start = (offset / 86400000) * 86400000;
+				long end = start + 863400000;
 
 				query.whereGreaterThanOrEqualTo("eventDate", new Date(start));
 				query.whereLessThanOrEqualTo("eventDate", new Date(end));

@@ -185,12 +185,12 @@ public class AnnouncementsActivity extends ListActivity implements
 			return;
 		case 1:
 			toast = Toast.makeText(this, "Login Successfully",
-					Toast.LENGTH_LONG);
+					Toast.LENGTH_SHORT);
 			AnnouncementsActivity.this.invalidateOptionsMenu();
 			break;
 		case 2:
 			toast = Toast.makeText(this, "Logout Successfully",
-					Toast.LENGTH_LONG);
+					Toast.LENGTH_SHORT);
 			AnnouncementsActivity.this.invalidateOptionsMenu();
 			break;
 		default:

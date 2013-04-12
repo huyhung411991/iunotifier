@@ -219,12 +219,12 @@ public class CourseDetailsActivity extends Activity {
 			return;
 		case 1:
 			toast = Toast.makeText(this, "Login Successfully",
-					Toast.LENGTH_LONG);
+					Toast.LENGTH_SHORT);
 			CourseDetailsActivity.this.invalidateOptionsMenu();
 			break;
 		case 2:
 			toast = Toast.makeText(this, "Logout Successfully",
-					Toast.LENGTH_LONG);
+					Toast.LENGTH_SHORT);
 			CourseDetailsActivity.this.invalidateOptionsMenu();
 			break;
 		default:
