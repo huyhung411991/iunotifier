@@ -91,17 +91,17 @@ public class MainMenuActivity extends Activity {
 			return;
 		case 1:
 			toast = Toast.makeText(this, "Login Successfully",
-					Toast.LENGTH_LONG);
+					Toast.LENGTH_SHORT);
 			MainMenuActivity.this.invalidateOptionsMenu();
 			break;
 		case 2:
 			toast = Toast.makeText(this, "Logout Successfully",
-					Toast.LENGTH_LONG);
+					Toast.LENGTH_SHORT);
 			MainMenuActivity.this.invalidateOptionsMenu();
 			break;
 		case 3:
 			toast = Toast.makeText(this, "All Data Is Deleted",
-					Toast.LENGTH_LONG);
+					Toast.LENGTH_SHORT);
 			break;
 		default:
 			break;
