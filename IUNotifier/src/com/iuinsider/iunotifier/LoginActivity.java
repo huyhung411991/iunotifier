@@ -1,8 +1,5 @@
 package com.iuinsider.iunotifier;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -23,6 +20,7 @@ import android.widget.TextView;
 
 import com.iuinsider.iunotifier.providers.DB;
 import com.iuinsider.iunotifier.providers.DBRetriever;
+import com.iuinsider.iunotifier.providers.UserPermission;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -49,8 +47,6 @@ public class LoginActivity extends Activity {
 	 */
 	private UserLoginTask mAuthTask = null;
 
-	protected final String[] PROJECTION = new String[] { DB.UserCourses.ID };
-
 	// =========================================================================================
 	private class UserLoginTask extends AsyncTask<String, Void, Boolean> {
 		/**
@@ -71,16 +67,10 @@ public class LoginActivity extends Activity {
 
 			if (user != null) {
 				// Login successful
-				Set<String> roleSet = new TreeSet<String>();
-				roleSet.add(DB.UserPermission.USER_TEACHER);
-				roleSet.add(DB.UserPermission.USER_STUDENT);
-				roleSet.add(DB.UserPermission.USER_ADMIN);
-
-				String userRole = user.getString(DB.UserPermission.USER_COLUMN);
-				if (roleSet.contains(userRole))
+				String userRole = user.getString(UserPermission.USER_COLUMN);
+				if (UserPermission.hasUserCourses(userRole))
 					DBRetriever.userCoursesQuery(LoginActivity.this, user);
-				if (userRole.equals(DB.UserPermission.USER_STUDENT)
-						|| userRole.equals(DB.UserPermission.USER_ADMIN))
+				if (UserPermission.hasCourseSubscribe(userRole))				
 					courseSubscribe();
 
 				return true;
@@ -123,7 +113,7 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+		Parse.initialize(this, IUNotifierApplication.APP_ID,
 				IUNotifierApplication.CLIENT_KEY);
 
 		// Set up the login form.
@@ -259,16 +249,18 @@ public class LoginActivity extends Activity {
 		}
 	}
 
+	// =========================================================================================
 	public void courseSubscribe() {
+		String[] projection = new String[] { DB.UserCourses.ID };
 		Cursor userCoursesCursor = getContentResolver().query(
-				DB.UserCourses.CONTENT_URI, PROJECTION, null, null, null);
+				DB.UserCourses.CONTENT_URI, projection, null, null, null);
 
 		while (userCoursesCursor.moveToNext()) {
 			String courseID = userCoursesCursor.getString(0);
 			PushService.subscribe(this, courseID, AnnouncementsActivity.class);
+			
 			Log.d("CourseSubsribe", courseID);
 		}
-
 		userCoursesCursor.close();
 	}
 }

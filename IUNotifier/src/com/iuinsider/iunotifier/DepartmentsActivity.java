@@ -31,16 +31,15 @@ public class DepartmentsActivity extends ListActivity implements
 
 	private SimpleCursorAdapter mAdapter = null;
 	private ParseUser currentUser = null;
+
 	private static final String EXTRA_DEPARTMENT = ".com.iuinsider.iunotifier.DEPARTMENT";
 
-	// These are the Contacts rows that we will retrieve
+	// These are the columns that we will retrieve
 	private static final String[] PROJECTION = new String[] {
 			DB.Departments._ID, DB.Departments.ID, DB.Departments.NAME };
-
 	// This is the select criteria
 	private static final String SELECTION = "((" + DB.Departments.NAME
 			+ " NOTNULL) AND (" + DB.Departments.NAME + " != '' ))";
-
 	// This is the sorting order
 	private static final String SORTORDER = DB.Departments.NAME + " DESC";
 
@@ -50,8 +49,8 @@ public class DepartmentsActivity extends ListActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_department);
 
-		// Go to user login page
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+		// Get current user
+		Parse.initialize(this, IUNotifierApplication.APP_ID,
 				IUNotifierApplication.CLIENT_KEY);
 		currentUser = ParseUser.getCurrentUser();
 
@@ -103,9 +102,6 @@ public class DepartmentsActivity extends ListActivity implements
 	}
 
 	// =========================================================================================
-	/**
-	 * Set up the {@link android.app.ActionBar}.
-	 */
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -122,6 +118,7 @@ public class DepartmentsActivity extends ListActivity implements
 			MenuItem switchButton = menu.findItem(R.id.action_login);
 			switchButton.setIcon(R.drawable.sign_in);
 		}
+
 		return true;
 	}
 
@@ -131,7 +128,7 @@ public class DepartmentsActivity extends ListActivity implements
 		Intent intent;
 
 		switch (item.getItemId()) {
-		case android.R.id.home:
+		case android.R.id.home: // Select home button
 			Intent parentActivityIntent = new Intent(this,
 					MainMenuActivity.class);
 			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -140,7 +137,8 @@ public class DepartmentsActivity extends ListActivity implements
 			overridePendingTransition(0, R.anim.slide_out_right);
 			finish();
 			return true;
-		case R.id.action_login:
+
+		case R.id.action_login: // Select login button
 			// Logout current user before login
 			if (currentUser != null) {
 				intent = new Intent(this, LogoutActivity.class);
@@ -150,15 +148,19 @@ public class DepartmentsActivity extends ListActivity implements
 				startActivityForResult(intent, 0);
 			}
 			break;
-		case R.id.action_refresh:
+
+		case R.id.action_refresh: // Select refresh button
 			DBRetriever.departmentsQuery(this, false);
 			break;
-		case R.id.action_reload_all:
+
+		case R.id.action_reload_all: // Select reload all
 			DBRetriever.departmentsQuery(this, true);
 			break;
+
 		default:
 			break;
 		}
+
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -170,22 +172,29 @@ public class DepartmentsActivity extends ListActivity implements
 		super.onActivityResult(requestCode, resultCode, data);
 
 		Toast toast = null;
-
-		if (resultCode == 0) {
+		switch (resultCode) {
+		case 0:
 			DepartmentsActivity.this.invalidateOptionsMenu();
 			return;
-		} else if (resultCode == 1) {
+		case 1:
 			toast = Toast.makeText(this, "Login Successfully",
 					Toast.LENGTH_LONG);
 			DepartmentsActivity.this.invalidateOptionsMenu();
-		} else if (resultCode == 2) {
+			break;
+		case 2:
 			toast = Toast.makeText(this, "Logout Successfully",
 					Toast.LENGTH_LONG);
 			DepartmentsActivity.this.invalidateOptionsMenu();
+			break;
+		default:
+			break;
 		}
-		toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL,
-				0, 0);
-		toast.show();
+
+		if (toast != null) {
+			toast.setGravity(Gravity.CENTER_VERTICAL
+					| Gravity.CENTER_HORIZONTAL, 0, 0);
+			toast.show();
+		}
 	}
 
 	@Override

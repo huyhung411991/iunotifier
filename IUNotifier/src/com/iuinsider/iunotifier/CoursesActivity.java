@@ -36,7 +36,7 @@ public class CoursesActivity extends ListActivity implements
 	private static final String EXTRA_DEPARTMENT = ".com.iuinsider.iunotifier.DEPARTMENT";
 	private static final String EXTRA_COURSE = ".com.iuinsider.iunotifier.COURSE";
 
-	// These are the column that we will retrieve
+	// These are the columns that we will retrieve
 	private static final String[] COURSES_PROJECTION = new String[] {
 			DB.Courses._ID, DB.Courses.ID, DB.Courses.NAME };
 	private static final String[] USER_COURSES_PROJECTION = new String[] {
@@ -60,7 +60,7 @@ public class CoursesActivity extends ListActivity implements
 		setContentView(R.layout.activity_courses);
 
 		// Get current user
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+		Parse.initialize(this, IUNotifierApplication.APP_ID,
 				IUNotifierApplication.CLIENT_KEY);
 		currentUser = ParseUser.getCurrentUser();
 
@@ -117,7 +117,6 @@ public class CoursesActivity extends ListActivity implements
 			} else {
 				overridePendingTransition(0, R.anim.push_up_out);
 			}
-
 		} else {
 			Intent newIntent = new Intent(this, DepartmentsActivity.class);
 			CoursesActivity.this.finish();
@@ -134,9 +133,6 @@ public class CoursesActivity extends ListActivity implements
 	}
 
 	// =========================================================================================
-	/**
-	 * Set up the {@link android.app.ActionBar}.
-	 */
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -153,6 +149,7 @@ public class CoursesActivity extends ListActivity implements
 			MenuItem switchButton = menu.findItem(R.id.action_login);
 			switchButton.setIcon(R.drawable.sign_in);
 		}
+
 		return true;
 	}
 
@@ -162,7 +159,7 @@ public class CoursesActivity extends ListActivity implements
 		Intent intent;
 
 		switch (item.getItemId()) {
-		case android.R.id.home:
+		case android.R.id.home: // Select home button
 			Intent parentActivityIntent = new Intent(this,
 					MainMenuActivity.class);
 			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -171,7 +168,8 @@ public class CoursesActivity extends ListActivity implements
 			overridePendingTransition(0, R.anim.slide_out_right);
 			finish();
 			return true;
-		case R.id.action_login:
+
+		case R.id.action_login: // Select login button
 			// Logout current user before login
 			if (currentUser != null) {
 				intent = new Intent(this, LogoutActivity.class);
@@ -181,12 +179,15 @@ public class CoursesActivity extends ListActivity implements
 				startActivityForResult(intent, 0);
 			}
 			break;
-		case R.id.action_refresh:
+
+		case R.id.action_refresh: // Select refresh button
 			DBRetriever.coursesQuery(this, departmentID, false);
 			break;
-		case R.id.action_reload_all:
+
+		case R.id.action_reload_all: // Select reload all button
 			DBRetriever.coursesQuery(this, departmentID, true);
 			break;
+
 		default:
 			break;
 		}
@@ -202,23 +203,32 @@ public class CoursesActivity extends ListActivity implements
 
 		Toast toast = null;
 
-		if (resultCode == 0) {
+		switch (resultCode) {
+		case 0:
 			CoursesActivity.this.invalidateOptionsMenu();
 			return;
-		} else if (resultCode == 1) {
+		case 1:
 			toast = Toast.makeText(this, "Login Successfully",
 					Toast.LENGTH_LONG);
 			CoursesActivity.this.invalidateOptionsMenu();
-		} else if (resultCode == 2) {
+			break;
+		case 2:
 			toast = Toast.makeText(this, "Logout Successfully",
 					Toast.LENGTH_LONG);
 			CoursesActivity.this.invalidateOptionsMenu();
+			break;
+		default:
+			break;
 		}
-		toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL,
-				0, 0);
-		toast.show();
+
+		if (toast != null) {
+			toast.setGravity(Gravity.CENTER_VERTICAL
+					| Gravity.CENTER_HORIZONTAL, 0, 0);
+			toast.show();
+		}
 	}
 
+	// =========================================================================================
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		currentUser = ParseUser.getCurrentUser();

@@ -15,12 +15,16 @@ public class ResetDataActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_resetdata);
 
+		// Listen when Yes button is clicked
 		findViewById(R.id.resetData_yes_button).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
+						getContentResolver().delete(DB.News.CONTENT_URI,	null, null);
+						getContentResolver().delete(DB.Events.CONTENT_URI,	null, null);
 						getContentResolver().delete(DB.Departments.CONTENT_URI,	null, null);
 						getContentResolver().delete(DB.Courses.CONTENT_URI, null, null);
+						getContentResolver().delete(DB.CourseDetails.CONTENT_URI, null, null);
 						getContentResolver().delete(DB.Announce.CONTENT_URI, null, null);
 						
 						Intent in = new Intent();
@@ -29,6 +33,7 @@ public class ResetDataActivity extends Activity {
 					}
 				});
 
+		// Listen when No button is clicked
 		findViewById(R.id.resetData_no_button).setOnClickListener(
 				new View.OnClickListener() {
 					@Override

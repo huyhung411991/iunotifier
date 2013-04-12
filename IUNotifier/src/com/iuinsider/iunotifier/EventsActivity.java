@@ -3,7 +3,6 @@ package com.iuinsider.iunotifier;
 import android.annotation.TargetApi;
 import android.app.ListActivity;
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -33,17 +32,14 @@ public class EventsActivity extends ListActivity implements
 
 	private ParseUser currentUser = null;
 	private SimpleCursorAdapter mAdapter = null;
-	private Context context;
 	private String sortCondition = "Upcoming";
 
-	// These are the Contacts rows that we will retrieve
+	// These are the columns that we will retrieve
 	private static final String[] PROJECTION = new String[] { DB.Events._ID,
 			DB.Events.TITLE, DB.Events.DESCRIPTION, DB.Events.DATE,
 			DB.Events.PLACE, DB.Events.UPDATED_AT };
-
 	// This is the select criteria
 	private static final String SELECTION = "";
-
 	// This is the sorting order
 	private static final String SORTORDER = DB.Events.UPDATED_AT + " DESC";
 
@@ -54,7 +50,7 @@ public class EventsActivity extends ListActivity implements
 		setContentView(R.layout.activity_events);
 
 		// Get current user
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+		Parse.initialize(this, IUNotifierApplication.APP_ID,
 				IUNotifierApplication.CLIENT_KEY);
 		currentUser = ParseUser.getCurrentUser();
 
@@ -81,12 +77,11 @@ public class EventsActivity extends ListActivity implements
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
 
-		context = this;
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
 				sortCondition = (String) parent.getItemAtPosition(pos);
-				DBRetriever.eventsQuery(context, sortCondition);
+				DBRetriever.eventsQuery(EventsActivity.this, sortCondition);
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
@@ -120,9 +115,6 @@ public class EventsActivity extends ListActivity implements
 	}
 
 	// =========================================================================================
-	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
-	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -140,6 +132,7 @@ public class EventsActivity extends ListActivity implements
 			MenuItem switchButton = menu.findItem(R.id.action_login);
 			switchButton.setIcon(R.drawable.sign_in);
 		}
+
 		return true;
 	}
 
@@ -149,7 +142,7 @@ public class EventsActivity extends ListActivity implements
 		Intent intent;
 
 		switch (item.getItemId()) {
-		case android.R.id.home:
+		case android.R.id.home: // Select home button
 			Intent parentActivityIntent = new Intent(this,
 					MainMenuActivity.class);
 			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -158,7 +151,8 @@ public class EventsActivity extends ListActivity implements
 			overridePendingTransition(0, R.anim.slide_out_right);
 			finish();
 			return true;
-		case R.id.action_login:
+
+		case R.id.action_login: // Select login button
 			// Logout current user before login
 			if (currentUser != null) {
 				intent = new Intent(this, LogoutActivity.class);
@@ -168,9 +162,11 @@ public class EventsActivity extends ListActivity implements
 				startActivityForResult(intent, 0);
 			}
 			break;
-		case R.id.action_refresh:
+
+		case R.id.action_refresh: // Select refresh button
 			DBRetriever.eventsQuery(this, sortCondition);
 			break;
+
 		default:
 			break;
 		}
@@ -185,28 +181,37 @@ public class EventsActivity extends ListActivity implements
 		super.onActivityResult(requestCode, resultCode, data);
 
 		Toast toast = null;
-
-		if (resultCode == 0) {
+		switch (resultCode) {
+		case 0:
 			EventsActivity.this.invalidateOptionsMenu();
 			return;
-		} else if (resultCode == 1) {
+		case 1:
 			toast = Toast.makeText(this, "Login Successfully",
 					Toast.LENGTH_LONG);
 			EventsActivity.this.invalidateOptionsMenu();
-		} else if (resultCode == 2) {
+			break;
+		case 2:
 			toast = Toast.makeText(this, "Logout Successfully",
 					Toast.LENGTH_LONG);
 			EventsActivity.this.invalidateOptionsMenu();
+			break;
+		default:
+			break;
 		}
-		toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL,
-				0, 0);
-		toast.show();
+
+		if (toast != null) {
+			toast.setGravity(Gravity.CENTER_VERTICAL
+					| Gravity.CENTER_HORIZONTAL, 0, 0);
+			toast.show();
+		}
 	}
 
+	// =========================================================================================
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		currentUser = ParseUser.getCurrentUser();
 		MenuItem switchButton = menu.findItem(R.id.action_login);
+
 		if (currentUser != null) {
 			switchButton.setIcon(R.drawable.sign_in);
 		} else {
@@ -253,19 +258,10 @@ public class EventsActivity extends ListActivity implements
 		Cursor mCursor = mAdapter.getCursor();
 		mCursor.moveToPosition(position);
 
-		String eventTitle, eventDescription, eventPlace, eventDateTime;
-
-		int columnIndex = mCursor.getColumnIndex(DB.Events.TITLE);
-		eventTitle = mCursor.getString(columnIndex);
-
-		columnIndex = mCursor.getColumnIndex(DB.Events.DESCRIPTION);
-		eventDescription = mCursor.getString(columnIndex);
-
-		columnIndex = mCursor.getColumnIndex(DB.Events.PLACE);
-		eventPlace = mCursor.getString(columnIndex);
-
-		columnIndex = mCursor.getColumnIndex(DB.Events.DATE);
-		eventDateTime = mCursor.getString(columnIndex);
+		String eventTitle = getValue(mCursor, DB.Events.TITLE);
+		String eventDescription = getValue(mCursor, DB.Events.DESCRIPTION);
+		String eventPlace = getValue(mCursor, DB.Events.PLACE);
+		String eventDateTime = getValue(mCursor, DB.Events.DATE);
 
 		Bundle bundle = new Bundle();
 		bundle.putString("EventTitle", eventTitle);
@@ -276,5 +272,11 @@ public class EventsActivity extends ListActivity implements
 		Intent intent = new Intent(this, EventDetailsActivity.class);
 		intent.putExtras(bundle);
 		startActivity(intent);
+	}
+
+	// =========================================================================================
+	public String getValue(Cursor cursor, String columnName) {
+		int columnIndex = cursor.getColumnIndex(columnName);
+		return cursor.getString(columnIndex);
 	}
 }

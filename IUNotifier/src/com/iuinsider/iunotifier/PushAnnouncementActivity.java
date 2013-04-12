@@ -1,9 +1,10 @@
 package com.iuinsider.iunotifier;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,11 +15,10 @@ import com.iuinsider.iunotifier.providers.DBRetriever;
 
 public class PushAnnouncementActivity extends Activity {
 
-//	private ParseUser currentUser = null;
 	private EditText announcementContent;
 	private Button announceButton;
 	private String courseID;
-	private Context context;
+
 	private static final String EXTRA_COURSE = ".com.iuinsider.iunotifier.COURSE";
 
 	// =========================================================================================
@@ -28,19 +28,21 @@ public class PushAnnouncementActivity extends Activity {
 		setContentView(R.layout.activity_push_announcement);
 
 		courseID = getIntent().getStringExtra(EXTRA_COURSE);
-		if (courseID == null) {
+		if (TextUtils.isEmpty(courseID))
 			finish();
-		}
 
-		context = this;
 		announcementContent = (EditText) findViewById(R.id.announcement_content);
 		announceButton = (Button) findViewById(R.id.announce_button);
 		announceButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				String message = announcementContent.getText().toString();
-				DBRetriever.pushAnnouncement(courseID, message, context);
+				DBRetriever.pushAnnouncement(PushAnnouncementActivity.this,
+						courseID, message);
 			}
 		});
+
+		// Show the Up button in the action bar.
+		setupActionBar();
 	}
 
 	// =========================================================================================
@@ -50,6 +52,13 @@ public class PushAnnouncementActivity extends Activity {
 		PushAnnouncementActivity.this.finish();
 		overridePendingTransition(0, R.anim.slide_out_right);
 	}
+	
+	// =========================================================================================
+		private void setupActionBar() {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				getActionBar().setDisplayHomeAsUpEnabled(true);
+			}
+		}
 
 	// =========================================================================================
 	@Override
@@ -63,7 +72,7 @@ public class PushAnnouncementActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
+		case android.R.id.home: // Select home button
 			Intent parentActivityIntent = new Intent(this,
 					MainMenuActivity.class);
 			parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP

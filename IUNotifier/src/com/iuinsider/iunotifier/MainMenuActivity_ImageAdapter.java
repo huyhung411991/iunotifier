@@ -13,6 +13,11 @@ public class MainMenuActivity_ImageAdapter extends BaseAdapter {
 	private Context mContext;
 	private LayoutInflater layoutInflater;
 
+	// References to icons images and texts
+	private final Integer[] mThumbIds = { R.drawable.news, R.drawable.calendar,
+			R.drawable.courses };
+	private final String[] iconNames = { "News", "Events", "Courses" };
+
 	// =========================================================================================
 	public MainMenuActivity_ImageAdapter(Context c) {
 		mContext = c;
@@ -52,22 +57,17 @@ public class MainMenuActivity_ImageAdapter extends BaseAdapter {
 		}
 
 		// Set attributes for icons
-		ImageView imageView = (ImageView) grid.findViewById(R.id.main_menu_gridLayout_icon_imageView);
+		ImageView imageView = (ImageView) grid
+				.findViewById(R.id.main_menu_gridLayout_icon_imageView);
 		imageView.setImageResource(mThumbIds[position]);
 		imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-		// Set the texts below icons	
-		TextView textView = (TextView) grid.findViewById(R.id.main_menu_gridLayout_iconName_textView);
+		// Set the texts below icons
+		TextView textView = (TextView) grid
+				.findViewById(R.id.main_menu_gridLayout_iconName_textView);
 		textView.setText(iconNames[position]);
 		textView.setTextColor(Color.WHITE);
 
-
 		return grid;
 	}
-
-	// =========================================================================================
-	// References to icons images and texts
-	private Integer[] mThumbIds = { R.drawable.news, R.drawable.calendar,
-			R.drawable.courses };
-	private String[] iconNames = { "News", "Events", "Courses" };
 }

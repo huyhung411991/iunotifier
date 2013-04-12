@@ -26,7 +26,7 @@ public class MainMenuActivity extends Activity {
 		setContentView(R.layout.activity_main_menu);
 
 		// Get current user
-		Parse.initialize(this, IUNotifierApplication.APPLICATION_ID,
+		Parse.initialize(this, IUNotifierApplication.APP_ID,
 				IUNotifierApplication.CLIENT_KEY);
 		currentUser = ParseUser.getCurrentUser();
 
@@ -56,7 +56,6 @@ public class MainMenuActivity extends Activity {
 
 		switch (item.getItemId()) {
 		case R.id.action_login:
-
 			// Logout current user before login
 			if (currentUser != null) {
 				intent = new Intent(this, LogoutActivity.class);
@@ -86,26 +85,36 @@ public class MainMenuActivity extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 
 		Toast toast = null;
-		if (resultCode == 0) {
+		switch (resultCode) {
+		case 0:
 			MainMenuActivity.this.invalidateOptionsMenu();
 			return;
-		} else if (resultCode == 1) {
+		case 1:
 			toast = Toast.makeText(this, "Login Successfully",
 					Toast.LENGTH_LONG);
 			MainMenuActivity.this.invalidateOptionsMenu();
-		} else if (resultCode == 2) {
+			break;
+		case 2:
 			toast = Toast.makeText(this, "Logout Successfully",
 					Toast.LENGTH_LONG);
 			MainMenuActivity.this.invalidateOptionsMenu();
-		} else if (resultCode == 3) {
+			break;
+		case 3:
 			toast = Toast.makeText(this, "All Data Is Deleted",
 					Toast.LENGTH_LONG);
+			break;
+		default:
+			break;
 		}
-		toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL,
-				0, 0);
-		toast.show();
+
+		if (toast != null) {
+			toast.setGravity(Gravity.CENTER_VERTICAL
+					| Gravity.CENTER_HORIZONTAL, 0, 0);
+			toast.show();
+		}
 	}
 
+	// =========================================================================================
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		currentUser = ParseUser.getCurrentUser();
@@ -115,6 +124,7 @@ public class MainMenuActivity extends Activity {
 		} else {
 			switchButton.setIcon(R.drawable.not_sign_in);
 		}
+
 		return true;
 	}
 
@@ -134,10 +144,10 @@ public class MainMenuActivity extends Activity {
 				if (position == 0)
 					openNews(view);
 				// Use image position to invoke Events Activity
-				if (position == 1)
+				else if (position == 1)
 					openEvents(view);
 				// Use image position to invoke Course Activity
-				if (position == 2)
+				else if (position == 2)
 					openCourse(view);
 			}
 		});
