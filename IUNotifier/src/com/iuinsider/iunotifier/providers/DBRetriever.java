@@ -98,7 +98,7 @@ public class DBRetriever {
 		context.getContentResolver().delete(DB.News.CONTENT_URI, null, null);
 
 		ParseQuery query = new ParseQuery(DB.News.TABLE_NAME);
-		if (TextUtils.isEmpty(sortCondition)) {
+		if (!TextUtils.isEmpty(sortCondition)) {
 			query.whereEqualTo(DB.News.SOURCE, sortCondition);
 		}
 
