@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log>
+<logentry
+   revision="78">
+<author>nda1291</author>
+<date>2013-04-13T01:54:24.441854Z</date>
+<msg>Edit page number</msg>
+</logentry>
+<logentry
+   revision="77">
+<author>nda1291</author>
+<date>2013-04-13T01:51:51.177999Z</date>
+<msg>add Manual for Subversion on Goolge Code and Parse</msg>
+</logentry>
+<logentry
+   revision="76">
+<author>nda1291</author>
+<date>2013-04-12T18:56:00.053380Z</date>
+<msg>add Presentation - Project Note Sprint 2</msg>
+</logentry>
+<logentry
+   revision="75">
+<author>nda1291</author>
+<date>2013-04-12T18:33:24.613605Z</date>
+<msg>- change 2.1, 2.2, 2.3
+- add junit sampe java source
+- reverse 1.1 and 1.2</msg>
+</logentry>
+<logentry
+   revision="74">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-12T17:47:09.176680Z</date>
+<msg>Extract methods in DBRetriever class.
+Add DBRetrieverTest class (not working).</msg>
+</logentry>
+<logentry
+   revision="73">
+<author>nda1291</author>
+<date>2013-04-12T17:05:57.103447Z</date>
+<msg>- complete version control
+- complete refactoring
+- complete test cases (bo 2 phan 1.6 va 1.7)
+- change font style</msg>
+</logentry>
+<logentry
+   revision="72">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-12T16:38:40.620691Z</date>
+<msg>- Fix the number 86400000l -&gt; 86400000
+- Change all toast appearance time to SHORT</msg>
+</logentry>
+<logentry
+   revision="71">
+<author>nda1291</author>
+<date>2013-04-12T15:29:16.963015Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="70">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-12T14:07:00.238413Z</date>
+<msg>Refactor a bunch of codes</msg>
+</logentry>
+<logentry
+   revision="69">
+<author>nda1291</author>
+<date>2013-04-12T11:04:13.324872Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="68">
+<author>nda1291</author>
+<date>2013-04-11T16:46:18.221957Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="67">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-11T09:35:50.760828Z</date>
+<msg>Clean code
+
+Course subscribe &amp; unsubscribe might already work. Need testing to be sure.</msg>
+</logentry>
+<logentry
+   revision="66">
+<author>nda1291</author>
+<date>2013-04-11T05:11:16.438008Z</date>
+<msg>Release Note complete</msg>
+</logentry>
+<logentry
+   revision="65">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-10T18:18:38.292912Z</date>
+<msg>Add getting Theory and Lab Info in CourseDetailsActivity</msg>
+</logentry>
+<logentry
+   revision="64">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-10T17:50:18.849956Z</date>
+<msg>Extend check for user in Login &amp; CourseDetails Activities</msg>
+</logentry>
+<logentry
+   revision="63">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-10T16:58:06.686538Z</date>
+<msg>Temporarily remove support for query all courses and all announcements until getting it work</msg>
+</logentry>
+<logentry
+   revision="62">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-10T16:25:20.392438Z</date>
+<msg>Add ID column (along with existed _ID column) to table News &amp; Events</msg>
+</logentry>
+<logentry
+   revision="61">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-10T16:13:16.923552Z</date>
+<msg>Add call of Parse initialize method in activities.
+Change CREATED_AT parameter in News &amp; Events to UPDATED_AT
+
+Course Subscribe still not working.</msg>
+</logentry>
+<logentry
+   revision="60">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-07T05:23:02.789338Z</date>
+<msg>Fix wrong actionBar layout reference in activities.
+Add reload all action to actionBar in course related activities.</msg>
+</logentry>
+<logentry
+   revision="59">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-07T01:51:36.984117Z</date>
+<msg>Update Parse API
+Remove unnecessary xml layout files
+
+Still working on Course Subscribe.</msg>
+</logentry>
+<logentry
+   revision="58">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-06T19:10:21.927242Z</date>
+<msg>- Add a toast show successful login/logout
+- Add created date to announcement</msg>
+</logentry>
+<logentry
+   revision="57">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-06T17:39:20.284490Z</date>
+<msg>Create the Toast output message for successful/fail push announcements </msg>
+</logentry>
+<logentry
+   revision="56">
+<author>nda1291@gmail.com</author>
+<date>2013-04-06T17:04:10.869883Z</date>
+<msg>Project Note - Sprint 2</msg>
+</logentry>
+<logentry
+   revision="55">
+<author>nda1291@gmail.com</author>
+<date>2013-04-06T17:03:36.513273Z</date>
+<msg>Project Note - Sprint 1</msg>
+</logentry>
+<logentry
+   revision="54">
+<author>nda1291@gmail.com</author>
+<date>2013-04-06T17:02:14.681085Z</date>
+<msg>Project Plan</msg>
+</logentry>
+<logentry
+   revision="53">
+<author>nda1291@gmail.com</author>
+<date>2013-04-06T17:00:57.870517Z</date>
+<msg>Vision and scope</msg>
+</logentry>
+<logentry
+   revision="52">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-06T16:59:48.276077Z</date>
+<msg>Fix broken Announcement Receiving from last revision</msg>
+</logentry>
+<logentry
+   revision="51">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-06T16:35:15.012571Z</date>
+<msg>Extract function isConnected to check for network connection in course related activities.
+
+Still working on retrieving UserCourses in LoginActivity.</msg>
+</logentry>
+<logentry
+   revision="50">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-05T17:51:37.761229Z</date>
+<msg>Them 1 file color.xml</msg>
+</logentry>
+<logentry
+   revision="49">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-05T17:50:02.880398Z</date>
+<msg>Chinh sua GUI cho course detail
+Lam lai navigation, nut home = tro ve mainmenu / nut back = van chay nhu cu</msg>
+</logentry>
+<logentry
+   revision="48">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-05T15:13:50.652092Z</date>
+<msg>Add check for reload all database table in some query functions in DBRetriever class</msg>
+</logentry>
+<logentry
+   revision="47">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-05T14:18:44.426495Z</date>
+<msg>Implement CourseDetailsActivity</msg>
+</logentry>
+<logentry
+   revision="46">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-05T10:39:37.915066Z</date>
+<msg>Rewrite 2 function DateToString and StringToDate in DBRetriever class</msg>
+</logentry>
+<logentry
+   revision="45">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-04T16:01:28.556022Z</date>
+<msg>Fix lỗi context làm ko load đc khi chọn item trong dropdownlist trong news với events</msg>
+</logentry>
+<logentry
+   revision="44">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-04T15:22:57.204189Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="43">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-04T11:11:51.219327Z</date>
+<msg>Fix broken course subscribe in last revision</msg>
+</logentry>
+<logentry
+   revision="42">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-04T08:13:34.057749Z</date>
+<msg>Change: Add method to subscribe and unsubscribe for course announcements.
+Known Issue: Cant get to AnnouncementsActivity when open the push item.</msg>
+</logentry>
+<logentry
+   revision="41">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-04T06:49:00.939389Z</date>
+<msg>Refactor code
+Readd ID Column for table Announcement
+Add proper function for querying Courses</msg>
+</logentry>
+<logentry
+   revision="40">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-04T05:46:58.124404Z</date>
+<msg>Edit GUI cho course detail</msg>
+</logentry>
+<logentry
+   revision="39">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-04T03:47:36.922849Z</date>
+<msg>- Them user permission check de pushAnnouncement
+- Chinh lai createDate trong event, news
+</msg>
+</logentry>
+<logentry
+   revision="38">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-03T19:01:16.612867Z</date>
+<msg>Modify pushAnnouncement in Cloud code to add new announcement to database.
+Move push function from PushAnnouncementActivity to DBRetriever class.
+Configure DepartmentActivity &amp; CoursesActivity to support load User Courses.</msg>
+</logentry>
+<logentry
+   revision="37">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-03T18:01:09.191060Z</date>
+<msg>Add functions getUserCourses in Cloud Code and remove 2 unused functions
+Remove unused column updateAt in table UserCourses</msg>
+</logentry>
+<logentry
+   revision="36">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-03T15:56:03.491220Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="35">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-03T13:40:38.739118Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="34">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-03T13:39:01.707958Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="33">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-03T13:38:32.843590Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="32">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-03T13:37:59.225939Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="31">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-03T13:32:25.077613Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="30">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-03T13:31:47.997556Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="29">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-03T13:31:14.422729Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="28">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-03T13:26:33.259576Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="27">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-03T13:25:46.429083Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="26">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-03T13:25:25.303388Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="25">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-03T12:05:24.556679Z</date>
+<msg>CourseDetailsActivity: remove Listener and use android:onClick attribute instead
+DepartmentsActivity: change to sort by departmentID
+EventsActivity &amp; NewsActivity: add SORTORDER parameter
+DB &amp; DBHelper Class: remove unnecessary eventTime (use only eventDate) and departmentIDNumber (can use _ID instead if want to)</msg>
+</logentry>
+<logentry
+   revision="24">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-03T09:07:10.652522Z</date>
+<msg>- Update GUI
+- Add 2 icons for announcement and push
+</msg>
+</logentry>
+<logentry
+   revision="23">
+<author>LongPham3105@gmail.com</author>
+<date>2013-04-03T08:37:29.218831Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="22">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-02T08:49:07.553560Z</date>
+<msg>Remove testing provider-defined method for getting time of last update.
+Add new method getLastUpdate in DBRetriever as a proper way to get time of last update.
+Reconfigure query methods in DBRetriever and Activities to work with new method.</msg>
+</logentry>
+<logentry
+   revision="21">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-02T01:41:40.890214Z</date>
+<msg>Add support for table User Course in IUContentProvider class
+Add testing provider-defined method getLastUpdate</msg>
+</logentry>
+<logentry
+   revision="20">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T18:51:41.962217Z</date>
+<msg>Correct AnnouncementsActivity class
+Add support for CourseDetails in DBRetriever class</msg>
+</logentry>
+<logentry
+   revision="19">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T18:10:56.174072Z</date>
+<msg>Leftover from previous revision</msg>
+</logentry>
+<logentry
+   revision="18">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T18:09:32.964705Z</date>
+<msg>Bunch of cosmetic fixing
+Add AnnouncementsActivity</msg>
+</logentry>
+<logentry
+   revision="17">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T15:54:29.100058Z</date>
+<msg>Change: Delete renamed files on the repo (3rd time)</msg>
+</logentry>
+<logentry
+   revision="16">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T15:52:20.604070Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="15">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T15:51:51.407526Z</date>
+<msg></msg>
+</logentry>
+<logentry
+   revision="14">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T15:46:10.222198Z</date>
+<msg>Cosmetic stuff.
+Refactor a lot of variable names and file names
+Require checkout before making any change</msg>
+</logentry>
+<logentry
+   revision="13">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T13:13:29.880115Z</date>
+<msg>Fix stupid error with CourseActivity
+Make query to 3 tables Departments, Courses, CourseDetails works with String ID</msg>
+</logentry>
+<logentry
+   revision="12">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T10:50:40.589759Z</date>
+<msg>Add CoursesActivity for selecting course.
+Connect DepartmentActivity with CoursesActivity.
+Fix some small error in DBRetriever.</msg>
+</logentry>
+<logentry
+   revision="11">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T07:27:14.309815Z</date>
+<msg>Add UNIQUE attribute to ID column in tables Departments, Courses, CourseDetails and change insert command to insertWithOnConflict to reduce conflict in database update.</msg>
+</logentry>
+<logentry
+   revision="10">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T07:05:05.600744Z</date>
+<msg>Incremental update works
+Add sorting order for department query</msg>
+</logentry>
+<logentry
+   revision="9">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T06:40:01.009202Z</date>
+<msg>Added lost java files</msg>
+</logentry>
+<logentry
+   revision="8">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T06:37:58.269608Z</date>
+<msg>Changes:
+Fix getting network connection state
+Fix getting updateAt attribute
+Known Issues:
+Get time of last update.</msg>
+</logentry>
+<logentry
+   revision="7">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T05:42:01.939409Z</date>
+<msg>Add DepartmentActivity
+Fix some incorrect references in DBHelper, DBRetriever class
+Remove unused constant PARSE_ID in tables Department, Course and CourseDetails</msg>
+</logentry>
+<logentry
+   revision="6">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T04:09:41.828011Z</date>
+<msg>Update DBHelper class to support creating &amp; deleting the new 3 tables
+Correct some logging messages in DBRetriever class</msg>
+</logentry>
+<logentry
+   revision="5">
+<author>huyhung411991@gmail.com</author>
+<date>2013-04-01T01:57:24.489687Z</date>
+<msg>Add Parse Cloud code from previous sprint
+Add Documents folder for storing project documents later</msg>
+</logentry>
+<logentry
+   revision="4">
+<author>huyhung411991@gmail.com</author>
+<date>2013-03-31T17:51:40.413887Z</date>
+<msg>Extract 2 method: DateToString and StringToDate, refactor some String
+Add 2 method to query for Departments and Courses
+Add constant String Parse_ID for table Departments, Courses, CourseDetails</msg>
+</logentry>
+<logentry
+   revision="3">
+<author>huyhung411991@gmail.com</author>
+<date>2013-03-31T15:56:56.512990Z</date>
+<msg>Add table definition for Departments, Courses, and CourseDetails
+Update Content Provider to support those tables</msg>
+</logentry>
+<logentry
+   revision="2">
+<author>huyhung411991@gmail.com</author>
+<date>2013-03-31T11:08:41.238516Z</date>
+<msg>Add software</msg>
+</logentry>
+<logentry
+   revision="1">
+<date>2013-03-31T10:36:29.728435Z</date>
+<msg>Initial directory structure.</msg>
+</logentry>
+</log>
