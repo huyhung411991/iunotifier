@@ -31,7 +31,8 @@ import com.parse.ParseUser;
 public class DBRetriever {
 	private static Context context = null;
 	private static final String[] formats = new String[] {
-			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd HH:mm:ss.SSS",
+			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", 
+			"yyyy-MM-dd HH:mm:ss.SSS",
 			"yyyy-MM-dd" };
 	private static final int MILLISECONDS_OF_DAY = 24 * 60 * 60 * 1000;
 	private static final int MILLISECONDS_OF_DAY_2 = (23 * 60 + 59) * 60 * 1000;
@@ -188,11 +189,11 @@ public class DBRetriever {
 						parseObject.getString(DB.Events.DESCRIPTION));
 				event.put(DB.Events.PLACE,
 						parseObject.getString(DB.Events.PLACE));
-				Date date = parseObject.getDate(DB.Events.DATE);
-				event.put(DB.Events.DATE, DateToString(date, 1));
-				date = parseObject.getUpdatedAt();
+				Date eventDate = parseObject.getDate(DB.Events.DATE);
+				event.put(DB.Events.DATE, DateToString(eventDate, 1));
+				Date updateDate = parseObject.getUpdatedAt();
 				event.put(DB.Events.UPDATED_AT,
-						"Created on: " + DateToString(date, 2));
+						"Created on: " + DateToString(updateDate, 2));
 				return event;
 			}
 		});
